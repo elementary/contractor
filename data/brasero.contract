@@ -1,0 +1,6 @@
+[Contractor Entry]
+Name=Brasero
+Icon=brasero
+Description=Burn to Disc
+MimeType=all
+Exec=brasero -d %U
