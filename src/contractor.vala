@@ -392,7 +392,7 @@ namespace Contractor
         {
             Gee.Set<File> contract_file_dirs = new Gee.HashSet<File> ();
 
-            directory = File.new_for_path ("/usr/share/contractor/");
+            directory = File.new_for_path (Build.PREFIX + "/share/contractor/");
             yield process_directory (directory, contract_file_dirs);
 
             create_maps ();
