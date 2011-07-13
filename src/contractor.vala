@@ -41,20 +41,70 @@ namespace Contractor
         {
             cfs = new ContractFileService ();
         }
+        
 
-        private GLib.HashTable<string,string> get_filtered_entry (ContractFileInfo entry, File file)
+        private bool all_native;
+        private string common_parent;
+        private string cmd_uris;
+
+        /* generate possible contracts for list of arguments and filter them by 
+           common parent mimetype and all.
+           We don't want to waste time and ressources determining the common contracts 
+           for each files one by one */
+        public GLib.HashTable<string,string>[] GetServicesByLocationsList (GLib.HashTable<string,string>[] locations)
         {
-            GLib.HashTable<string,string> filtered_entry;
-            
-            filtered_entry = new GLib.HashTable<string,string> (str_hash, str_equal);
-            filtered_entry.insert ("Name", entry.name);
-            filtered_entry.insert ("Description", entry.description);
-            filtered_entry.insert ("Exec", get_exec_from_entry (entry, file));
-            filtered_entry.insert ("IconName", entry.icon_name);
+            GLib.HashTable<string,string>[] filtered = null;
+            if (!cfs.initialized)
+                return filtered;
 
-            return filtered_entry;
+            var nbargs = locations.length;
+            //message ("locationslist %d", nbargs);
+
+            if (nbargs == 1) {
+                GLib.HashTable<string,string> location = locations[0];
+                return GetServicesByLocation (location.lookup ("uri"),
+                                              location.lookup ("mimetype"));
+            }
+
+            analyse_similarities (locations);
+
+            //message ("common parent %s", common_parent);
+            var list_for_all = cfs.get_contract_files_for_type ("all");
+            if (list_for_all.size > 0)
+            {
+                foreach (var entry in list_for_all)
+                {
+                    if (!(!all_native && !entry.take_uri_args)
+                        && !(nbargs>1 && !entry.take_multi_args))
+                    {
+                        var filtered_entry = get_filtered_entry_for_list (entry);
+                        //debug ("desc: %s exec: %s", filtered_entry.lookup ("Description"), filtered_entry.lookup ("Exec"));
+                        filtered += filtered_entry;
+                    }
+                }
+            }
+
+            if (common_parent != null) 
+            {
+                var list_for_parent = cfs.get_contract_files_for_type (common_parent);
+                if (list_for_parent.size > 0)
+                {
+                    foreach (var entry in list_for_parent)
+                    {
+                        if (!(!all_native && !entry.take_uri_args)
+                            && !(nbargs>1 && !entry.take_multi_args)) 
+                        {
+                            var filtered_entry = get_filtered_entry_for_list (entry);
+                            //debug ("desc: %s exec: %s", filtered_entry.lookup ("Description"), filtered_entry.lookup ("Exec"));
+                            filtered += filtered_entry;
+                        }
+                    }
+                }
+            }
+
+            return filtered;
         }
-
+        
         public GLib.HashTable<string,string>[] GetServicesByLocation (string strlocation, string? file_mime = null) 
         {
             File file = File.new_for_commandline_arg (strlocation);
@@ -63,7 +113,7 @@ namespace Contractor
             if (!cfs.initialized)
                 return filtered;
             
-            bool uri_constraint = !file.is_native ();
+            bool is_native = file.is_native ();
 
             /*if (file.query_exists ()) {
               message ("file exist");
@@ -82,11 +132,11 @@ namespace Contractor
                 {
                     foreach (var entry in list_for_all)
                     {
-                        if (uri_constraint && !entry.take_uri_args) 
-                            break; 
-                        var filtered_entry = get_filtered_entry (entry, file);
-                        debug ("desc: %s exec: %s", filtered_entry.lookup ("Description"), filtered_entry.lookup ("Exec"));
-                        filtered += filtered_entry;
+                        if (!(!is_native && !entry.take_uri_args)) {
+                            var filtered_entry = get_filtered_entry (entry, file);
+                            //debug ("desc: %s exec: %s", filtered_entry.lookup ("Description"), filtered_entry.lookup ("Exec"));
+                            filtered += filtered_entry;
+                        }
                     }
                 }
                 var parent_mime = get_parent_mime (mimetype);
@@ -97,11 +147,11 @@ namespace Contractor
                     {
                         foreach (var entry in list_for_parent)
                         {
-                            if (uri_constraint && !entry.take_uri_args) 
-                                break; 
-                            var filtered_entry = get_filtered_entry (entry, file);
-                            debug ("desc: %s exec: %s", filtered_entry.lookup ("Description"), filtered_entry.lookup ("Exec"));
-                            filtered += filtered_entry;
+                            if (!(!is_native && !entry.take_uri_args)) {
+                                var filtered_entry = get_filtered_entry (entry, file);
+                                //debug ("desc: %s exec: %s", filtered_entry.lookup ("Description"), filtered_entry.lookup ("Exec"));
+                                filtered += filtered_entry;
+                            }
                         }
                     }
                 }
@@ -110,16 +160,112 @@ namespace Contractor
                 {
                     foreach (var entry in list_for_mimetype)
                     {
-                        if (uri_constraint && !entry.take_uri_args) 
-                            break;
-                        var filtered_entry = get_filtered_entry (entry, file);
-                        debug ("desc: %s exec: %s", filtered_entry.lookup ("Description"), filtered_entry.lookup ("Exec"));
-                        filtered += filtered_entry;
+                        if (!(!is_native && !entry.take_uri_args)) {
+                            var filtered_entry = get_filtered_entry (entry, file);
+                            //debug ("desc: %s exec: %s", filtered_entry.lookup ("Description"), filtered_entry.lookup ("Exec"));
+                            filtered += filtered_entry;
+                        }
                     }
                 }
             }
 
             return filtered;
+        }
+
+        public GLib.HashTable<string,string>[] GetServicesForString () 
+        {
+            GLib.HashTable<string,string>[] filtered = null;
+            
+            //message ("GetServicesForString");
+            foreach (var cfi in cfs.exec_string_map.values) {
+                filtered += get_filtered_entry_for_string (cfi);
+                //message ("exec_string %s", cfi.name);
+            }
+
+            return filtered;
+        }
+
+        private void analyse_similarities (GLib.HashTable<string,string>[] locations)
+        {
+            string[] pmimes = null;
+            bool[] natives = null;
+
+            all_native = true;
+            common_parent = null;
+            cmd_uris = "";
+
+            foreach (var location in locations) {       
+                var uri = location.lookup ("uri");
+                cmd_uris += uri + " ";
+                File file = File.new_for_commandline_arg (uri);
+                string mimetype = location.lookup ("mimetype");
+                if (mimetype == null || mimetype.length <= 0)
+                    mimetype = query_content_type (file);
+                pmimes += get_parent_mime (mimetype);
+                natives += file.is_native ();
+            }
+
+            foreach (var pmime in pmimes) {
+                if (pmime != null) {
+                    if (common_parent == null)
+                        common_parent = pmime;
+                    else {
+                        if (pmime != common_parent) {
+                            common_parent = null;
+                            break;
+                        }
+                    }
+                }else {
+                    common_parent = null;
+                    break;
+                }
+            }
+            
+            foreach (var native in natives) {
+                if (!native) {
+                    all_native = false;
+                    break;
+                }
+            }
+        }
+
+        private GLib.HashTable<string,string> get_filtered_entry_for_list (ContractFileInfo entry)
+        {
+            GLib.HashTable<string,string> filtered_entry;
+            
+            filtered_entry = new GLib.HashTable<string,string> (str_hash, str_equal);
+            filtered_entry.insert ("Name", entry.name);
+            filtered_entry.insert ("Description", entry.description);
+            filtered_entry.insert ("Exec", cmd_uris);
+            filtered_entry.insert ("IconName", entry.icon_name);
+
+            return filtered_entry;
+        }
+
+        private GLib.HashTable<string,string> get_filtered_entry (ContractFileInfo entry, File file)
+        {
+            GLib.HashTable<string,string> filtered_entry;
+            
+            filtered_entry = new GLib.HashTable<string,string> (str_hash, str_equal);
+            filtered_entry.insert ("Name", entry.name);
+            filtered_entry.insert ("Description", entry.description);
+            filtered_entry.insert ("Exec", get_exec_from_entry (entry, file));
+            filtered_entry.insert ("IconName", entry.icon_name);
+
+            return filtered_entry;
+        }
+
+        private GLib.HashTable<string,string> get_filtered_entry_for_string (ContractFileInfo entry)
+        {
+            GLib.HashTable<string,string> filtered_entry;
+            
+            filtered_entry = new GLib.HashTable<string,string> (str_hash, str_equal);
+            filtered_entry.insert ("Name", entry.name);
+            filtered_entry.insert ("Description", entry.description);
+            filtered_entry.insert ("Exec", entry.exec_string);
+            filtered_entry.insert ("IconName", entry.icon_name);
+
+            return filtered_entry;
         }
 
         private string get_exec_from_entry (ContractFileInfo cfi, File file)
@@ -159,6 +305,7 @@ namespace Contractor
     {
         public string name { get; construct set; }
         public string exec { get; set; }
+        public string exec_string { get; set; }
         public string description { get; set; }
         public string[] mime_types = null;
         public string icon_name { get; construct set; default = ""; }
@@ -197,6 +344,9 @@ namespace Contractor
                         icon_name = icon_name.substring (0, icon_name.length - 4);
                     }
                 }
+                
+                if (keyfile.has_key (GROUP, "ExecString"))
+                    exec_string = keyfile.get_string (GROUP, "ExecString");
             }
             catch (Error err)
             {
@@ -219,6 +369,8 @@ namespace Contractor
         private Gee.Map<string, Gee.List<ContractFileInfo> > exec_map;
         private Gee.Map<string, ContractFileInfo> contract_id_map;
 
+        public Gee.Map<string, ContractFileInfo> exec_string_map;
+        
         public bool initialized { get; private set; default = false; }
 
         public signal void initialization_done ();
@@ -310,6 +462,9 @@ namespace Contractor
             // and exec map
             exec_map =
                 new Gee.HashMap<string, Gee.List<ContractFileInfo> > ();
+            // and exec string map
+            exec_string_map =
+                new Gee.HashMap<string, ContractFileInfo> ();
             // and desktop id map
             contract_id_map =
                 new Gee.HashMap<string, ContractFileInfo> ();
@@ -363,6 +518,10 @@ namespace Contractor
                     exec_map[exec] = exec_list;
                 }
                 exec_list.add (cfi);
+
+                // update exec sting map
+                if (cfi.exec_string != null)
+                    exec_string_map [Path.get_basename (cfi.filename)] = cfi;
 
                 // update contract id map
                 contract_id_map[Path.get_basename (cfi.filename)] = cfi;
@@ -422,6 +581,17 @@ namespace Contractor
             ret.add_all (cfi_set);
             return ret;
         }
+
+        /*public void get_contracts_for_string ()
+        {
+            GLib.HashTable<string,string>[] filtered = null;
+            //GLib.HashTable<string,string>[] filtered = null;
+            //foreach (ContractFileInfo cfi in exec_string_map)
+            foreach (var cfi in exec_string_map.values) {
+                filtered += get_filtered_entry_for_string (cfi);
+                message ("exec_string %s", cfi.name);
+            }
+        }*/
     }
 
 
