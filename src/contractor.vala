@@ -236,7 +236,7 @@ namespace Contractor
             filtered_entry = new GLib.HashTable<string,string> (str_hash, str_equal);
             filtered_entry.insert ("Name", entry.name);
             filtered_entry.insert ("Description", entry.description);
-            filtered_entry.insert ("Exec", cmd_uris);
+            filtered_entry.insert ("Exec", entry.exec.printf (cmd_uris));
             filtered_entry.insert ("IconName", entry.icon_name);
 
             return filtered_entry;
