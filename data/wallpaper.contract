@@ -1,6 +1,0 @@
-[Contractor Entry]
-Name=Wallpaper
-Icon=wallpaper
-Description=Set as wallpaper
-MimeType=image
-Exec=gsettings set desktop.Wallpaper picture-path %u
