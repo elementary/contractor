@@ -1,0 +1,5 @@
+contractor (0.2) unstable; urgency=low
+
+  * Packaged the Vala rewrite.
+
+ -- Sergey "Shnatsel" Davidoff <shnatsel@gmail.com>  Fri, 15 Jul 2011 14:50:08 +0400
