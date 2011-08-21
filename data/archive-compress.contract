@@ -3,4 +3,5 @@ Name=Compress
 Icon=
 Description=Compress
 MimeType=!Archives
+StrictCondition=false
 Exec=file-roller --add %U

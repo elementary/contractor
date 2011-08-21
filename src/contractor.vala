@@ -91,7 +91,7 @@ namespace Contractor
                 }
             }
 
-            /* conditional contracts are contracts which own mime_type entries which contain special conditional character(s) like ! for negation. Thoses conditionnals characters can apply to another contract mime group, a parent_mime or a mime type. At the moment it's relatively simple but maybe later we can extend conditionals to characters like & | () */
+            /* conditional contracts are contracts which own mime_type entries containing special conditional character(s) like ! for negation. Thoses conditionnals characters can apply to another contract mime group, a parent_mime or a mime type. At the moment it's relatively simple but maybe later we can extend conditionals to characters like & | () */
             foreach (var cc in cfs.conditional_contracts) {
                 debug ("CC %s %s", cc.name, cc.conditional_mime);
                 var len = cc.conditional_mime.length;
@@ -101,13 +101,20 @@ namespace Contractor
                     if (str.get_char (0) >= 'A' && str.get_char (0) <= 'Z') {
                         /* check if the contract exist */ 
                         var contract_target = cfs.name_id_map[str];
-                        if (contract_target != null && !is_contract_in_filtered (str)) {
-                            /* check is the contract isn't filtered and the matches on corresponding mimetype */
+                        if (contract_target != null && !is_contract_in_filtered (str)) 
+                        {
+                            /* check if the contract isn't filtered 
+                               and the matches on corresponding mimetype */
                             if (!is_contract_in_filtered (str) 
-                                && contract_target.mime_types != null 
-                                && are_locations_mimes_match_conditional_contract_mimes (contract_target.mime_types, locations)) 
+                                && contract_target.mime_types != null) 
                             {
-                                multi_args_add_contract_to_filtered_table (cc);
+                                bool ret;
+                                if (cc.strict_condition)
+                                    ret = are_locations_mimes_match_strict_conditional_contract_mimes (contract_target.mime_types, locations); 
+                                else
+                                    ret = are_locations_mimes_match_conditional_contract_mimes (contract_target.mime_types, locations);
+                                if (ret) 
+                                    multi_args_add_contract_to_filtered_table (cc);
                             }
                         } else {
                             warning ("%s, Conditional MimeType %s doesn't match anything", cc.name, cc.conditional_mime);
@@ -181,7 +188,7 @@ namespace Contractor
                 }
             }
 
-            /* conditional contracts are contracts which own mime_type entries which contain special conditional character(s) like ! for negation. Thoses conditionnals characters can apply to another contract mime group, a parent_mime or a mime type. At the moment it's relatively simple but maybe later we can extend conditionals to characters like & | () */
+            /* conditional contracts are contracts which own mime_type entries containing special conditional character(s) like ! for negation. Thoses conditionnals characters can apply to another contract mime group, a parent_mime or a mime type. At the moment it's relatively simple but maybe later we can extend conditionals to characters like & | () */
             foreach (var cc in cfs.conditional_contracts) {
                 debug ("CC %s %s", cc.name, cc.conditional_mime);
                 var len = cc.conditional_mime.length;
@@ -317,7 +324,7 @@ namespace Contractor
             return true;
         }
         
-        private bool are_locations_mimes_match_conditional_contract_mimes (string[] mime_types, GLib.HashTable<string,string>[] locations) 
+        private bool are_locations_mimes_match_strict_conditional_contract_mimes (string[] mime_types, GLib.HashTable<string,string>[] locations) 
         {
             foreach (var location in locations) {
                 var mime = location.lookup ("mimetype");
@@ -329,6 +336,25 @@ namespace Contractor
             }
 
             return true; 
+        }
+        
+        /* at least one arg should respect the condition */
+        private bool are_locations_mimes_match_conditional_contract_mimes (string[] mime_types, GLib.HashTable<string,string>[] locations) 
+        {
+            uint mlength = mime_types.length;
+            foreach (var location in locations) {
+                var mime = location.lookup ("mimetype");
+                var count = 0;
+                foreach (var umime in mime_types) 
+                {
+                    if (umime != mime)
+                        count++;
+                }
+                if (count == mlength)
+                    return true;
+            }
+
+            return false;
         }
         
         private bool is_contract_in_filtered (string contract_name) {
@@ -427,6 +453,8 @@ namespace Contractor
         public string filename { get; construct set; }
         public bool is_valid { get; private set; default = true; }
         public bool is_conditional { get; private set; default = false; }
+        /* used in the context of multiples arguments. If true, all arguments should respect the condition. If false, at least one argument should respect it. Default true */
+        public bool strict_condition { get; private set; default = true; }
 
         private static const string GROUP = "Contractor Entry";
 
@@ -447,6 +475,7 @@ namespace Contractor
                 conditional_mime = keyfile.get_string (GROUP, "MimeType");
                 if (conditional_mime.contains ("!")) {
                     is_conditional = true;
+                    strict_condition = keyfile.get_boolean (GROUP, "StrictCondition");
                     if (conditional_mime.contains (";"))
                         warning ("%s: multi arguments in conditional mimetype are not currently supported: %s", name, conditional_mime);
                 } else {
