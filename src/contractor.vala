@@ -44,18 +44,21 @@ namespace Contractor
         
 
         private bool all_native;
+        private bool is_native;
         private string common_parent;
         private string cmd_uris;
+
+        GLib.HashTable<string,string>[] filtered;
 
         /* generate possible contracts for list of arguments and filter them by 
            common parent mimetype and all.
            We don't want to waste time and ressources determining the common contracts 
            for each files one by one */
-        public GLib.HashTable<string,string>[] GetServicesByLocationsList (GLib.HashTable<string,string>[] locations)
+        public GLib.HashTable<string,string>[]? GetServicesByLocationsList (GLib.HashTable<string,string>[] locations)
         {
-            GLib.HashTable<string,string>[] filtered = null;
+            filtered = null;
             if (!cfs.initialized)
-                return filtered;
+                return null;
 
             var nbargs = locations.length;
             //message ("locationslist %d", nbargs);
@@ -72,15 +75,8 @@ namespace Contractor
             var list_for_all = cfs.get_contract_files_for_type ("all");
             if (list_for_all.size > 0)
             {
-                foreach (var entry in list_for_all)
-                {
-                    if (!(!all_native && !entry.take_uri_args)
-                        && !(nbargs>1 && !entry.take_multi_args))
-                    {
-                        var filtered_entry = get_filtered_entry_for_list (entry);
-                        //debug ("desc: %s exec: %s", filtered_entry.lookup ("Description"), filtered_entry.lookup ("Exec"));
-                        filtered += filtered_entry;
-                    }
+                foreach (var entry in list_for_all) {
+                    multi_args_add_contract_to_filtered_table (entry);
                 }
             }
 
@@ -89,14 +85,42 @@ namespace Contractor
                 var list_for_parent = cfs.get_contract_files_for_type (common_parent);
                 if (list_for_parent.size > 0)
                 {
-                    foreach (var entry in list_for_parent)
-                    {
-                        if (!(!all_native && !entry.take_uri_args)
-                            && !(nbargs>1 && !entry.take_multi_args)) 
-                        {
-                            var filtered_entry = get_filtered_entry_for_list (entry);
-                            //debug ("desc: %s exec: %s", filtered_entry.lookup ("Description"), filtered_entry.lookup ("Exec"));
-                            filtered += filtered_entry;
+                    foreach (var entry in list_for_parent) {
+                        multi_args_add_contract_to_filtered_table (entry);
+                    }
+                }
+            }
+
+            /* conditional contracts are contracts which own mime_type entries which contain special conditional character(s) like ! for negation. Thoses conditionnals characters can apply to another contract mime group, a parent_mime or a mime type. At the moment it's relatively simple but maybe later we can extend conditionals to characters like & | () */
+            foreach (var cc in cfs.conditional_contracts) {
+                debug ("CC %s %s", cc.name, cc.conditional_mime);
+                var len = cc.conditional_mime.length;
+                if (len >= 2) {
+                    string str = cc.conditional_mime.slice (1, len);
+                    /* check if the conditional target another contract name, check if the first letter is a maj */
+                    if (str.get_char (0) >= 'A' && str.get_char (0) <= 'Z') {
+                        /* check if the contract exist */ 
+                        var contract_target = cfs.name_id_map[str];
+                        if (contract_target != null && !is_contract_in_filtered (str)) {
+                            /* check is the contract isn't filtered and the matches on corresponding mimetype */
+                            if (!is_contract_in_filtered (str) 
+                                && contract_target.mime_types != null 
+                                && are_locations_mimes_match_conditional_contract_mimes (contract_target.mime_types, locations)) 
+                            {
+                                multi_args_add_contract_to_filtered_table (cc);
+                            }
+                        } else {
+                            warning ("%s, Conditional MimeType %s doesn't match anything", cc.name, cc.conditional_mime);
+                        }
+                    } else if (str.contains("/")) {
+                        /* could be a mimetype */
+                        if (are_locations_match_conditional_mime (locations, str)) {
+                            multi_args_add_contract_to_filtered_table (cc);
+                        }
+                    } else {
+                        /* could be a parent */
+                        if (common_parent != null && common_parent != str) {
+                            multi_args_add_contract_to_filtered_table (cc);
                         }
                     }
                 }
@@ -105,20 +129,22 @@ namespace Contractor
             return filtered;
         }
         
-        public GLib.HashTable<string,string>[] GetServicesByLocation (string strlocation, string? file_mime = null) 
+        public GLib.HashTable<string,string>[]? GetServicesByLocation (string strlocation, string? file_mime = null) 
         {
             File file = File.new_for_commandline_arg (strlocation);
-            GLib.HashTable<string,string>[] filtered = null;
             
+            filtered = null;
             if (!cfs.initialized)
-                return filtered;
+                return null;
             
-            bool is_native = file.is_native ();
+            is_native = file.is_native ();
 
             /*if (file.query_exists ()) {
               message ("file exist");
               }*/
             string mimetype;
+            string parent_mime = null;
+
             if (file_mime == null || file_mime.length <= 0)
                 mimetype = query_content_type (file);
             else
@@ -132,38 +158,59 @@ namespace Contractor
                 {
                     foreach (var entry in list_for_all)
                     {
-                        if (!(!is_native && !entry.take_uri_args)) {
-                            var filtered_entry = get_filtered_entry (entry, file);
-                            //debug ("desc: %s exec: %s", filtered_entry.lookup ("Description"), filtered_entry.lookup ("Exec"));
-                            filtered += filtered_entry;
-                        }
+                        single_arg_add_contract_to_filtered_table (entry, file);
                     }
                 }
-                var parent_mime = get_parent_mime (mimetype);
+                parent_mime = get_parent_mime (mimetype);
                 if (parent_mime != null) 
                 {
                     var list_for_parent = cfs.get_contract_files_for_type (parent_mime);
                     if (list_for_parent.size > 0)
                     {
-                        foreach (var entry in list_for_parent)
-                        {
-                            if (!(!is_native && !entry.take_uri_args)) {
-                                var filtered_entry = get_filtered_entry (entry, file);
-                                //debug ("desc: %s exec: %s", filtered_entry.lookup ("Description"), filtered_entry.lookup ("Exec"));
-                                filtered += filtered_entry;
-                            }
+                        foreach (var entry in list_for_parent) {
+                            single_arg_add_contract_to_filtered_table (entry, file);
                         }
                     }
                 }
                 var list_for_mimetype = cfs.get_contract_files_for_type (mimetype);
                 if (list_for_mimetype.size > 0)
                 {
-                    foreach (var entry in list_for_mimetype)
-                    {
-                        if (!(!is_native && !entry.take_uri_args)) {
-                            var filtered_entry = get_filtered_entry (entry, file);
-                            //debug ("desc: %s exec: %s", filtered_entry.lookup ("Description"), filtered_entry.lookup ("Exec"));
-                            filtered += filtered_entry;
+                    foreach (var entry in list_for_mimetype) {
+                        single_arg_add_contract_to_filtered_table (entry, file);
+                    }
+                }
+            }
+
+            /* conditional contracts are contracts which own mime_type entries which contain special conditional character(s) like ! for negation. Thoses conditionnals characters can apply to another contract mime group, a parent_mime or a mime type. At the moment it's relatively simple but maybe later we can extend conditionals to characters like & | () */
+            foreach (var cc in cfs.conditional_contracts) {
+                debug ("CC %s %s", cc.name, cc.conditional_mime);
+                var len = cc.conditional_mime.length;
+                if (len >= 2) {
+                    string str = cc.conditional_mime.slice (1, len);
+                    /* check if the conditional target another contract name, check if the first letter is a maj */
+                    if (str.get_char (0) >= 'A' && str.get_char (0) <= 'Z') {
+                        /* check if the contract exist */
+                        var contract_target = cfs.name_id_map[str];
+                        if (contract_target != null) {
+                            /* check is the contract isn't filtered and the matches on corresponding mimetype */
+                            if (!is_contract_in_filtered (str) 
+                                && contract_target.mime_types != null 
+                                && is_mime_match_conditional_contract_mimes (contract_target.mime_types, mimetype))
+                            {
+                                single_arg_add_contract_to_filtered_table (cc, file);
+                            }
+                        } else {
+                            warning ("%s, Conditional MimeType %s doesn't match anything", cc.name, cc.conditional_mime);
+                        }
+                    } else if (str.contains("/")) {
+                        /* could be a mimetype */
+                        if (mimetype != str) {
+                            single_arg_add_contract_to_filtered_table (cc, file);
+                        }
+                    } else {
+                        /* could be a parent */
+                        if (parent_mime != null && parent_mime != str) {
+                            single_arg_add_contract_to_filtered_table (cc, file);
                         }
                     }
                 }
@@ -183,6 +230,27 @@ namespace Contractor
             }
 
             return filtered;
+        }
+
+        private void multi_args_add_contract_to_filtered_table (ContractFileInfo entry)
+        {
+            if (!(!all_native && !entry.take_uri_args)
+                && !(!entry.take_multi_args))
+            {
+                var filtered_entry = get_filtered_entry_for_list (entry);
+                //debug ("desc: %s exec: %s", filtered_entry.lookup ("Description"), filtered_entry.lookup ("Exec"));
+                filtered += filtered_entry;
+            }
+        }
+
+        private void single_arg_add_contract_to_filtered_table (ContractFileInfo entry, File file)
+        {
+            if (!(!is_native && !entry.take_uri_args)) 
+            {
+                var filtered_entry = get_filtered_entry (entry, file);
+                //debug ("desc: %s exec: %s", filtered_entry.lookup ("Description"), filtered_entry.lookup ("Exec"));
+                filtered += filtered_entry;
+            }
         }
 
         private void analyse_similarities (GLib.HashTable<string,string>[] locations)
@@ -227,6 +295,49 @@ namespace Contractor
                     break;
                 }
             }
+        }
+        
+        private bool are_locations_match_conditional_mime (GLib.HashTable<string,string>[] locations, string mime) 
+        {
+            foreach (var location in locations) {
+                if (location.lookup ("mimetype") == mime)
+                    return false;
+            }
+
+            return true;
+        }
+        
+        private bool is_mime_match_conditional_contract_mimes (string[] mime_types, string mime) 
+        {
+            foreach (var umime in mime_types) {
+                if (umime == mime)
+                    return false;
+            }
+
+            return true;
+        }
+        
+        private bool are_locations_mimes_match_conditional_contract_mimes (string[] mime_types, GLib.HashTable<string,string>[] locations) 
+        {
+            foreach (var location in locations) {
+                var mime = location.lookup ("mimetype");
+                foreach (var umime in mime_types) 
+                {
+                    if (umime == mime)
+                        return false;
+                }
+            }
+
+            return true; 
+        }
+        
+        private bool is_contract_in_filtered (string contract_name) {
+            foreach (var entry in filtered) {
+                if (entry.lookup ("Name") == contract_name)
+                    return true;
+            }
+
+            return false;
         }
 
         private GLib.HashTable<string,string> get_filtered_entry_for_list (ContractFileInfo entry)
@@ -308,12 +419,14 @@ namespace Contractor
         public string exec_string { get; set; }
         public string description { get; set; }
         public string[] mime_types = null;
+        public string conditional_mime;
         public string icon_name { get; construct set; default = ""; }
         public bool take_multi_args { get; set; }
         public bool take_uri_args { get; set; }
 
         public string filename { get; construct set; }
         public bool is_valid { get; private set; default = true; }
+        public bool is_conditional { get; private set; default = false; }
 
         private static const string GROUP = "Contractor Entry";
 
@@ -331,7 +444,14 @@ namespace Contractor
                 name = keyfile.get_locale_string (GROUP, "Name");
                 exec = keyfile.get_string (GROUP, "Exec");
                 description = keyfile.get_locale_string (GROUP, "Description");
-                mime_types = keyfile.get_string_list (GROUP, "MimeType");
+                conditional_mime = keyfile.get_string (GROUP, "MimeType");
+                if (conditional_mime.contains ("!")) {
+                    is_conditional = true;
+                    if (conditional_mime.contains (";"))
+                        warning ("%s: multi arguments in conditional mimetype are not currently supported: %s", name, conditional_mime);
+                } else {
+                    mime_types = keyfile.get_string_list (GROUP, "MimeType");
+                }
 
                 if (keyfile.has_key (GROUP, "Icon"))
                 {
@@ -364,11 +484,13 @@ namespace Contractor
         private FileMonitor monitor = null;
 
         private Gee.List<ContractFileInfo> all_contract_files;
+        public Gee.List<ContractFileInfo> conditional_contracts;
 
         private Gee.Map<unowned string, Gee.List<ContractFileInfo> > mimetype_map;
         private Gee.Map<string, Gee.List<ContractFileInfo> > exec_map;
         private Gee.Map<string, ContractFileInfo> contract_id_map;
 
+        public Gee.Map<string, ContractFileInfo> name_id_map;
         public Gee.Map<string, ContractFileInfo> exec_string_map;
         
         public bool initialized { get; private set; default = false; }
@@ -378,6 +500,7 @@ namespace Contractor
         public ContractFileService ()
         {
             all_contract_files = new Gee.ArrayList<ContractFileInfo> ();
+            conditional_contracts = new Gee.ArrayList<ContractFileInfo> ();
             initialize ();
         }
 
@@ -444,9 +567,11 @@ namespace Contractor
                     var keyfile = new KeyFile ();
                     keyfile.load_from_data (contents, len, 0);
                     var cfi = new ContractFileInfo.for_keyfile (file.get_path (), keyfile);
-                    if (cfi.is_valid)
-                    {
+                    if (cfi.is_valid) {
                         all_contract_files.add (cfi);
+                    }
+                    if (cfi.is_conditional) {
+                        conditional_contracts.add (cfi);
                     }
                 }
             } catch (Error err) {
@@ -467,6 +592,9 @@ namespace Contractor
                 new Gee.HashMap<string, ContractFileInfo> ();
             // and desktop id map
             contract_id_map =
+                new Gee.HashMap<string, ContractFileInfo> ();
+            // and name id map
+            name_id_map =
                 new Gee.HashMap<string, ContractFileInfo> ();
 
             Regex exec_re;
@@ -526,6 +654,9 @@ namespace Contractor
                 // update contract id map
                 contract_id_map[Path.get_basename (cfi.filename)] = cfi;
 
+                // update name id map
+                name_id_map[cfi.name] = cfi;
+
                 // update mimetype map
                 if (cfi.mime_types == null) continue;
 
@@ -564,6 +695,7 @@ namespace Contractor
         {
             debug ("Reloading contract files...");
             all_contract_files.clear ();
+            conditional_contracts.clear ();
             yield load_all_contract_files (false);
         }
 

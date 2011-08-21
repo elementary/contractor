@@ -1,0 +1,6 @@
+[Contractor Entry]
+Name=Compress
+Icon=
+Description=Compress
+MimeType=!Archives
+Exec=file-roller --add %U
