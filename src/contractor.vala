@@ -586,15 +586,15 @@ namespace Contractor
         private async void load_contract_file (File file)
         {
             try {
-                size_t len;
-                string contents;
-                bool success = yield file.load_contents_async (null, 
-                                                               out contents, out len);
+                uint8[] contents;
+                bool success = yield file.load_contents_async (null, out contents, null);
+                var contents_str = (string) contents;
+                size_t len = contents_str.length;
                 
-                if (success)
+                if (success && len>0)
                 {
                     var keyfile = new KeyFile ();
-                    keyfile.load_from_data (contents, len, 0);
+                    keyfile.load_from_data (contents_str, len, 0);
                     var cfi = new ContractFileInfo.for_keyfile (file.get_path (), keyfile);
                     if (cfi.is_valid) {
                         all_contract_files.add (cfi);
