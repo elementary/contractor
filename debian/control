@@ -14,3 +14,16 @@ Description: Service for sharing data with registered apps
  A sharing service that allows source apps to send their data to
  registered destination apps. This way, data source apps don't have to
  have the destination apps hard coded into them.
+
+Package: contractor-dbg
+Architecture: any
+Section: debug
+Priority: extra
+Depends: contractor (= ${binary:Version}), ${misc:Depends}
+Enhances: contractor
+Description: Service for sharing data with registered apps (debugging symbols)
+ A sharing service that allows source apps to send their data to
+ registered destination apps. This way, data source apps don't have to
+ have the destination apps hard coded into them.
+ .
+ This package contains debugging symbols for contractor.
