@@ -546,19 +546,20 @@ namespace Contractor
 
             directories = new List<File> ();
             var paths = Environment.get_system_data_dirs ();
-            for (var i=0;i<paths.length + 1;i++){
-                if (i == paths.length)
-                    directories.append (File.new_for_path (Environment.get_user_data_dir ()+"/contractor/"));
-                else
-                    directories.append (File.new_for_path (paths[i]+"/contractor/"));
+            paths.resize (paths.length + 1); 
+            paths[paths.length - 1] = Environment.get_user_data_dir ();
+            foreach (var path in paths){
+                debug ("Looking in "+path);
+                var file = File.new_for_path (path+"/contractor/");
+                directories.append (file);
                 
-                yield process_directory (directories.nth_data (i), contract_file_dirs);
+                yield process_directory (file, contract_file_dirs);
 
                 create_maps ();
 
                 if (should_monitor) {
                     try {
-                        monitor = directories.nth_data (i).monitor_directory (0);
+                        monitor = file.monitor_directory (0);
                     } catch (IOError e) {
                         error ("directory monitor failed: %s", e.message);
                     }
