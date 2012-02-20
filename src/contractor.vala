@@ -509,7 +509,7 @@ namespace Contractor
     public class ContractFileService : Object
     {
         //private static unowned ContractFileService? cfservice;
-        private File directory;
+        private List<File> directories;
         private FileMonitor monitor = null;
 
         private Gee.List<ContractFileInfo> all_contract_files;
@@ -544,18 +544,26 @@ namespace Contractor
         {
             Gee.Set<File> contract_file_dirs = new Gee.HashSet<File> ();
 
-            directory = File.new_for_path (Build.PREFIX + "/share/contractor/");
-            yield process_directory (directory, contract_file_dirs);
+            directories = new List<File> ();
+            var paths = Environment.get_system_data_dirs ();
+            for (var i=0;i<paths.length + 1;i++){
+                if (i == paths.length)
+                    directories.append (File.new_for_path (Environment.get_user_data_dir ()+"/contractor/"));
+                else
+                    directories.append (File.new_for_path (paths[i]+"/contractor/"));
+                
+                yield process_directory (directories.nth_data (i), contract_file_dirs);
 
-            create_maps ();
+                create_maps ();
 
-            if (should_monitor) {
-                try {
-                    monitor = directory.monitor_directory (0);
-                } catch (IOError e) {
-                    error ("directory monitor failed: %s", e.message);
+                if (should_monitor) {
+                    try {
+                        monitor = directories.nth_data (i).monitor_directory (0);
+                    } catch (IOError e) {
+                        error ("directory monitor failed: %s", e.message);
+                    }
+                    monitor.changed.connect (contract_file_directory_changed);
                 }
-                monitor.changed.connect (contract_file_directory_changed);
             }
         }
 
