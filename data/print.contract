@@ -1,6 +1,0 @@
-[Contractor Entry]
-Name=Print
-Icon=document-print
-Description=Print
-MimeType=text
-Exec=lpr %F
