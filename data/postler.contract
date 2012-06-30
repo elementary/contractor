@@ -1,7 +1,0 @@
-[Contractor Entry]
-Name=Postler
-Icon=internet-mail
-Description=Send by Email
-MimeType=all
-Exec=postler mailto:?attach=%u
-ExecString=postler mailto:?body=%s
