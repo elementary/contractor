@@ -764,7 +764,10 @@ namespace Contractor
         }*/
     }
 
-
+    void name_last_callback () {
+        print ("could not aquire name\n\n");
+        Process.exit (1);
+    }
     void on_bus_aquired (DBusConnection conn) {
         try {
             conn.register_object ("/org/elementary/contractor", new Contractor ());
@@ -779,7 +782,7 @@ namespace Contractor
         Bus.own_name (BusType.SESSION, "org.elementary.contractor", BusNameOwnerFlags.NONE,
                       on_bus_aquired,
                       () => {},
-                      () => error ("Could not aquire name\n"));
+                      name_last_callback);
 
         new MainLoop ().run ();
 
