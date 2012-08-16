@@ -1,6 +1,6 @@
 [Contractor Entry]
 Name=Wallpaper
 Icon=wallpaper
-Description=Set as wallpaper
+Description=Set as Wallpaper
 MimeType=image
 Exec=gsettings set org.gnome.desktop.background picture-uri "file:///%f"
