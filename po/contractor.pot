@@ -1,0 +1,39 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-09-02 19:45+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: /home/noelco/contractor/po/../src//contractor.vala:483
+#: /home/noelco/contractor/po/../src//contractor.vala:803
+msgid "Extract here"
+msgstr ""
+
+#: /home/noelco/contractor/po/../src//contractor.vala:802
+msgid "Archives"
+msgstr ""
+
+#: /home/noelco/contractor/po/../src//contractor.vala:804
+msgid "Compress"
+msgstr ""
+
+#: /home/noelco/contractor/po/../src//contractor.vala:805
+msgid "Wallpaper"
+msgstr ""
+
+#: /home/noelco/contractor/po/../src//contractor.vala:806
+msgid "Set as Wallpaper"
+msgstr ""
