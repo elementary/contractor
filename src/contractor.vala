@@ -798,14 +798,6 @@ namespace Contractor
             error ("Could not register service\n");
         }
     }
-    
-    void default_contracts_strings () {
-        string archive_name = _("Archives");
-        string archive_desc = _("Extract here");
-        string archive_compress = _("Compress");
-        string wallpaper_name = _("Wallpaper");
-        string wallpaper_desc = _("Set as Wallpaper");
-    }
 
     public static int main (string[] args) {
         //var app = new Contractor ();
@@ -819,5 +811,15 @@ namespace Contractor
 
         return 0;
     }
+
+}
+
+namespace Translations {
+
+    const string archive_name = N_("Archives");
+    const string archive_desc = N_("Extract here");
+    const string archive_compress = N_("Compress");
+    const string wallpaper_name = N_("Wallpaper");
+    const string wallpaper_desc = N_("Set as Wallpaper");
 
 }
