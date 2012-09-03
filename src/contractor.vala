@@ -39,6 +39,8 @@ namespace Contractor
         //protected override void startup () 
         private void startup () 
         {
+            GLib.Intl.setlocale (GLib.LocaleCategory.ALL, GLib.Intl.get_language_names()[0]);
+            GLib.Intl.textdomain (Build.GETTEXT_PACKAGE);
             cfs = new ContractFileService ();
         }
         
@@ -456,6 +458,7 @@ namespace Contractor
         /* used in the context of multiples arguments. If true, all arguments should respect the condition. If false, at least one argument should respect it. Default true */
         public bool strict_condition { get; private set; default = true; }
 
+        private const string[] SUPPORTED_GETTEXT_DOMAINS_KEYS = {"X-Ubuntu-Gettext-Domain", "X-GNOME-Gettext-Domain"};
         private static const string GROUP = "Contractor Entry";
 
         public ContractFileInfo.for_keyfile (string path, KeyFile keyfile)
@@ -467,11 +470,35 @@ namespace Contractor
 
         private void init_from_keyfile (KeyFile keyfile)
         {
-            try
-            {
+            try {
                 name = keyfile.get_locale_string (GROUP, "Name");
+                string? textdomain = null;
+                foreach (var domain_key in SUPPORTED_GETTEXT_DOMAINS_KEYS) {
+                    if (keyfile.has_key (GROUP, domain_key)) {
+                        textdomain = keyfile.get_string (GROUP, domain_key);
+                        break;
+                    }
+                }
+                if (textdomain != null)
+                    name = GLib.dgettext (textdomain, name).dup ();
+                    
+            } catch (Error e) { warning("Couldn't read Name field %s", e.message); is_valid = false;}
+            try {
                 exec = keyfile.get_string (GROUP, "Exec");
+            } catch (Error e) { warning("Couldn't read Exec field %s", e.message); is_valid = false;}
+            try {
                 description = keyfile.get_locale_string (GROUP, "Description");
+                string? textdomain = null;
+                foreach (var domain_key in SUPPORTED_GETTEXT_DOMAINS_KEYS) {
+                    if (keyfile.has_key (GROUP, domain_key)) {
+                        textdomain = keyfile.get_string (GROUP, domain_key);
+                        break;
+                    }
+                }
+                if (textdomain != null)
+                    description = GLib.dgettext (textdomain, description).dup ();
+            } catch (Error e) { warning("Couldn't read title field %s", e.message); is_valid = false;}
+            try {
                 conditional_mime = keyfile.get_string (GROUP, "MimeType");
                 if (conditional_mime.contains ("!")) {
                     is_conditional = true;
@@ -481,7 +508,8 @@ namespace Contractor
                 } else {
                     mime_types = keyfile.get_string_list (GROUP, "MimeType");
                 }
-
+            } catch (Error e) { warning("Couldn't read MimeType field %s", e.message); is_valid = false;}
+            try {
                 if (keyfile.has_key (GROUP, "Icon"))
                 {
                     icon_name = keyfile.get_locale_string (GROUP, "Icon");
@@ -493,17 +521,12 @@ namespace Contractor
                         icon_name = icon_name.substring (0, icon_name.length - 4);
                     }
                 }
-                
+            } catch (Error e) { warning("Couldn't read Icon field %s", e.message); is_valid = false;}
+            try {
                 if (keyfile.has_key (GROUP, "ExecString"))
                     exec_string = keyfile.get_string (GROUP, "ExecString");
-            }
-            catch (Error err)
-            {
-                warning ("cannot init keyfile: %s", err.message);
-                is_valid = false;
-            }
+            } catch (Error e) { warning("Couldn't read ExecString field %s", e.message); is_valid = false;}
         }
-
     }
 
     public class ContractFileService : Object
@@ -783,10 +806,20 @@ namespace Contractor
                       on_bus_aquired,
                       () => {},
                       name_last_callback);
-
+        
         new MainLoop ().run ();
 
         return 0;
     }
+
+}
+
+namespace Translations {
+
+    const string archive_name = N_("Archives");
+    const string archive_desc = N_("Extract here");
+    const string archive_compress = N_("Compress");
+    const string wallpaper_name = N_("Wallpaper");
+    const string wallpaper_desc = N_("Set as Wallpaper");
 
 }

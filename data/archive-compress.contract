@@ -5,3 +5,4 @@ Description=Compress
 MimeType=!Archives
 StrictCondition=false
 Exec=file-roller --add %U
+X-GNOME-Gettext-Domain=contractor
