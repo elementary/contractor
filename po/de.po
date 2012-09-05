@@ -7,35 +7,33 @@ msgid ""
 msgstr ""
 "Project-Id-Version: beat-box\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-02 17:07+0200\n"
-"PO-Revision-Date: 2012-09-02 17:19+0100\n"
-"Last-Translator: Corentin Noël <tintou@mailoo.org>\n"
+"POT-Creation-Date: 2012-09-03 11:00+0200\n"
+"PO-Revision-Date: 2012-09-04 10:19+0000\n"
+"Last-Translator: Eduard Gotwig <eduardgotwig@gmail.com>\n"
 "Language-Team: German <de@li.org>\n"
-"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-07-01 04:58+0000\n"
-"X-Generator: Launchpad (build 15520)\n"
+"X-Launchpad-Export-Date: 2012-09-05 04:59+0000\n"
+"X-Generator: Launchpad (build 15901)\n"
+"Language: de\n"
 
-#: /home/noelco/contractor/po/../src//contractor.vala:800
+#: /home/noelco/contractor/po/../src//contractor.vala:819
 msgid "Archives"
-msgstr ""
+msgstr "Archive"
 
-#: /home/noelco/contractor/po/../src//contractor.vala:801
+#: /home/noelco/contractor/po/../src//contractor.vala:820
 msgid "Extract here"
-msgstr ""
+msgstr "Hier entpacken"
 
-#: /home/noelco/contractor/po/../src//contractor.vala:802
-#, fuzzy
+#: /home/noelco/contractor/po/../src//contractor.vala:821
 msgid "Compress"
-msgstr "Komponist"
+msgstr "Komprimieren"
 
-#: /home/noelco/contractor/po/../src//contractor.vala:803
+#: /home/noelco/contractor/po/../src//contractor.vala:822
 msgid "Wallpaper"
-msgstr ""
+msgstr "Hintergrundbild"
 
-#: /home/noelco/contractor/po/../src//contractor.vala:804
+#: /home/noelco/contractor/po/../src//contractor.vala:823
 msgid "Set as Wallpaper"
-msgstr ""
-
+msgstr "Als Hintergrundbild verwenden"
