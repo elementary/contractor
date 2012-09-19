@@ -556,14 +556,14 @@ namespace Contractor
             initialize ();
         }
 
-        private async void initialize ()
+        private void initialize ()
         {
-            yield load_all_contract_files ();
+            load_all_contract_files ();
             initialized = true;
             initialization_done ();
         }
 
-        private async void load_all_contract_files (bool should_monitor=true)
+        private void load_all_contract_files (bool should_monitor=true)
         {
             Gee.Set<File> contract_file_dirs = new Gee.HashSet<File> ();
 
@@ -576,7 +576,7 @@ namespace Contractor
                 var file = File.new_for_path (path+"/contractor/");
                 directories.append (file);
                 
-                yield process_directory (file, contract_file_dirs);
+                process_directory (file, contract_file_dirs);
 
                 create_maps ();
 
@@ -591,22 +591,17 @@ namespace Contractor
             }
         }
 
-        private async void process_directory (File directory,
+        private void process_directory (File directory,
                                               Gee.Set<File> monitored_dirs)
         {
             try {
-                /*bool exists = yield Utils.query_exists_async (directory);
-                  if (!exists) return;*/
-                var enumerator = yield directory.enumerate_children_async (
-                                                                           FILE_ATTRIBUTE_STANDARD_NAME + "," + FILE_ATTRIBUTE_STANDARD_TYPE,
-                                                                           0, 0);
-                var files = yield enumerator.next_files_async (1024, 0);
-                foreach (var f in files)
-                {
+                var enumerator = directory.enumerate_children (FileAttribute.STANDARD_NAME + "," + FileAttribute.STANDARD_TYPE, 0);
+                FileInfo f = null;
+                while ((f = enumerator.next_file ()) != null) {
                     unowned string name = f.get_name ();
                     if (f.get_file_type () == FileType.REGULAR && name.has_suffix (".contract"))
                     {
-                        yield load_contract_file (directory.get_child (name));
+                        load_contract_file (directory.get_child (name));
                         message ("found: %s", name);
                     }
                 }
@@ -615,11 +610,11 @@ namespace Contractor
             }
         }
 
-        private async void load_contract_file (File file)
+        private void load_contract_file (File file)
         {
             try {
                 uint8[] contents;
-                bool success = yield file.load_contents_async (null, out contents, null);
+                bool success = file.load_contents (null, out contents, null);
                 var contents_str = (string) contents;
                 size_t len = contents_str.length;
                 
@@ -752,12 +747,12 @@ namespace Contractor
             });
         }
 
-        private async void reload_contract_files ()
+        private void reload_contract_files ()
         {
             debug ("Reloading contract files...");
             all_contract_files.clear ();
             conditional_contracts.clear ();
-            yield load_all_contract_files (false);
+            load_all_contract_files (false);
         }
 
         private void add_cfi_for_mime (string mime, Gee.Set<ContractFileInfo> ret)
