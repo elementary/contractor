@@ -8,18 +8,18 @@ msgstr ""
 "Project-Id-Version: noise\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-09-03 11:00+0200\n"
-"PO-Revision-Date: 2012-09-03 12:59+0000\n"
-"Last-Translator: Corentin Noël <tintou@mailoo.org>\n"
+"PO-Revision-Date: 2012-09-23 18:14+0000\n"
+"Last-Translator: MarkoD <Unknown>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-09-05 04:59+0000\n"
-"X-Generator: Launchpad (build 15901)\n"
+"X-Launchpad-Export-Date: 2012-09-24 04:50+0000\n"
+"X-Generator: Launchpad (build 15985)\n"
 
 #: /home/noelco/contractor/po/../src//contractor.vala:819
 msgid "Archives"
-msgstr ""
+msgstr "Arhivi"
 
 #: /home/noelco/contractor/po/../src//contractor.vala:820
 msgid "Extract here"
@@ -27,7 +27,7 @@ msgstr ""
 
 #: /home/noelco/contractor/po/../src//contractor.vala:821
 msgid "Compress"
-msgstr ""
+msgstr "Stisni"
 
 #: /home/noelco/contractor/po/../src//contractor.vala:822
 msgid "Wallpaper"
@@ -35,4 +35,4 @@ msgstr ""
 
 #: /home/noelco/contractor/po/../src//contractor.vala:823
 msgid "Set as Wallpaper"
-msgstr ""
+msgstr "Nastavi kot sliko ozadja"

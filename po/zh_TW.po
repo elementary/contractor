@@ -8,32 +8,32 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-03 11:00+0200\n"
-"PO-Revision-Date: 2012-03-26 03:31+0000\n"
-"Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
+"PO-Revision-Date: 2012-09-23 04:49+0000\n"
+"Last-Translator: leo  <shing80333@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-09-05 04:59+0000\n"
-"X-Generator: Launchpad (build 15901)\n"
+"X-Launchpad-Export-Date: 2012-09-24 04:50+0000\n"
+"X-Generator: Launchpad (build 15985)\n"
 "Language: \n"
 
 #: /home/noelco/contractor/po/../src//contractor.vala:819
 msgid "Archives"
-msgstr ""
+msgstr "壓縮檔"
 
 #: /home/noelco/contractor/po/../src//contractor.vala:820
 msgid "Extract here"
-msgstr ""
+msgstr "在此解壓縮"
 
 #: /home/noelco/contractor/po/../src//contractor.vala:821
 msgid "Compress"
-msgstr ""
+msgstr "壓縮"
 
 #: /home/noelco/contractor/po/../src//contractor.vala:822
 msgid "Wallpaper"
-msgstr ""
+msgstr "桌布"
 
 #: /home/noelco/contractor/po/../src//contractor.vala:823
 msgid "Set as Wallpaper"
-msgstr ""
+msgstr "設為桌布"
