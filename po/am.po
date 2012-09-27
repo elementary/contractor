@@ -1,16 +1,16 @@
-# Russian translation for beat-box
+# Amharic translation for contractor
 # Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
-# This file is distributed under the same license as the beat-box package.
+# This file is distributed under the same license as the contractor package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: beat-box\n"
+"Project-Id-Version: contractor\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2012-09-03 11:00+0200\n"
-"PO-Revision-Date: 2012-09-26 12:34+0000\n"
-"Last-Translator: Dmitry Misharov <Unknown>\n"
-"Language-Team: Russian <ru@li.org>\n"
+"PO-Revision-Date: 2012-09-26 16:16+0000\n"
+"Last-Translator: samson <Unknown>\n"
+"Language-Team: Amharic <am@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,20 +19,20 @@ msgstr ""
 
 #: /home/noelco/contractor/po/../src//contractor.vala:819
 msgid "Archives"
-msgstr "Архивы"
+msgstr "ማሕደሮች"
 
 #: /home/noelco/contractor/po/../src//contractor.vala:820
 msgid "Extract here"
-msgstr "Распаковать в эту папку"
+msgstr "እዚህ ማራገፊያ"
 
 #: /home/noelco/contractor/po/../src//contractor.vala:821
 msgid "Compress"
-msgstr "Создать архив"
+msgstr "ማመቂያ"
 
 #: /home/noelco/contractor/po/../src//contractor.vala:822
 msgid "Wallpaper"
-msgstr "Фон рабочего стола"
+msgstr "የግድግዳ ወረቀት"
 
 #: /home/noelco/contractor/po/../src//contractor.vala:823
 msgid "Set as Wallpaper"
-msgstr "Сделать фоновым рисунком рабочего стола"
+msgstr "እንደ ግድግዳ ወረቀት ማሰናጃ"
