@@ -6,14 +6,14 @@ Build-Depends: cmake (>= 2.6),
                debhelper (>= 7.0.50~),
                libgee-dev,
                libglib2.0-dev,
-               valac-0.16 | valac (>= 0.16)
+               valac (>= 0.16)
 Standards-Version: 3.8.4
 Homepage: https://launchpad.net/contractor
 
 Package: contractor
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: Service for sharing data with registered apps
+Description: service for sharing data between apps
  A sharing service that allows source apps to send their data to
  registered destination apps. This way, data source apps don't have to
  have the destination apps hard coded into them.
@@ -23,8 +23,7 @@ Architecture: any
 Section: debug
 Priority: extra
 Depends: contractor (= ${binary:Version}), ${misc:Depends}
-Enhances: contractor
-Description: Service for sharing data with registered apps (debugging symbols)
+Description: service for sharing data between apps (debugging symbols)
  A sharing service that allows source apps to send their data to
  registered destination apps. This way, data source apps don't have to
  have the destination apps hard coded into them.

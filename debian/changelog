@@ -1,11 +1,5 @@
-contractor (0.2) precise; urgency=low
+contractor (0.2) UNRELEASED; urgency=low
 
-  * New upstream release.
-
- -- Cody Garver <cody@elementaryos.org>  Sat, 22 Sep 2012 16:46:44 -0500
-
-contractor (0.2) unstable; urgency=low
-
-  * Packaged the Vala rewrite.
+  * Initial release.
 
  -- Sergey "Shnatsel" Davidoff <shnatsel@gmail.com>  Fri, 15 Jul 2011 14:50:08 +0400
