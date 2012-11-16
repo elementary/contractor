@@ -8,23 +8,23 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-09-03 11:00+0200\n"
-"PO-Revision-Date: 2012-09-23 04:49+0000\n"
-"Last-Translator: leo  <shing80333@gmail.com>\n"
+"PO-Revision-Date: 2012-11-15 14:11+0000\n"
+"Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-09-24 04:50+0000\n"
-"X-Generator: Launchpad (build 15985)\n"
+"X-Launchpad-Export-Date: 2012-11-16 04:51+0000\n"
+"X-Generator: Launchpad (build 16272)\n"
 "Language: \n"
 
 #: /home/noelco/contractor/po/../src//contractor.vala:819
 msgid "Archives"
-msgstr "壓縮檔"
+msgstr "封存檔"
 
 #: /home/noelco/contractor/po/../src//contractor.vala:820
 msgid "Extract here"
-msgstr "在此解壓縮"
+msgstr "抽出資料至此"
 
 #: /home/noelco/contractor/po/../src//contractor.vala:821
 msgid "Compress"
