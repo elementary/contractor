@@ -6,7 +6,7 @@ Build-Depends: cmake (>= 2.6),
                debhelper (>= 7.0.50~),
                libgee-dev,
                libglib2.0-dev,
-               valac (>= 0.16)
+               valac-0.16 | valac (>= 0.16)
 Standards-Version: 3.8.4
 Homepage: https://launchpad.net/contractor
 
