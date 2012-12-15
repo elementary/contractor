@@ -39,7 +39,7 @@ namespace Contractor
         //protected override void startup () 
         private void startup () 
         {
-            GLib.Intl.setlocale (GLib.LocaleCategory.ALL, GLib.Intl.get_language_names()[0]);
+            GLib.Intl.setlocale (GLib.LocaleCategory.ALL, "");
             GLib.Intl.textdomain (Build.GETTEXT_PACKAGE);
             cfs = new ContractFileService ();
         }
