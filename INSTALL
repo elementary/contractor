@@ -1,6 +1,5 @@
-                                   Install                                      
+                                   Install
 --------------------------------------------------------------------------------
-
 • Build Contractor
 
   bzr branch lp:contractor
@@ -9,10 +8,7 @@
   cmake .. -DCMAKE_INSTALL_PREFIX=/usr
   make
   sudo make install
-
 • Bugs
-
-  If you find bugs in this installation guide or in Contractor itself, please report them at
+  If you find bugs in this installation guide
+  or in Contractor itself, please report them at
   https://launchpad.net/contractor/+filebug
-
-
