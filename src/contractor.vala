@@ -21,15 +21,22 @@ using GLib;
 using Contractor;
 namespace Contractor{
     [DBus (name = "org.elementary.Contractor")]
+    // the main constractor class where everything comes together
     public class Contractor : Object {
         private ContractFileService cfs;
         construct{
-            print("starting Contractor...");
+            message("starting Contractor...\n");
             GLib.Intl.setlocale (GLib.LocaleCategory.ALL, "");
             GLib.Intl.textdomain (Build.GETTEXT_PACKAGE);
             cfs = new ContractFileService ();
         }
+        public string GetServicesByLocation (string strlocation){
+            message(strlocation);
+            return strlocation;
+        }
+        public signal void pong (int count, string msg);
     }
+
     /* starts the contractor goodnes
        creates a new Bus and enters the main loops
     */

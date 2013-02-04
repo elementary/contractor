@@ -1,20 +1,23 @@
 
-[DBus (name = "org.elementary.contractor")]
+using GLib;
+[DBus (name = "org.elementary.Contractor")]
 interface Demo : Object {
-    public abstract GLib.HashTable<string,string>[] GetServicesByLocation (string strlocation, string? file_mime="")    throws IOError;
+    public abstract string GetServicesByLocation (string strlocation) throws IOError;
+     public signal void pong (int count, string msg);
 }
 
 void main () {
+    var loop = new MainLoop();
     try {
-        Demo demo = Bus.get_proxy_sync (BusType.SESSION, "org.elementary.contractor",
-                                        "/org/elementary/contractor");
+        message("trying");
+        Demo demo = Bus.get_proxy_sync (BusType.SESSION, "org.elementary.Contractor", "/org/elementary/contractor");
+       demo.pong.connect((m) => {
+            stdout.printf ("Got pong for msg '%d'\n", m);
+            loop.quit ();
+        });
 
-        var contracts = demo.GetServicesByLocation ("file:///home/kitkat/plop.tar");
-        foreach(var entry in contracts)
-        {
-            message ("desc: %s icon: %s", entry.lookup ("Description"), entry.lookup ("IconName"));
-        }
-    } catch (IOError e) {
+        var contract = demo.GetServicesByLocation ("file:///home/michael/plop.tar");
+    } catch (Error e) {
         stderr.printf ("%s\n", e.message);
     }
 }
