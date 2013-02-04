@@ -20,15 +20,20 @@
 using GLib;
 
 namespace Contractor{
-    [DBus (name = "org.elementary.contractor")]
+    [DBus (name = "org.elementary.Contractor")]
     public class Contractor : Object {
+        private int counter;
+        public int ping (string msg) {
+        stdout.printf ("%s\n", msg);
+        return counter++;
+    }
+     public signal void pong (int count, string msg);
     }
     void main(){
-        Bus.own_name (BusType.SESSION, "org.elementary.contractor", BusNameOwnerFlags.NONE,
+        Bus.own_name (BusType.SESSION, "org.elementary.Contractor", BusNameOwnerFlags.NONE,
                       on_bus_aquired,
                       () => {},
-                      () => stderr.printf ("Could not aquire name\n"));
-
+                      () => stderr.printf("Could not aquire Session bus for contractor\n"));
         new MainLoop().run();
         }
         void on_bus_aquired(DBusConnection conn){
