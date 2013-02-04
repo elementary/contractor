@@ -23,6 +23,8 @@ add_definitions(${CFLAGS})
 vala_precompile(
 VALA_C
     contractor.vala
+    contractfileservice.vala
+    contractorfileinfo.vala
     config.vala
 PACKAGES
     glib-2.0

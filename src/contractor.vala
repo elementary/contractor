@@ -18,17 +18,21 @@
  */
 
 using GLib;
-
+using Contractor;
 namespace Contractor{
     [DBus (name = "org.elementary.Contractor")]
     public class Contractor : Object {
-        private int counter;
-        public int ping (string msg) {
-        stdout.printf ("%s\n", msg);
-        return counter++;
+        private ContractFileService cfs;
+        construct{
+            print("starting Contractor...");
+            GLib.Intl.setlocale (GLib.LocaleCategory.ALL, "");
+            GLib.Intl.textdomain (Build.GETTEXT_PACKAGE);
+            cfs = new ContractFileService ();
+        }
     }
-     public signal void pong (int count, string msg);
-    }
+    /* starts the contractor goodnes
+       creates a new Bus and enters the main loops
+    */
     void main(){
         Bus.own_name (BusType.SESSION, "org.elementary.Contractor", BusNameOwnerFlags.NONE,
                       on_bus_aquired,
@@ -36,14 +40,15 @@ namespace Contractor{
                       () => stderr.printf("Could not aquire Session bus for contractor\n"));
         new MainLoop().run();
         }
-        void on_bus_aquired(DBusConnection conn){
-            try {
-                conn.register_object("/org/elementary/contractor", new Contractor());
-            } catch (IOError e) {
-                stderr.printf("Could not register service\n");
-            }
+    // trys to aquire the bus 
+    void on_bus_aquired(DBusConnection conn){
+        try {
+            conn.register_object("/org/elementary/contractor", new Contractor());
+        } catch (IOError e) {
+            stderr.printf("Could not register service because: %s \n",e.message);
         }
     }
+}
 
 namespace Translations {
     const string archive_name = N_("Archives");
