@@ -43,12 +43,12 @@ namespace Contractor{
             paths.resize (paths.length + 1);
             paths[paths.length - 1] = Environment.get_user_data_dir ();
             foreach (var path in paths){
-                debug("Looking in "+path);
                 var file = File.new_for_path (path+"/contractor/");
-                directories.append (file);
-
-                process_directory (file, contract_file_dirs);
-
+                if (file.query_exists ()) {
+                    message("Looking in "+path);
+                    directories.append(file);
+                    process_directory(file, contract_file_dirs);
+                }
                 // create_maps ();
 
                 if (should_monitor) {

@@ -25,7 +25,7 @@ namespace Contractor{
     public class Contractor : Object {
         private ContractFileService cfs;
         construct{
-            message("starting Contractor...\n");
+            message("starting Contractor...");
             GLib.Intl.setlocale (GLib.LocaleCategory.ALL, "");
             GLib.Intl.textdomain (Build.GETTEXT_PACKAGE);
             cfs = new ContractFileService ();
