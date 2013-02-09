@@ -27,46 +27,38 @@ namespace Contractor{
             initialize ();
         }
         private void initialize(){
-        	try{
-        		load_all_contract_files ();
-        	}catch{
-
-        	}
+        	load_all_contract_files ();
         }
-        private List<File> directories;
+
         private FileMonitor monitor = null;
+
 		private void load_all_contract_files (bool should_monitor=true){
-			message("loading necessary files");
-			Gee.Set<File> contract_file_dirs = new Gee.HashSet<File> ();
-            directories = new List<File> ();
+			debug("loading necessary files");
+            //get paths from enviroment
             var paths = Environment.get_system_data_dirs ();
             paths.resize (paths.length + 1);
             paths[paths.length - 1] = Environment.get_user_data_dir ();
-            foreach (var path in paths){
-                var file = File.new_for_path (path+"/contractor/");
-                if (file.query_exists ()) {
-                    message("Looking in "+path);
-                    directories.append(file);
-                    process_directory(file, contract_file_dirs);
-                }
+            foreach(var path in paths){
+                var directory = File.new_for_path(path+"/contractor/");
+                if (directory.query_exists()) {
+                    message("Looking in "+directory.get_path());
+                    process_directory(directory);
+                }             
                 // create_maps ();
 
                 if (should_monitor) {
                     try {
-                        monitor = file.monitor_directory (0);
+                        monitor = directory.monitor_directory (0);
                     } catch (IOError e) {
                         error ("directory monitor failed: %s", e.message);
                     }
                     monitor.changed.connect (contract_file_directory_changed);
                 }
             }
-            foreach (var path in paths){
-            }
 		}
 
-		private void process_directory (File directory, Gee.Set<File> monitored_dirs)
+		private void process_directory (File directory)
         {
-        	message(directory.get_path());
             try {
                 var enumerator = directory.enumerate_children (FileAttribute.STANDARD_NAME + "," + FileAttribute.STANDARD_TYPE, 0);
                 FileInfo f = null;
@@ -95,7 +87,6 @@ namespace Contractor{
                 {
                     var keyfile = new KeyFile ();
                     keyfile.load_from_data (contents_str, len, 0);
-                      message("keyfile.to_string()");
                     var cfi = new ContractFileInfo.for_keyfile (file.get_path (), keyfile);
                     if (cfi.is_valid) {
                         all_contract_files.add(cfi);
@@ -110,20 +101,21 @@ namespace Contractor{
             }
         }
 
+        private uint timer_id = 0;
 		private void contract_file_directory_changed (File file, File? other_file, FileMonitorEvent event)
         {
-            //message ("file_directory_changed");
-            // if (timer_id != 0)
-            // {
-            //     Source.remove (timer_id);
-            // }
+            message ("file_directory_changed");
+            if (timer_id != 0)
+            {
+                Source.remove (timer_id);
+            }
 
-            // timer_id = Timeout.add (1000, () =>
-            // {
-            //     timer_id = 0;
-            //  //   reload_contract_files ();
-            //     return false;
-            // });
+            timer_id = Timeout.add (1000, () =>
+            {
+                timer_id = 0;
+             //   reload_contract_files ();
+                return false;
+            });
         }
 	}
 }

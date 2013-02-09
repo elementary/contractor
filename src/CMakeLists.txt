@@ -32,6 +32,8 @@ PACKAGES
     gee-1.0
 OPTIONS
     --thread
+    -g
+    --save-temps
 )
 add_executable(contractor ${VALA_C})
 target_link_libraries(contractor ${DEPS_LIBRARIES})

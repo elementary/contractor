@@ -20,8 +20,33 @@
 using GLib;
 using Contractor;
 namespace Contractor{
-    [DBus (name = "org.elementary.Contractor")]
+    /* starts the contractor goodnes
+       creates a new Bus and enters the main loops
+    */
+    private MainLoop loop;
+    void main(){
+        Bus.own_name (BusType.SESSION, "org.elementary.Contractor", BusNameOwnerFlags.NONE,
+                      on_bus_aquired,
+                      () => {},
+                      () => on_bus_not_aquired);
+        loop = new MainLoop ();
+        loop.run();
+        }
+    // trys to aquire the bus 
+    private void on_bus_aquired(DBusConnection conn){
+        try {
+            conn.register_object("/org/elementary/contractor", new Contractor());
+        } catch (IOError e) {
+            stderr.printf("Could not register service because: %s \n",e.message);
+        }
+    }
+    private void on_bus_not_aquired(){
+        stderr.printf("Could not aquire Session bus for contractor\n");
+        loop.quit();
+    }
+
     // the main constractor class where everything comes together
+    [DBus (name = "org.elementary.Contractor")]
     public class Contractor : Object {
         private ContractFileService cfs;
         construct{
@@ -30,30 +55,12 @@ namespace Contractor{
             GLib.Intl.textdomain (Build.GETTEXT_PACKAGE);
             cfs = new ContractFileService ();
         }
+
         public string GetServicesByLocation (string strlocation){
             message(strlocation);
             return strlocation;
         }
         public signal void pong (int count, string msg);
-    }
-
-    /* starts the contractor goodnes
-       creates a new Bus and enters the main loops
-    */
-    void main(){
-        Bus.own_name (BusType.SESSION, "org.elementary.Contractor", BusNameOwnerFlags.NONE,
-                      on_bus_aquired,
-                      () => {},
-                      () => stderr.printf("Could not aquire Session bus for contractor\n"));
-        new MainLoop().run();
-        }
-    // trys to aquire the bus 
-    void on_bus_aquired(DBusConnection conn){
-        try {
-            conn.register_object("/org/elementary/contractor", new Contractor());
-        } catch (IOError e) {
-            stderr.printf("Could not register service because: %s \n",e.message);
-        }
     }
 }
 
