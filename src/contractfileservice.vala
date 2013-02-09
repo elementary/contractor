@@ -20,20 +20,19 @@
 namespace Contractor{
 	public class ContractFileService : Object{
 		private Gee.List<ContractFileInfo> all_contract_files;
-        public Gee.List<ContractFileInfo> conditional_contracts;
+        private Gee.List<ContractFileInfo> conditional_contracts;
+
 		public ContractFileService (){
             all_contract_files = new Gee.ArrayList<ContractFileInfo> ();
             conditional_contracts = new Gee.ArrayList<ContractFileInfo> ();
-            initialize ();
+            
+            load_all_contract_files ();
         }
-        private void initialize(){
-        	load_all_contract_files ();
-        }
-
-        private FileMonitor monitor = null;
-
+        	
 		private void load_all_contract_files (bool should_monitor=true){
-			debug("loading necessary files");
+			message("loading necessary files");
+            var monitors = new Gee.ArrayList<FileMonitor>();
+            var count = 0;
             //get paths from enviroment
             var paths = Environment.get_system_data_dirs ();
             paths.resize (paths.length + 1);
@@ -41,19 +40,20 @@ namespace Contractor{
             foreach(var path in paths){
                 var directory = File.new_for_path(path+"/contractor/");
                 if (directory.query_exists()) {
-                    message("Looking in "+directory.get_path());
+                    debug("Looking in "+directory.get_path());
                     process_directory(directory);
+                    if (should_monitor) {
+                        try {
+                            monitors[count] = directory.monitor_directory (0);
+                        } catch (IOError e) {
+                            error("%s monitor failed: %s", directory.get_path(), e.message);
+                        }
+                        monitors[count].changed.connect(contract_file_directory_changed);
+                        count =+ 1;
+                    }
+                
                 }             
                 // create_maps ();
-
-                if (should_monitor) {
-                    try {
-                        monitor = directory.monitor_directory (0);
-                    } catch (IOError e) {
-                        error ("directory monitor failed: %s", e.message);
-                    }
-                    monitor.changed.connect (contract_file_directory_changed);
-                }
             }
 		}
 
@@ -66,7 +66,6 @@ namespace Contractor{
                     unowned string name = f.get_name ();
                     if (f.get_file_type () == FileType.REGULAR && name.has_suffix (".contract"))
                     {
-                        //message("loading file: "+directory.get_path()+"/"+name);
                         load_contract_file (directory.get_child(name));
                     }
                 }
