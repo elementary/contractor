@@ -19,17 +19,36 @@
  
 namespace Contractor{
 	public class ContractFileService : Object{
-		private Gee.List<ContractFileInfo> all_contract_files;
-        private Gee.List<ContractFileInfo> conditional_contracts;
+        // all contract files with conditional
+		private Gee.List<ContractFileInfo> contracts_files;
+        // only conditional contract files
+        private Gee.List<ContractFileInfo> conditional_contracts_files;
 
 		public ContractFileService (){
-            all_contract_files = new Gee.ArrayList<ContractFileInfo> ();
-            conditional_contracts = new Gee.ArrayList<ContractFileInfo> ();
-            
-            load_all_contract_files ();
+            contracts_files = new Gee.ArrayList<ContractFileInfo> ();
+            conditional_contracts_files = new Gee.ArrayList<ContractFileInfo> ();
+            load_contracts_files ();
         }
-        	
-		private void load_all_contract_files (bool should_monitor=true){
+        /* status: TODO
+        *
+        */
+        private uint timer_id = 0;
+        private void contract_file_directory_changed (File file, File? other_file, FileMonitorEvent event){
+            message ("file_directory_changed");
+            if (timer_id != 0){
+                Source.remove (timer_id);
+            }
+
+            timer_id = Timeout.add (1000, () =>{
+                timer_id = 0;
+             //   reload_contract_files ();
+                return false;
+            });
+        }
+        /* status: basicly done need review
+        *
+        */
+		private void load_contracts_files (bool should_monitor=true){
 			message("loading necessary files");
             var monitors = new Gee.ArrayList<FileMonitor>();
             var count = 0;
@@ -43,19 +62,22 @@ namespace Contractor{
                     process_directory(directory);
                     if (should_monitor){
                         try{
-                            monitors.add(directory.monitor_directory(0));
+                            monitors.add(directory.monitor_directory(FileMonitorFlags.NONE, null));
                         } catch (IOError e){
                             error("%s monitor failed: %s", directory.get_path(), e.message);
                         }
                         monitors[count].changed.connect(contract_file_directory_changed);
                         count =+ 1;
                     }
-                }             
+                }           
                 // create_maps ();
             }
 		}
 
-		private void process_directory (File directory)
+        /* status: needs comments and documentary
+        *
+        */
+		private void process_directory(File directory)
         {
             try {
                 var enumerator = directory.enumerate_children (FileAttribute.STANDARD_NAME + "," + FileAttribute.STANDARD_TYPE, 0);
@@ -71,10 +93,11 @@ namespace Contractor{
                  warning ("%s name %s", err.message, directory.get_path());
              }
         }
-
+        /* status: done
+        *
+        */
         private void load_contract_file (File file)
         {
-        	message(file.get_basename());
             try {
                 uint8[] contents;
                 bool success = file.load_contents (null, out contents, null);
@@ -82,37 +105,25 @@ namespace Contractor{
                 size_t len = contents_str.length;
                 if (success && len>0)
                 {
-                    var keyfile = new KeyFile ();
+                    var keyfile = new KeyFile();
                     keyfile.load_from_data (contents_str, len, 0);
                     var cfi = new ContractFileInfo.for_keyfile (file.get_path (), keyfile);
                     if (cfi.is_valid) {
-                        all_contract_files.add(cfi);
+                        contracts_files.add(cfi);
                     }
                     if (cfi.is_conditional) {
-                        conditional_contracts.add(cfi);
+                        conditional_contracts_files.add(cfi);
                     }
                 }
             } catch (Error err) {
-
                 warning ("%s", err.message);
             }
         }
 
-        private uint timer_id = 0;
-		private void contract_file_directory_changed (File file, File? other_file, FileMonitorEvent event)
-        {
-            message ("file_directory_changed");
-            if (timer_id != 0)
-            {
-                Source.remove (timer_id);
+        public void list_all_contracts(){
+            foreach(var contract in contracts_files){
+               message(contract.name + " contract. description: " + contract.description);
             }
-
-            timer_id = Timeout.add (1000, () =>
-            {
-                timer_id = 0;
-             //   reload_contract_files ();
-                return false;
-            });
         }
 	}
 }
