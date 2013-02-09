@@ -29,35 +29,22 @@ namespace Contractor{
             conditional_contracts_files = new Gee.ArrayList<ContractFileInfo> ();
             load_contracts_files ();
         }
-        /* status: TODO
-        *
-        */
-        private uint timer_id = 0;
-        private void contract_file_directory_changed (File file, File? other_file, FileMonitorEvent event){
-            message ("file_directory_changed");
-            if (timer_id != 0){
-                Source.remove (timer_id);
-            }
 
-            timer_id = Timeout.add (1000, () =>{
-                timer_id = 0;
-             //   reload_contract_files ();
-                return false;
-            });
-        }
         /* status: basicly done need review
         *
         */
+        private Gee.ArrayList<FileMonitor> monitors;
 		private void load_contracts_files (bool should_monitor=true){
 			message("loading necessary files");
-            var monitors = new Gee.ArrayList<FileMonitor>();
             var count = 0;
+            monitors = new Gee.ArrayList<FileMonitor>();
             //get paths from enviroment
             var paths = Environment.get_system_data_dirs ();
             paths.resize (paths.length + 1);
             paths[paths.length - 1] = Environment.get_user_data_dir ();
             foreach(var path in paths){
                 var directory = File.new_for_path(path+"/contractor/");
+                message(directory.get_path());
                 if (directory.query_exists()){
                     process_directory(directory);
                     if (should_monitor){
@@ -119,7 +106,21 @@ namespace Contractor{
                 warning ("%s", err.message);
             }
         }
-
+        /* status: TODO
+        *
+        */
+        private uint timer_id = 1;
+        private void contract_file_directory_changed (File file, File? other_file, FileMonitorEvent event){
+            message("%s changed", file.get_path());
+            if (timer_id != 0){
+                Source.remove (timer_id);
+            }
+            timer_id = Timeout.add (1000, () =>{
+                timer_id = 0;
+             //   reload_contract_files ();
+                return false;
+            });
+        }
         public void list_all_contracts(){
             foreach(var contract in contracts_files){
                message(contract.name + " contract. description: " + contract.description);

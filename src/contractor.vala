@@ -60,6 +60,7 @@ namespace Contractor{
             message(strlocation);
             return strlocation;
         }
+        
         public signal void pong (int count, string msg);
     }
 }
