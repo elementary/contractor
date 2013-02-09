@@ -28,28 +28,26 @@ namespace Contractor{
         public string icon_name { get; construct set; default = ""; }
         public bool take_multi_args { get; set; }
         public bool take_uri_args { get; set; }
-
         public string filename { get; construct set; }
         public bool is_valid { get; private set; default = true; }
         public bool is_conditional { get; private set; default = false; }
         /* used in the context of multiples arguments. If true, all arguments should respect the condition. If false, at least one argument should respect it. Default true */
         public bool strict_condition { get; private set; default = true; }
-
         private const string[] SUPPORTED_GETTEXT_DOMAINS_KEYS = {"X-Ubuntu-Gettext-Domain", "X-GNOME-Gettext-Domain"};
         private static const string GROUP = "Contractor Entry";
 
-        public ContractFileInfo.for_keyfile (string path, KeyFile keyfile)
+        public ContractFileInfo.for_keyfile(string path, KeyFile keyfile)
         {
-            Object (filename: path);
-            init_from_keyfile (keyfile);
+            Object(filename: path);
+            init_from_keyfile(keyfile);
         }
 
-        private void init_from_keyfile (KeyFile keyfile)
+        private void init_from_keyfile(KeyFile keyfile)
         {
             try {
-                name = keyfile.get_locale_string (GROUP, "Name");
+                name = keyfile.get_locale_string(GROUP, "Name");
                 string? textdomain = null;
-                foreach (var domain_key in SUPPORTED_GETTEXT_DOMAINS_KEYS) {
+                foreach(var domain_key in SUPPORTED_GETTEXT_DOMAINS_KEYS){
                     if (keyfile.has_key (GROUP, domain_key)) {
                         textdomain = keyfile.get_string (GROUP, domain_key);
                         break;
