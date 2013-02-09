@@ -55,13 +55,12 @@ namespace Contractor{
             GLib.Intl.textdomain (Build.GETTEXT_PACKAGE);
             cfs = new ContractFileService ();
         }
-
-        public string GetServicesByLocation (string strlocation){
-            message(strlocation);
-            return strlocation;
-        }
         
         public signal void pong (int count, string msg);
+
+        public void list_all_contracts(){
+            cfs.list_all_contracts();
+        }
     }
 }
 

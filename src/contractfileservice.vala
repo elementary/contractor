@@ -30,7 +30,7 @@ namespace Contractor{
             load_contracts_files ();
         }
 
-        /* status: basicly done need review
+        /* status: create_maps need to be implemented
         *
         */
         private Gee.ArrayList<FileMonitor> monitors;
@@ -83,7 +83,7 @@ namespace Contractor{
         /* status: done
         *
         */
-        private void load_contract_file (File file)
+        private void load_contract_file(File file)
         {
             try {
                 uint8[] contents;
