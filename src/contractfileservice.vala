@@ -39,19 +39,17 @@ namespace Contractor{
             paths[paths.length - 1] = Environment.get_user_data_dir ();
             foreach(var path in paths){
                 var directory = File.new_for_path(path+"/contractor/");
-                if (directory.query_exists()) {
-                    debug("Looking in "+directory.get_path());
+                if (directory.query_exists()){
                     process_directory(directory);
-                    if (should_monitor) {
-                        try {
-                            monitors[count] = directory.monitor_directory (0);
-                        } catch (IOError e) {
+                    if (should_monitor){
+                        try{
+                            monitors.add(directory.monitor_directory(0));
+                        } catch (IOError e){
                             error("%s monitor failed: %s", directory.get_path(), e.message);
                         }
                         monitors[count].changed.connect(contract_file_directory_changed);
                         count =+ 1;
                     }
-                
                 }             
                 // create_maps ();
             }
