@@ -34,14 +34,11 @@ namespace Contractor{
         public void ping (string msg) {
         stdout.printf ("%s\n", msg);
         }
-        public signal void pong (string msg);
+        public signal void pong ();
 
         public string list_all_contracts(){
            return cfs.list_all_contracts();
         }
-
-
-        
 
         private bool all_native;
         private bool is_native;

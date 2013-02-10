@@ -48,16 +48,16 @@ namespace Contractor{
                 message(directory.get_path());
                 if (directory.query_exists()){
                     process_directory(directory);
-                    if (should_monitor){
-                        try{
-                            monitors.add(directory.monitor_directory(FileMonitorFlags.NONE, null));
-                        } catch (IOError e){
-                            error("%s monitor failed: %s", directory.get_path(), e.message);
-                        }
-                        monitors[count].changed.connect(contract_file_directory_changed);
-                        count =+ 1;
+                }
+                if (should_monitor){
+                    try{
+                    monitors.add(directory.monitor_directory(FileMonitorFlags.NONE, null));
+                    } catch (IOError e){
+                        error("%s monitor failed: %s", directory.get_path(), e.message);
                     }
-                }           
+                    monitors[count].changed.connect(contract_file_directory_changed);
+                    count =+ 1;
+                }       
                 create_maps ();
             }
 		}

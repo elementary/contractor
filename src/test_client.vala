@@ -21,25 +21,19 @@ using GLib;
 [DBus (name = "org.elementary.Contractor")]
 interface Demo : Object {
     public abstract string list_all_contracts() throws Error;
-     public signal void pong (string msg);
+    public signal void pong (string msg);
 }
 
 void main () {
-    var loop = new MainLoop();
     Demo demo = null;
     try {
         message("trying");
         demo = Bus.get_proxy_sync (BusType.SESSION, "org.elementary.Contractor", "/org/elementary/contractor");
-        demo.pong.connect((m) => {
-            stdout.printf ("Got pong with msg '%s'\n",m);
-            loop.quit ();
-        });
-        message("pong");
+        demo.pong.connect((m) => {});
         var contract = demo.list_all_contracts();
         message(contract);
     } catch (Error e) {
         stderr.printf ("%s\n", e.message);
     }
-    loop.run();
 }
 
