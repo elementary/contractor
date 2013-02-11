@@ -31,7 +31,7 @@ void main () {
         demo = Bus.get_proxy_sync (BusType.SESSION, "org.elementary.Contractor", "/org/elementary/contractor");
         demo.pong.connect((m) => {});
         var contract = demo.list_all_contracts();
-        message(contract);
+        stdout.printf(contract);
     } catch (Error e) {
         stderr.printf ("%s\n", e.message);
     }

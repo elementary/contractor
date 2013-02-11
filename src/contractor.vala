@@ -18,7 +18,6 @@
  */
 
 using GLib;
-using Contractor;
 namespace Contractor{
     // the main constractor class where everything comes together
     [DBus (name = "org.elementary.Contractor")]
@@ -26,15 +25,15 @@ namespace Contractor{
         private ContractFileService cfs;
         GLib.HashTable<string,string>[] filtered;
         construct{
-            message("starting Contractor...");
+            debug("starting Contractor...");
             GLib.Intl.setlocale (GLib.LocaleCategory.ALL, "");
             GLib.Intl.textdomain (Build.GETTEXT_PACKAGE);
             cfs = new ContractFileService ();
         }
         public void ping (string msg) {
-        stdout.printf ("%s\n", msg);
+            stdout.printf ("%s\n", msg);
         }
-        public signal void pong ();
+        public signal void pong (string msg);
 
         public string list_all_contracts(){
            return cfs.list_all_contracts();
@@ -437,7 +436,14 @@ namespace Contractor{
        creates a new Bus and enters the main loops
     */
     private MainLoop loop;
-    void main(){
+    void main(string[] args){
+        foreach(string arg in args){
+            if(arg == "-l"){
+                Contractor contractor = new Contractor();
+                stdout.printf(contractor.list_all_contracts());
+                Process.exit (0);
+            };
+        };
         Bus.own_name (BusType.SESSION, "org.elementary.Contractor", BusNameOwnerFlags.NONE,
                       on_bus_aquired,
                       () => {},
