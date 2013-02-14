@@ -150,7 +150,9 @@ namespace Contractor{
 
             debug ("test path %s %s %s", file.get_path (), file.get_uri (), mimetype);
             if (mimetype != null){
+                debug((mimetype != null).to_string());
                 var list_for_all = cfs.get_contract_files_for_type("all");
+                debug(list_for_all.size.to_string());
                 if(list_for_all.size > 0){
                     foreach(var entry in list_for_all){
                         single_arg_add_contract_to_filtered_table(entry, file);

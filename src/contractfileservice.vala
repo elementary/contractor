@@ -217,10 +217,12 @@ namespace Contractor{
         private void add_cfi_for_mime (string mime, Gee.Set<ContractFileInfo> ret)
         {
             var cfis = mimetype_map[mime];
+            debug(mimetype_map[mime].first().name);
             if (cfis != null){
                 ret.add_all(cfis);
             }
         }
+
         /*
         * status: TODO
         */
@@ -232,7 +234,7 @@ namespace Contractor{
             ret.add_all (cfi_set);
             return ret;
         }
-        
+
         /*
         * status: broken
         
