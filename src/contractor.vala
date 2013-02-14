@@ -30,10 +30,6 @@ namespace Contractor{
             GLib.Intl.textdomain (Build.GETTEXT_PACKAGE);
             cfs = new ContractFileService ();
         }
-        public void ping (string msg) {
-            stdout.printf ("%s\n", msg);
-        }
-        public signal void pong (string msg);
 
         public string list_all_contracts(){
            return cfs.list_all_contracts();
@@ -131,36 +127,33 @@ namespace Contractor{
             return filtered;
         }
 
-        public GLib.HashTable<string,string>[]? GetServicesByLocation (string strlocation)
-        {
+        /*
+        *   TODO: everything!
+        */
+        public GLib.HashTable<string,string>[]? GetServicesByLocation (string strlocation){
             File file = File.new_for_commandline_arg (strlocation);
-
             filtered = null;
-            if (!cfs.initialized)
+            if (!cfs.initialized){
                 return null;
-
+            }
             is_native = file.is_native ();
 
-            /*if (file.query_exists ()) {
-              message ("file exist");
-              }*/
             string mimetype;
             string parent_mime = null;
             string file_mime = null;
-            if (file_mime == null || file_mime.length <= 0)
-                mimetype = query_content_type (file);
-            else
-                mimetype = file_mime;
 
-            //message ("test path %s %s %s", file.get_path (), file.get_uri (), mimetype);
-            if (mimetype != null)
-            {
-                var list_for_all = cfs.get_contract_files_for_type ("all");
-                if (list_for_all.size > 0)
-                {
-                    foreach (var entry in list_for_all)
-                    {
-                        single_arg_add_contract_to_filtered_table (entry, file);
+            if (file_mime == null || file_mime.length <= 0){
+                mimetype = query_content_type(file);
+            }else{
+                mimetype = file_mime;
+            }
+
+            debug ("test path %s %s %s", file.get_path (), file.get_uri (), mimetype);
+            if (mimetype != null){
+                var list_for_all = cfs.get_contract_files_for_type("all");
+                if(list_for_all.size > 0){
+                    foreach(var entry in list_for_all){
+                        single_arg_add_contract_to_filtered_table(entry, file);
                     }
                 }
                 parent_mime = get_parent_mime (mimetype);
@@ -432,6 +425,7 @@ namespace Contractor{
             return mimetype;
         }
     }
+
     /* starts the contractor goodnes
        creates a new Bus and enters the main loops
     */

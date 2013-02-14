@@ -32,7 +32,7 @@ namespace Contractor{
         }
 
         /* 
-        *   status: create_maps need to be implemented
+        *   status: need review and documentation
         */
         private Gee.ArrayList<FileMonitor> monitors;
         private void load_contracts_files (bool should_monitor=true){
@@ -217,7 +217,9 @@ namespace Contractor{
         private void add_cfi_for_mime (string mime, Gee.Set<ContractFileInfo> ret)
         {
             var cfis = mimetype_map[mime];
-            if (cfis != null) ret.add_all (cfis);
+            if (cfis != null){
+                ret.add_all(cfis);
+            }
         }
         /*
         * status: TODO
@@ -225,11 +227,12 @@ namespace Contractor{
         public Gee.List<ContractFileInfo> get_contract_files_for_type (string mime_type)
         {
             var cfi_set = new Gee.HashSet<ContractFileInfo> ();
-            add_cfi_for_mime (mime_type, cfi_set);
+            add_cfi_for_mime(mime_type, cfi_set);
             var ret = new Gee.ArrayList<ContractFileInfo> ();
             ret.add_all (cfi_set);
             return ret;
         }
+        
         /*
         * status: broken
         
