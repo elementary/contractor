@@ -82,7 +82,7 @@ namespace Contractor{
                 } else {
                     mime_types = keyfile.get_string_list (GROUP, "MimeType");
                 }
-            } catch (Error e) { warning("Couldn't read MimeType field %s", e.message); is_valid = false;}
+            } catch (Error e) { warning("Couldn't read MimeType field %s",e.message); is_valid = false;}
             try {
                 if (keyfile.has_key (GROUP, "Icon"))
                 {

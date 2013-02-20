@@ -20,8 +20,8 @@
 using GLib;
 [DBus (name = "org.elementary.Contractor")]
 interface Demo : Object {
-    // public abstract string list_all_contracts() throws Error;
-    public abstract string GetServicesByLocation(string file) throws Error;
+    public abstract HashTable<string, string> list_all_contracts() throws Error;
+    public abstract HashTable<string, string>[] xml_test() throws Error;
     public signal void pong (string msg);
 }
 
@@ -31,8 +31,15 @@ void main () {
         message("trying");
         demo = Bus.get_proxy_sync (BusType.SESSION, "org.elementary.Contractor", "/org/elementary/contractor");
         demo.pong.connect((m) => {});
-        var contract = demo.GetServicesByLocation("/home/michael/plop.tar");
-        stdout.printf(contract);
+        var contract = demo.xml_test();
+        var val = contract[0].get_values ();
+        var key = contract[0].get_keys();
+        foreach (string v in val) {
+            stdout.printf ("%s\n", v);
+        }
+        foreach (string k in key) {
+            stdout.printf ("%s\n", k);
+        }
     } catch (Error e) {
         stderr.printf ("%s\n", e.message);
     }

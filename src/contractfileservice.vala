@@ -266,12 +266,12 @@ namespace Contractor{
        /*   nice return of the avaible contracts
        *    status: done
        */
-        public string list_all_contracts(){
-            var builder = new StringBuilder ();
+        public HashTable<string, string> list_all_contracts(){
+            var table = new HashTable<string, string>(str_hash, str_equal);
             foreach(var contract in contracts_files){
-                builder.append(contract.name + " contract. description: " + contract.description + "\n");
+                table.insert(contract.name,contract.description);
             }
-            return builder.str;
+            return table;
         }
     }
 }
