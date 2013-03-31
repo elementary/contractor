@@ -48,11 +48,10 @@ namespace Contractor {
         /  status: TODO
         */           
         public ClientVisibleContractInfo[] get_contracts_by_mime (string mime_type) {
-            
             // need to add this to demo compile
-            ClientVisibleContractInfo s = {"id","2","2"};
+            ClientVisibleContractInfo s = {"id", "2", "2"};
             ClientVisibleContractInfo[] l = new ClientVisibleContractInfo[10];
-            l[0]=s;
+            l[0] = s;
             return l;
         }
         /* 
@@ -61,24 +60,24 @@ namespace Contractor {
         */ 
         public ClientVisibleContractInfo[] get_contracts_by_mimelist (string[] mime_type) {
             // need to add this to demo compile
-            ClientVisibleContractInfo s = {"id","2","2"};
+            ClientVisibleContractInfo s = {"id", "2", "2"};
             ClientVisibleContractInfo[] l = new ClientVisibleContractInfo[10];
-            l[0]=s;
+            l[0] = s;
             return l;
         }
         /* 
         /  return:
-        /  status:
+        /  status: TODO
         */ 
-        public int execute_with_file_list (string id,string[] file_path) {
+        public int execute_with_file_list (string id, string[] file_path) {
             // need to add this to demo compile
             return 0;
         }
         /* 
         /  return:
-        /  status:
+        /  status: TODO
         */ 
-        public int execute_with_file (string id,string file_path) {
+        public int execute_with_file (string id, string file_path) {
             // need to add this to demo compile
             return 0;
         }
