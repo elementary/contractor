@@ -25,15 +25,17 @@ namespace Contractor {
     public class Contractor : GLib.Object {
         private ContractFileService cfs;
         //Gee.HashMultiMap<string, string> contracts;
+        
         construct {
             debug ("starting Contractor...");
             GLib.Intl.setlocale (GLib.LocaleCategory.ALL, "");
             GLib.Intl.textdomain (Build.GETTEXT_PACKAGE);
             cfs = new ContractFileService ();
         }
+        
         /* 
-        /  return:
-        /  status: TODO
+        /  a basic strict for the user that return the information he/she needs
+        /  status: Done
         */ 
         public struct ClientVisibleContractInfo {
            string id;
@@ -45,7 +47,7 @@ namespace Contractor {
         /  return:
         /  status: TODO
         */           
-        public ClientVisibleContractInfo[] GetContractsByMime (string mime_type) {
+        public ClientVisibleContractInfo[] get_contracts_by_mime (string mime_type) {
             
             // need to add this to demo compile
             ClientVisibleContractInfo s = {"id","2","2"};
@@ -57,7 +59,7 @@ namespace Contractor {
         /  return:
         /  status: TODO
         */ 
-        public ClientVisibleContractInfo[] GetContractsByMimeList (string[] mime_type) {
+        public ClientVisibleContractInfo[] get_contracts_by_mimelist (string[] mime_type) {
             // need to add this to demo compile
             ClientVisibleContractInfo s = {"id","2","2"};
             ClientVisibleContractInfo[] l = new ClientVisibleContractInfo[10];
@@ -68,10 +70,19 @@ namespace Contractor {
         /  return:
         /  status:
         */ 
-        public int ExecuteContract (string id,string[] file_path) {
+        public int execute_with_file_list (string id,string[] file_path) {
             // need to add this to demo compile
             return 0;
         }
+        /* 
+        /  return:
+        /  status:
+        */ 
+        public int execute_with_file (string id,string file_path) {
+            // need to add this to demo compile
+            return 0;
+        }
+
         public HashTable<string, string> list_all_contracts () {
            return cfs.list_all_contracts ();
         }
