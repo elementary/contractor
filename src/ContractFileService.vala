@@ -16,93 +16,89 @@
  *
  * Author: lampe2 mgoldhand@googlemail.com
  */
- 
-namespace Contractor{
-    public class ContractFileService : Object{
+
+namespace Contractor {
+    public class ContractFileService : Object {
         // all contract files with conditional
         private Gee.List<ContractFileInfo> contracts_files;
         // only conditional contract files
         public Gee.List<ContractFileInfo> conditional_contracts_files;
         public bool initialized { get; private set; default = false; }
-        public ContractFileService (){
+        public ContractFileService () {
             contracts_files = new Gee.ArrayList<ContractFileInfo> ();
             conditional_contracts_files = new Gee.ArrayList<ContractFileInfo> ();
-            load_contracts_files();
+            load_contracts_files ();
             initialized = true;
         }
 
-        /* 
+        /*
         *   status: need review and documentation
         */
         private Gee.ArrayList<FileMonitor> monitors;
-        private void load_contracts_files (bool should_monitor=true){
-            debug("loading necessary files...");
+        private void load_contracts_files (bool should_monitor=true) {
+            debug ("loading necessary files...");
             var count = 0;
-            monitors = new Gee.ArrayList<FileMonitor>();
+            monitors = new Gee.ArrayList<FileMonitor> ();
             //get paths from enviroment
-            var paths = Environment.get_system_data_dirs();
+            var paths = Environment.get_system_data_dirs ();
             paths.resize (paths.length + 1);
             paths[paths.length - 1] = Environment.get_user_data_dir ();
-            foreach(var path in paths){
-                var directory = File.new_for_path(path+"/contractor/");
-                if (directory.query_exists()){
-                    process_directory(directory);
+            foreach (var path in paths) {
+                var directory = File.new_for_path (path + "/contractor/");
+                if (directory.query_exists ()) {
+                    process_directory (directory);
                 }
-                if (should_monitor){
-                    try{
-                    monitors.add(directory.monitor_directory(FileMonitorFlags.NONE, null));
-                    } catch (IOError e){
-                        error("%s monitor failed: %s", directory.get_path(), e.message);
+                if (should_monitor) {
+                    try {
+                    monitors.add (directory.monitor_directory (FileMonitorFlags.NONE, null));
+                    } catch (IOError e) {
+                        error ("%s monitor failed: %s", directory.get_path (), e.message);
                     }
-                    monitors[count].changed.connect(contract_file_directory_changed);
+                    monitors[count].changed.connect (contract_file_directory_changed);
                     count =+ 1;
-                }       
+                }
                 create_maps ();
             }
-            debug("load contracts files done");
+            debug ("load contracts files done");
         }
 
-        /* 
+        /*
         *   status: needs comments and documentary
         */
-        private void process_directory(File directory)
-        {
+        private void process_directory (File directory) {
             try {
                 var enumerator = directory.enumerate_children (FileAttribute.STANDARD_NAME + "," + FileAttribute.STANDARD_TYPE, 0);
                 FileInfo f = null;
                 while ((f = enumerator.next_file ()) != null) {
                     unowned string name = f.get_name ();
-                    if (f.get_file_type () == FileType.REGULAR && name.has_suffix (".contract"))
-                    {
-                        load_contract_file (directory.get_child(name));
+                    if (f.get_file_type () == FileType.REGULAR && name.has_suffix (".contract")) {
+                        load_contract_file (directory.get_child (name));
                     }
                 }
              } catch (Error err) {
-                 warning ("%s name %s", err.message, directory.get_path());
+                 warning ("%s name %s", err.message, directory.get_path ());
              }
         }
-        /*  loads the specifi contractor file parses it and  
+        /*  loads the specifi contractor file parses it and
         *   adds it to the list of contracts
         *   status: needs comment and documentary
         */
-        private void load_contract_file(File file)
-        {
+        private void load_contract_file (File file) {
             try {
                 uint8[] contents;
                 bool success = file.load_contents (null, out contents, null);
-                var contents_str = (string)contents;
+                var contents_str = (string) contents;
                 size_t len = contents_str.length;
 
-                if (success && len>0)
-                {
-                    var keyfile = new KeyFile();
+                if (success && len > 0) {
+                    var keyfile = new KeyFile ();
                     keyfile.load_from_data (contents_str, len, 0);
-                    var cfi = new ContractFileInfo.for_keyfile(file.get_path (), keyfile);
+                    var cfi = new ContractFileInfo.for_keyfile (file.get_path (), keyfile);
                     if (cfi.is_valid) {
-                        contracts_files.add(cfi);
+                        contracts_files.add (cfi);
                     }
                     if (cfi.is_conditional) {
-                        conditional_contracts_files.add(cfi);
+                        conditional_contracts_files.add (cfi);
                     }
                 }
             } catch (Error err) {
@@ -120,11 +116,11 @@ namespace Contractor{
         *
         *   status: need documentation but works
         */
-        private void create_maps (){
+        private void create_maps () {
             // create mimetype maps
-            mimetype_map = new Gee.HashMap<unowned string, Gee.List<ContractFileInfo> > ();
+            mimetype_map = new Gee.HashMap<unowned string, Gee.List<ContractFileInfo>> ();
             // and exec map
-            exec_map = new Gee.HashMap<string, Gee.List<ContractFileInfo> > ();
+            exec_map = new Gee.HashMap<string, Gee.List<ContractFileInfo>> ();
             // and exec string map
             exec_string_map = new Gee.HashMap<string, ContractFileInfo> ();
             // and desktop id map
@@ -133,20 +129,19 @@ namespace Contractor{
             name_id_map = new Gee.HashMap<string, ContractFileInfo> ();
             Regex exec_re;
             try {
-                exec_re = new Regex("%[fFuU]");
+                exec_re = new Regex ("%[fFuU]");
             } catch (Error err) {
                 critical ("%s", err.message);
                 return;
             }
-            foreach (var cfi in contracts_files)
-            {
+            foreach (var cfi in contracts_files) {
                //me message ("create_map %s", cfi.name);
                 string exec = "";
                 string[] parameter = null;
                 MatchInfo info = null;
                 try {
                     if (exec_re.match (cfi.exec, 0, out info)) {
-                        parameter = info.fetch_all();
+                        parameter = info.fetch_all ();
                         if (parameter.length != 1) {
                             warning ("argument definition eroned in %s", cfi.name);
                         } else {
@@ -169,8 +164,7 @@ namespace Contractor{
                 cfi.exec = exec;
                 // update exec map
                 Gee.List<ContractFileInfo>? exec_list = exec_map[exec];
-                if (exec_list == null)
-                {
+                if (exec_list == null) {
                     exec_list = new Gee.ArrayList<ContractFileInfo> ();
                     exec_map[exec] = exec_list;
                 }
@@ -187,13 +181,12 @@ namespace Contractor{
                 name_id_map[cfi.name] = cfi;
 
                 // update mimetype map
-                if (cfi.mime_types == null) continue;
+                if (cfi.mime_types == null)
+                    continue;
 
-                foreach (unowned string mime_type in cfi.mime_types)
-                {
+                foreach (unowned string mime_type in cfi.mime_types) {
                     Gee.List<ContractFileInfo>? list = mimetype_map[mime_type];
-                    if (list == null)
-                    {
+                    if (list == null) {
                         list = new Gee.ArrayList<ContractFileInfo> ();
                         mimetype_map[mime_type] = list;
                     }
@@ -204,32 +197,29 @@ namespace Contractor{
         /*
         * status: TODO
         */
-        private void reload_contract_files ()
-        {
+        private void reload_contract_files () {
             debug ("Reloading contract files...");
             contracts_files.clear ();
             conditional_contracts_files.clear ();
-            load_contracts_files(false);
+            load_contracts_files (false);
         }
         /*
         * status: TODO
         */
-        private void add_cfi_for_mime (string mime, Gee.Set<ContractFileInfo> ret)
-        {
+        private void add_cfi_for_mime (string mime, Gee.Set<ContractFileInfo> ret) {
             var cfis = mimetype_map[mime];
-            debug(mimetype_map[mime].first().name);
-            if (cfis != null){
-                ret.add_all(cfis);
+            debug (mimetype_map[mime].first ().name);
+            if (cfis != null) {
+                ret.add_all (cfis);
             }
         }
 
         /*
         * status: TODO
         */
-        public Gee.List<ContractFileInfo> get_contract_files_for_type (string mime_type)
-        {
+        public Gee.List<ContractFileInfo> get_contract_files_for_type (string mime_type) {
             var cfi_set = new Gee.HashSet<ContractFileInfo> ();
-            add_cfi_for_mime(mime_type, cfi_set);
+            add_cfi_for_mime (mime_type, cfi_set);
             var ret = new Gee.ArrayList<ContractFileInfo> ();
             ret.add_all (cfi_set);
             return ret;
@@ -237,7 +227,7 @@ namespace Contractor{
 
         /*
         * status: broken
-        
+
         public void get_contracts_for_string ()
         {
             GLib.HashTable<string,string>[] filtered = null;
@@ -248,13 +238,13 @@ namespace Contractor{
                 message ("exec_string %s", cfi.name);
             }
         }*/
-        /* 
+        /*
         *   status: needs comments and documentery
         */
         private uint timer_id = 0;
-        private void contract_file_directory_changed (File file, File? other_file, FileMonitorEvent event){
-            debug("%s changed", file.get_path());
-            if (timer_id != 0){
+        private void contract_file_directory_changed (File file, File? other_file, FileMonitorEvent event) {
+            debug ("%s changed", file.get_path ());
+            if (timer_id != 0) {
                 Source.remove (timer_id);
             }
             timer_id = Timeout.add (1000, () =>{
@@ -266,10 +256,10 @@ namespace Contractor{
        /*   nice return of the avaible contracts
        *    status: done
        */
-        public HashTable<string, string> list_all_contracts(){
+        public HashTable<string, string> list_all_contracts () {
             var table = new HashTable<string, string>(str_hash, str_equal);
-            foreach(var contract in contracts_files){
-                table.insert(contract.name,contract.description);
+            foreach (var contract in contracts_files) {
+                table.insert (contract.name,contract.description);
             }
             return table;
         }

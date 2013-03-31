@@ -22,9 +22,9 @@ link_directories(${LIB_PATHS})
 add_definitions(${CFLAGS})
 vala_precompile(
 VALA_C
-    contractor.vala
-    contractfileservice.vala
-    contractorfileinfo.vala
+    Contractor.vala
+    ContractFileService.vala
+    ContractorFileInfo.vala
     config.vala
 PACKAGES
     glib-2.0

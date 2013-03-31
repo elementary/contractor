@@ -19,28 +19,28 @@
 
 using GLib;
 using Xml;
-namespace Contractor{
+namespace Contractor {
 
     // the main constractor class where everything comes together
     [DBus (name = "org.elementary.Contractor")]
     public class Contractor : GLib.Object {
         private ContractFileService cfs;
         //Gee.HashMultiMap<string, string> contracts;
-        construct{
-            debug("starting Contractor...");
+        construct {
+            debug ("starting Contractor...");
             GLib.Intl.setlocale (GLib.LocaleCategory.ALL, "");
             GLib.Intl.textdomain (Build.GETTEXT_PACKAGE);
             cfs = new ContractFileService ();
         }
 
-        public HashTable<string, string> list_all_contracts(){
-           return cfs.list_all_contracts();
+        public HashTable<string, string> list_all_contracts () {
+           return cfs.list_all_contracts ();
         }
 
         HashTable<string, string>[] table;
-        public HashTable<string, string>[] xml_test(){
+        public HashTable<string, string>[] xml_test () {
             table = new HashTable<string, string>[3];
-            var t1 = new HashTable<string, string>(str_hash, str_equal);
+            var t1 = new HashTable<string, string> (str_hash, str_equal);
             t1.insert ("1", "first string");
             table[0].insert (t1);
             table[1].insert ("2", "second string");
@@ -63,10 +63,10 @@ namespace Contractor{
        creates a new Bus and enters the main loops
     */
     private MainLoop loop;
-    void main(string[] args){
-        foreach(string arg in args){
-            if(arg == "-l"){
-                Contractor contractor = new Contractor();
+    void main (string[] args) {
+        foreach (string arg in args) {
+            if (arg == "-l") {
+                Contractor contractor = new Contractor ();
                 Process.exit (0);
             };
         };
@@ -75,19 +75,19 @@ namespace Contractor{
                       () => {},
                       () => on_bus_not_aquired);
         loop = new MainLoop ();
-        loop.run();
+        loop.run ();
         }
-    // trys to aquire the bus 
-    private void on_bus_aquired(DBusConnection conn){
+    // trys to aquire the bus
+    private void on_bus_aquired (DBusConnection conn) {
         try {
-            conn.register_object("/org/elementary/contractor", new Contractor());
+            conn.register_object ("/org/elementary/contractor", new Contractor ());
         } catch (IOError e) {
-            stderr.printf("Could not register service because: %s \n",e.message);
+            stderr.printf ("Could not register service because: %s \n", e.message);
         }
     }
-    private void on_bus_not_aquired(){
-        stderr.printf("Could not aquire Session bus for contractor\n");
-        loop.quit();
+    private void on_bus_not_aquired () {
+        stderr.printf ("Could not aquire Session bus for contractor\n");
+        loop.quit ();
     }
 }
 
