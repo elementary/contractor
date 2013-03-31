@@ -31,6 +31,10 @@ namespace Contractor {
             GLib.Intl.textdomain (Build.GETTEXT_PACKAGE);
             cfs = new ContractFileService ();
         }
+        /* 
+        /  return:
+        /  status: TODO
+        */ 
         public struct ClientVisibleContractInfo {
            string id;
            string display_name;
@@ -64,9 +68,9 @@ namespace Contractor {
         /  return:
         /  status:
         */ 
-        public string ExecuteContract (string id,string[] file_path) {
+        public int ExecuteContract (string id,string[] file_path) {
             // need to add this to demo compile
-            return "false";
+            return 0;
         }
         public HashTable<string, string> list_all_contracts () {
            return cfs.list_all_contracts ();
