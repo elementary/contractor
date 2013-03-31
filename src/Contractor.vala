@@ -14,13 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: lampe2 mgoldhand@googlemail.com
+ * Author: lampe2 michael@lazarski.me
  */
 
 using GLib;
-using Xml;
+using Gee;
 namespace Contractor {
-
     // the main constractor class where everything comes together
     [DBus (name = "org.elementary.Contractor")]
     public class Contractor : GLib.Object {
@@ -32,31 +31,46 @@ namespace Contractor {
             GLib.Intl.textdomain (Build.GETTEXT_PACKAGE);
             cfs = new ContractFileService ();
         }
+        public struct ClientVisibleContractInfo {
+           string id;
+           string display_name;
+           string icon_path;
+        }
 
+        /* 
+        /  return:
+        /  status: TODO
+        */           
+        public ClientVisibleContractInfo[] GetContractsByMime (string mime_type) {
+            
+            // need to add this to demo compile
+            ClientVisibleContractInfo s = {"id","2","2"};
+            ClientVisibleContractInfo[] l = new ClientVisibleContractInfo[10];
+            l[0]=s;
+            return l;
+        }
+        /* 
+        /  return:
+        /  status: TODO
+        */ 
+        public ClientVisibleContractInfo[] GetContractsByMimeList (string[] mime_type) {
+            // need to add this to demo compile
+            ClientVisibleContractInfo s = {"id","2","2"};
+            ClientVisibleContractInfo[] l = new ClientVisibleContractInfo[10];
+            l[0]=s;
+            return l;
+        }
+        /* 
+        /  return:
+        /  status:
+        */ 
+        public string ExecuteContract (string id,string[] file_path) {
+            // need to add this to demo compile
+            return "false";
+        }
         public HashTable<string, string> list_all_contracts () {
            return cfs.list_all_contracts ();
         }
-
-        HashTable<string, string>[] table;
-        public HashTable<string, string>[] xml_test () {
-            table = new HashTable<string, string>[3];
-            var t1 = new HashTable<string, string> (str_hash, str_equal);
-            t1.insert ("1", "first string");
-            table[0].insert (t1);
-            table[1].insert ("2", "second string");
-            table[2].insert ("3", "third string");
-            return table;
-        }
-        // private string query_content_type (File file){
-        //     string mimetype = null;
-        //     try{
-        //         var file_info = file.query_info ("standard::content-type", FileQueryInfoFlags.NONE);
-        //         mimetype = file_info.get_content_type ();
-        //     } catch (Error e){
-        //         warning ("file query_info error %s: %s\n", file.get_uri (), e.message);
-        //     }
-        //     return mimetype;
-        // }
     }
 
     /* starts the contractor goodnes
