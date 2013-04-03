@@ -49,10 +49,7 @@ namespace Contractor {
         */
         public ClientVisibleContractInfo[] get_contracts_by_mime (string mime_type) {
             // need to add this to demo compile
-            ClientVisibleContractInfo s = {"id", "2", "2"};
-            ClientVisibleContractInfo[] l = new ClientVisibleContractInfo[10];
-            l[0] = s;
-            return l;
+            return to_ClientVisibleContractInfo_arr (cfs.get_contract_files_for_type (mime_type));
         }
         /*
         /  return:
@@ -84,14 +81,18 @@ namespace Contractor {
 
         public ClientVisibleContractInfo[] list_all_contracts () {
             var cts = cfs.list_all_contracts ();
+            return to_ClientVisibleContractInfo_arr (cts);
+        }
+
+        private ClientVisibleContractInfo[] to_ClientVisibleContractInfo_arr (ContractFileInfo[] cts) {
             ClientVisibleContractInfo[] cvci = {};
-            cts.foreach ((ct) => {
+            foreach (var ct in cts) {
                 cvci += ClientVisibleContractInfo () {
                     display_name = ct.name,
                     id = ct.name,
                     icon_path = ct.icon_name
                 };
-            });
+            }
            return cvci;
         }
     }

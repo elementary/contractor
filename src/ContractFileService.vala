@@ -138,8 +138,8 @@ namespace Contractor {
             return cont_arr;
         }
 
-        public List<ContractFileInfo> list_all_contracts () {
-            return this.contracts.copy ();
+        public ContractFileInfo[] list_all_contracts () {
+            return to_CFI_array (this.contracts);
         }
         /*
         * status: broken
