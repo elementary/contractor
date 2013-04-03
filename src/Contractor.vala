@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Elementary Developers
+ * Copyright (C) 2013 elementary Developers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,9 @@
 
 using GLib;
 using Gee;
+
 namespace Contractor {
+
     // the main constractor class where everything comes together
     [DBus (name = "org.elementary.Contractor")]
     public class Contractor : GLib.Object {
@@ -51,6 +53,7 @@ namespace Contractor {
             // need to add this to demo compile
             return to_ClientVisibleContractInfo_arr (cfs.get_contract_files_for_type (mime_type));
         }
+
         /*
         /  return:
         /  status: TODO
@@ -58,13 +61,18 @@ namespace Contractor {
         public ClientVisibleContractInfo[] get_contracts_by_mimelist (string[] mime_types) {
             // need to add this to demo compile
             ContractFileInfo[] c_info_list = {};
+
             foreach (var mime in mime_types) {
                 ContractFileInfo[] c_info =  cfs.get_contract_files_for_type (mime);
-                foreach (var c in c_info)
+
+                foreach (var c in c_info) {
                     c_info_list += c;
+                }
             }
+
             return to_ClientVisibleContractInfo_arr (c_info_list);
         }
+
         /*
         /  return:
         /  status: TODO
@@ -89,6 +97,7 @@ namespace Contractor {
 
         private ClientVisibleContractInfo[] to_ClientVisibleContractInfo_arr (ContractFileInfo[] cts) {
             ClientVisibleContractInfo[] cvci = {};
+
             foreach (var ct in cts) {
                 cvci += ClientVisibleContractInfo () {
                     display_name = ct.name,
@@ -96,7 +105,8 @@ namespace Contractor {
                     icon_path = ct.icon_name
                 };
             }
-           return cvci;
+
+            return cvci;
         }
     }
     /* starts the contractor goodnes
@@ -110,13 +120,15 @@ namespace Contractor {
                 Process.exit (0);
             };
         };
+
         Bus.own_name (BusType.SESSION, "org.elementary.Contractor", BusNameOwnerFlags.NONE,
                       on_bus_aquired,
                       () => {},
                       () => on_bus_not_aquired);
         loop = new MainLoop ();
         loop.run ();
-        }
+    }
+
     // trys to aquire the bus
     private void on_bus_aquired (DBusConnection conn) {
         try {
@@ -125,6 +137,7 @@ namespace Contractor {
             stderr.printf ("Could not register service because: %s \n", e.message);
         }
     }
+
     private void on_bus_not_aquired () {
         stderr.printf ("Could not aquire Session bus for contractor\n");
         loop.quit ();

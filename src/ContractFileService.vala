@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Elementary Developers
+ * Copyright (C) 2013 elementary Developers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
  */
 
 namespace Contractor {
+
     public class ContractFileService : Object {
         public List<ContractFileInfo> contracts;
         public bool initialized { get; private set; default = false; }
@@ -31,30 +32,37 @@ namespace Contractor {
         /*
         *   status: need review and documentation
         */
-        private Gee.ArrayList<FileMonitor> monitors;
+        private List<FileMonitor> monitors;
+
         private void load_contracts_files (bool should_monitor=true) {
             debug ("loading necessary files...");
             var count = 0;
-            monitors = new Gee.ArrayList<FileMonitor> ();
+            monitors = new List<FileMonitor> ();
+
             //get paths from enviroment
             var paths = Environment.get_system_data_dirs ();
             paths.resize (paths.length + 1);
             paths[paths.length - 1] = Environment.get_user_data_dir ();
+
             foreach (var path in paths) {
                 var directory = File.new_for_path (path + "/contractor/");
+
                 if (directory.query_exists ()) {
                     process_directory (directory);
                 }
+
                 if (should_monitor) {
                     try {
-                    monitors.add (directory.monitor_directory (FileMonitorFlags.NONE, null));
+                        monitors.append (directory.monitor_directory (FileMonitorFlags.NONE, null));
                     } catch (IOError e) {
                         error ("%s monitor failed: %s", directory.get_path (), e.message);
                     }
-                    monitors[count].changed.connect (contract_file_directory_changed);
+
+                    monitors.nth_data (count).changed.connect (contract_file_directory_changed);
                     count =+ 1;
                 }
             }
+
             debug ("load contracts files done");
         }
 
@@ -63,8 +71,10 @@ namespace Contractor {
         */
         private void process_directory (File directory) {
             try {
-                var enumerator = directory.enumerate_children (FileAttribute.STANDARD_NAME + "," + FileAttribute.STANDARD_TYPE, 0);
+                var enumerator = directory.enumerate_children ("%s,%s".printf(FileAttribute.STANDARD_NAME,
+                                                                              FileAttribute.STANDARD_TYPE), 0);
                 FileInfo f = null;
+
                 while ((f = enumerator.next_file ()) != null) {
                     unowned string name = f.get_name ();
                     if (f.get_file_type () == FileType.REGULAR && name.has_suffix (".contract")) {
@@ -75,6 +85,7 @@ namespace Contractor {
                  warning ("%s name %s", err.message, directory.get_path ());
              }
         }
+
         /*  loads the specifi contractor file parses it and
         *   adds it to the list of contracts
         *   status: needs comment and documentary
@@ -89,7 +100,9 @@ namespace Contractor {
                 if (success && len > 0) {
                     var keyfile = new KeyFile ();
                     keyfile.load_from_data (contents_str, len, 0);
+
                     var cfi = new ContractFileInfo.for_keyfile (file.get_path (), keyfile);
+
                     if (cfi.is_valid) {
                         contracts.append (cfi);
                     }
@@ -98,6 +111,7 @@ namespace Contractor {
                 warning ("%s", err.message);
             }
         }
+
         private void reload_contract_files () {
             debug ("Reloading contract files...");
             contracts = null;
@@ -114,8 +128,10 @@ namespace Contractor {
                     if (con_mime_type == mime_type)
                         return true;
                 }
+
                 return false;
             });
+
             return to_CFI_array (cont);
         }
 
@@ -132,15 +148,18 @@ namespace Contractor {
 
         private ContractFileInfo[] to_CFI_array (List<ContractFileInfo> list_of_contracts) {
             ContractFileInfo[] cont_arr = {};
+
             list_of_contracts.foreach ((cont) => {
                 cont_arr += cont;
             });
+
             return cont_arr;
         }
 
         public ContractFileInfo[] list_all_contracts () {
             return to_CFI_array (this.contracts);
         }
+
         /*
         * status: broken
 
@@ -160,9 +179,11 @@ namespace Contractor {
         private uint timer_id = 0;
         private void contract_file_directory_changed (File file, File? other_file, FileMonitorEvent event) {
             debug ("%s changed", file.get_path ());
+
             if (timer_id != 0) {
                 Source.remove (timer_id);
             }
+
             timer_id = Timeout.add (1000, () =>{
                 timer_id = 0;
                 reload_contract_files ();
