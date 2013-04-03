@@ -25,28 +25,28 @@ namespace Contractor {
     public class Contractor : GLib.Object {
         private ContractFileService cfs;
         //Gee.HashMultiMap<string, string> contracts;
-        
+
         construct {
             debug ("starting Contractor...");
             GLib.Intl.setlocale (GLib.LocaleCategory.ALL, "");
             GLib.Intl.textdomain (Build.GETTEXT_PACKAGE);
             cfs = new ContractFileService ();
         }
-        
-        /* 
+
+        /*
         /  a basic strict for the user that return the information he/she needs
         /  status: Done
-        */ 
+        */
         public struct ClientVisibleContractInfo {
            string id;
            string display_name;
            string icon_path;
         }
 
-        /* 
+        /*
         /  return:
         /  status: TODO
-        */           
+        */
         public ClientVisibleContractInfo[] get_contracts_by_mime (string mime_type) {
             // need to add this to demo compile
             ClientVisibleContractInfo s = {"id", "2", "2"};
@@ -54,10 +54,10 @@ namespace Contractor {
             l[0] = s;
             return l;
         }
-        /* 
+        /*
         /  return:
         /  status: TODO
-        */ 
+        */
         public ClientVisibleContractInfo[] get_contracts_by_mimelist (string[] mime_type) {
             // need to add this to demo compile
             ClientVisibleContractInfo s = {"id", "2", "2"};
@@ -65,28 +65,36 @@ namespace Contractor {
             l[0] = s;
             return l;
         }
-        /* 
+        /*
         /  return:
         /  status: TODO
-        */ 
+        */
         public int execute_with_file_list (string id, string[] file_path) {
             // need to add this to demo compile
             return 0;
         }
-        /* 
+        /*
         /  return:
         /  status: TODO
-        */ 
+        */
         public int execute_with_file (string id, string file_path) {
             // need to add this to demo compile
             return 0;
         }
 
-        public HashTable<string, string> list_all_contracts () {
-           return cfs.list_all_contracts ();
+        public ClientVisibleContractInfo[] list_all_contracts () {
+            var cts = cfs.list_all_contracts ();
+            ClientVisibleContractInfo[] cvci = {};
+            cts.foreach ((ct) => {
+                cvci += ClientVisibleContractInfo () {
+                    display_name = ct.name,
+                    id = ct.name,
+                    icon_path = ct.icon_name
+                };
+            });
+           return cvci;
         }
     }
-
     /* starts the contractor goodnes
        creates a new Bus and enters the main loops
     */
