@@ -55,12 +55,15 @@ namespace Contractor {
         /  return:
         /  status: TODO
         */
-        public ClientVisibleContractInfo[] get_contracts_by_mimelist (string[] mime_type) {
+        public ClientVisibleContractInfo[] get_contracts_by_mimelist (string[] mime_types) {
             // need to add this to demo compile
-            ClientVisibleContractInfo s = {"id", "2", "2"};
-            ClientVisibleContractInfo[] l = new ClientVisibleContractInfo[10];
-            l[0] = s;
-            return l;
+            ContractFileInfo[] c_info_list = {};
+            foreach (var mime in mime_types) {
+                ContractFileInfo[] c_info =  cfs.get_contract_files_for_type (mime);
+                foreach (var c in c_info)
+                    c_info_list += c;
+            }
+            return to_ClientVisibleContractInfo_arr (c_info_list);
         }
         /*
         /  return:
