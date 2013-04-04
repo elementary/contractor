@@ -129,21 +129,37 @@ namespace Contractor {
                 is_valid = false;
             }
         }
+        /*
+         * ToDo: replace the split with some appropriate function
+         */
         private string get_custom_id (File file) {
             string _id, file_name;
             file_name = get_contract_name (file);
-            _id = get_parent_until (file, "contractor") + file_name.split (".")[0];
+            _id = get_parent_until (file, "contractor") + file_name;
             return _id;
         }
 
         private string get_contract_name (File file) {
-            var q_info = file.query_info ("*", FileQueryInfoFlags.NONE);
-            return q_info.get_name ();
+            FileInfo q_info = new FileInfo ();
+            try {
+                q_info = file.query_info ("*", FileQueryInfoFlags.NONE);
+            } catch (Error e) { warning (e.message);}
+            return strip_file_extension (q_info.get_name (), "contract");
+        }
+        private string strip_file_extension (string filename, string extension) {
+            //written by Sergey "Shnatsel" Davidoff
+            //usage: strip_file_extension ("/path/to/file.extension", ".extension")
+            var index_of_last_dot = filename.last_index_of (".");
+            if (filename.slice (index_of_last_dot, filename.length) == extension) {
+                return filename.slice (0, index_of_last_dot);
+            } else {
+                return filename;
+            }
         }
 
         private string get_parent_until (File file, string until_dir) {
             File parent = file.get_parent ();
-            if (parent.get_basename () == until_dir)
+            if (parent.get_basename ().down () == until_dir.down ())
                 return "";
             else
                 return parent.get_basename () + "/" + get_parent_until (parent, until_dir);
