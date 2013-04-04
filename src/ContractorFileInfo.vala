@@ -50,11 +50,11 @@ namespace Contractor {
         * status: TODO
         */
         public ContractFileInfo(File file) {
+            try {
                 uint8[] contents;
                 bool success = file.load_contents (null, out contents, null);
                 var contents_str = (string) contents;
                 size_t len = contents_str.length;
-                message(contents_str);
                 if (success && len > 0) {
                     var keyfile = new KeyFile ();
                     keyfile.load_from_data (contents_str, len, 0);
@@ -62,6 +62,9 @@ namespace Contractor {
                     this.id = strip_file_extension(path,"contract");
                     init_from_keyfile (keyfile);
                 }
+            } catch (Error err) {
+                 warning ("%s", err.message);
+            }
         }
         /*
         * 
