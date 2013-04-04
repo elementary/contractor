@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: lampe2 michael@lazarski.me, Akshay Shekher <voldyman666@gmail.com>
+ * Author: lampe2 michael@lazarski.me, Akshay Shekher <voldyman666@gmail.com>, Sergey "Shnatsel" Davidoff <sergey@elementaryos.org>
  */
 
 namespace Contractor {
@@ -92,6 +92,7 @@ namespace Contractor {
                 warning ("Couldn't read title field %s", e.message);
                 is_valid = false;
             }
+
             try {
                 conditional_mime = keyfile.get_string (GROUP, "MimeType");
                 if (conditional_mime.contains ("!")) {
@@ -129,9 +130,7 @@ namespace Contractor {
                 is_valid = false;
             }
         }
-        /*
-         * ToDo: replace the split with some appropriate function
-         */
+
         private string get_custom_id (File file) {
             string _id, file_name;
             file_name = get_contract_name (file);
@@ -146,8 +145,8 @@ namespace Contractor {
             } catch (Error e) { warning (e.message);}
             return strip_file_extension (q_info.get_name (), "contract");
         }
+
         private string strip_file_extension (string filename, string extension) {
-            //written by Sergey "Shnatsel" Davidoff
             //usage: strip_file_extension ("/path/to/file.extension", ".extension")
             var index_of_last_dot = filename.last_index_of (".");
             if (filename.slice (index_of_last_dot, filename.length) == extension) {
