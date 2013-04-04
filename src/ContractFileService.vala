@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: lampe2 michael@lazarski.me
+ * Author: lampe2 michael@lazarski.me, Akshay Shekher <voldyman666@gmail.com>
  */
 
 namespace Contractor {
@@ -120,8 +120,9 @@ namespace Contractor {
         }
 
         /*
-        * status: TODO
-        */
+         * Filters the contracts on the basis of mime_type matching.
+         * TODO: add a better function instead of this lambda, to add better matching.
+         */
         public ContractFileInfo[] get_contract_files_for_type (string mime_type) {
             List<ContractFileInfo> cont =  filter (contracts, (contract) => {
                 foreach (string con_mime_type in contract.mime_types) {
@@ -135,6 +136,9 @@ namespace Contractor {
             return to_CFI_array (cont);
         }
 
+        /*
+         * Function used to filter a list of ContractFileInfo's based on a custom function.
+         */
         private delegate bool ContractFilterFunc (ContractFileInfo contr);
         private List<ContractFileInfo> filter (List<ContractFileInfo> conts, ContractFilterFunc fn) {
             List<ContractFileInfo> ret = new List<ContractFileInfo> ();
@@ -146,12 +150,15 @@ namespace Contractor {
             return ret.copy ();
         }
 
+        /*
+         * Since GLib.List doesn't provide a way to convert it into an array.
+         */
         private ContractFileInfo[] to_CFI_array (List<ContractFileInfo> list_of_contracts) {
-            ContractFileInfo[] cont_arr = {};
+            ContractFileInfo[] cont_arr = new ContractFileInfo[list_of_contracts.length ()];
 
-            list_of_contracts.foreach ((cont) => {
-                cont_arr += cont;
-            });
+            for (int i=0; i < list_of_contracts.length (); i++) {
+                cont_arr[i] = list_of_contracts.nth_data (i);
+            }
 
             return cont_arr;
         }
@@ -161,21 +168,8 @@ namespace Contractor {
         }
 
         /*
-        * status: broken
-
-        public void get_contracts_for_string ()
-        {
-            GLib.HashTable<string,string>[] filtered = null;
-            //GLib.HashTable<string,string>[] filtered = null;
-            //foreach (ContractFileInfo cfi in exec_string_map)
-            foreach (var cfi in exec_string_map.values) {
-                filtered += get_filtered_entry_for_string (cfi);
-                message ("exec_string %s", cfi.name);
-            }
-        }*/
-        /*
-        *   status: needs comments and documentery
-        */
+         * Schedule a reload of contracts when the contracts directory has been changed.
+         */
         private uint timer_id = 0;
         private void contract_file_directory_changed (File file, File? other_file, FileMonitorEvent event) {
             debug ("%s changed", file.get_path ());
@@ -189,6 +183,23 @@ namespace Contractor {
                 reload_contract_files ();
                 return false;
             });
+        }
+        /*
+         * Convert ContractFileInfo class to struct GenericContract's as they are required
+         * by the API.
+         */
+        public static GenericContract[] to_GenericContract_arr (ContractFileInfo[] cts) {
+            GenericContract[] cvci = new GenericContract[cts.length];
+
+            for (int i=0; i< cts.length; i++) {
+                cvci[i] = GenericContract () {
+                    display_name = cts[i].name,
+                    id = cts[i].name,
+                    icon_path = cts[i].icon_name
+                };
+            }
+
+            return cvci;
         }
     }
 }

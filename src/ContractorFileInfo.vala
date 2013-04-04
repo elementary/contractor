@@ -18,6 +18,15 @@
  */
 
 namespace Contractor {
+    /*
+        According to the API this type of Contract should be returned.
+    */
+    public struct GenericContract {
+           string id;
+           string display_name;
+           string icon_path;
+        }
+
      public class ContractFileInfo: Object {
         public string name { get; construct set; }
         public string exec { get; set; }
@@ -117,6 +126,13 @@ namespace Contractor {
                 warning ("Couldn't read ExecString field %s", e.message);
                 is_valid = false;
             }
+        }
+        public GenericContract to_generic_contract () {
+            return GenericContract () {
+                id = this.name,
+                display_name = this.name,
+                icon_path = this.icon_name
+            };
         }
     }
 }

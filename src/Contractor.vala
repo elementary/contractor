@@ -36,29 +36,19 @@ namespace Contractor {
         }
 
         /*
-        /  a basic strict for the user that return the information he/she needs
-        /  status: Done
-        */
-        public struct ClientVisibleContractInfo {
-           string id;
-           string display_name;
-           string icon_path;
-        }
-
-        /*
         /  return:
         /  status: TODO
         */
-        public ClientVisibleContractInfo[] get_contracts_by_mime (string mime_type) {
+        public GenericContract[] get_contracts_by_mime (string mime_type) {
             // need to add this to demo compile
-            return to_ClientVisibleContractInfo_arr (cfs.get_contract_files_for_type (mime_type));
+            return ContractFileService.to_GenericContract_arr (cfs.get_contract_files_for_type (mime_type));
         }
 
         /*
         /  return:
         /  status: TODO
         */
-        public ClientVisibleContractInfo[] get_contracts_by_mimelist (string[] mime_types) {
+        public GenericContract[] get_contracts_by_mimelist (string[] mime_types) {
             // need to add this to demo compile
             ContractFileInfo[] c_info_list = {};
 
@@ -70,7 +60,7 @@ namespace Contractor {
                 }
             }
 
-            return to_ClientVisibleContractInfo_arr (c_info_list);
+            return ContractFileService.to_GenericContract_arr (c_info_list);
         }
 
         /*
@@ -90,23 +80,9 @@ namespace Contractor {
             return 0;
         }
 
-        public ClientVisibleContractInfo[] list_all_contracts () {
+        public GenericContract[] list_all_contracts () {
             var cts = cfs.list_all_contracts ();
-            return to_ClientVisibleContractInfo_arr (cts);
-        }
-
-        private ClientVisibleContractInfo[] to_ClientVisibleContractInfo_arr (ContractFileInfo[] cts) {
-            ClientVisibleContractInfo[] cvci = {};
-
-            foreach (var ct in cts) {
-                cvci += ClientVisibleContractInfo () {
-                    display_name = ct.name,
-                    id = ct.name,
-                    icon_path = ct.icon_name
-                };
-            }
-
-            return cvci;
+            return ContractFileService.to_GenericContract_arr (cts);
         }
     }
     /* starts the contractor goodnes
