@@ -27,7 +27,7 @@ namespace Contractor {
            string icon_path;
         }
 
-     public class ContractFileInfo: Object {
+    public class ContractFileInfo: Object {
         public string id { get; construct set; }
         public string name { get; construct set; }
         public string exec { get; set; }
@@ -51,7 +51,10 @@ namespace Contractor {
             this.id = get_custom_id (contract_file);
             init_from_keyfile (keyfile);
         }
-
+        /*
+        * 
+        * status: TODO
+        */
         private void init_from_keyfile (KeyFile keyfile) {
             try {
                 name = keyfile.get_locale_string (GROUP, "Name");
@@ -130,14 +133,20 @@ namespace Contractor {
                 is_valid = false;
             }
         }
-
+        /*
+        * 
+        * status: TODO
+        */
         private string get_custom_id (File file) {
             string _id, file_name;
             file_name = get_contract_name (file);
             _id = get_parent_until (file, "contractor") + file_name;
             return _id;
         }
-
+        /*
+        * 
+        * status: TODO
+        */
         private string get_contract_name (File file) {
             FileInfo q_info = new FileInfo ();
             try {
@@ -145,7 +154,10 @@ namespace Contractor {
             } catch (Error e) { warning (e.message);}
             return strip_file_extension (q_info.get_name (), "contract");
         }
-
+        /*
+        * 
+        * status: TODO
+        */
         private string strip_file_extension (string filename, string extension) {
             //usage: strip_file_extension ("/path/to/file.extension", "extension")
             var index_of_last_dot = filename.last_index_of (".");
@@ -155,7 +167,10 @@ namespace Contractor {
                 return filename;
             }
         }
-
+        /*
+        * 
+        * status: TODO
+        */
         private string get_parent_until (File file, string until_dir) {
             File parent = file.get_parent ();
             if (parent.get_basename ().down () == until_dir.down ())
@@ -163,7 +178,10 @@ namespace Contractor {
             else
                 return parent.get_basename () + "/" + get_parent_until (parent, until_dir);
         }
-
+        /*
+        * 
+        * status: TODO
+        */
         public GenericContract to_generic_contract () {
             return GenericContract () {
                 id = this.id,
