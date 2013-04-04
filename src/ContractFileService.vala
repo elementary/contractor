@@ -80,6 +80,10 @@ namespace Contractor {
                     if (f.get_file_type () == FileType.REGULAR && name.has_suffix (".contract")) {
                         load_contract_file (directory.get_child (name));
                     }
+                    if (f.get_file_type () == FileType.DIRECTORY) {
+                        var dir = File.new_for_uri (directory.get_uri () + "/" + f.get_name ());
+                        process_directory (dir);
+                    }
                 }
              } catch (Error err) {
                  warning ("%s name %s", err.message, directory.get_path ());
@@ -101,7 +105,7 @@ namespace Contractor {
                     var keyfile = new KeyFile ();
                     keyfile.load_from_data (contents_str, len, 0);
 
-                    var cfi = new ContractFileInfo.for_keyfile (file.get_path (), keyfile);
+                    var cfi = new ContractFileInfo.for_keyfile (file, keyfile);
 
                     if (cfi.is_valid) {
                         contracts.append (cfi);
@@ -126,7 +130,7 @@ namespace Contractor {
         public ContractFileInfo[] get_contract_files_for_type (string mime_type) {
             List<ContractFileInfo> cont =  filter (contracts, (contract) => {
                 foreach (string con_mime_type in contract.mime_types) {
-                    if (con_mime_type == mime_type)
+                    if (con_mime_type in mime_type)
                         return true;
                 }
 
@@ -192,11 +196,7 @@ namespace Contractor {
             GenericContract[] cvci = new GenericContract[cts.length];
 
             for (int i=0; i< cts.length; i++) {
-                cvci[i] = GenericContract () {
-                    display_name = cts[i].name,
-                    id = cts[i].name,
-                    icon_path = cts[i].icon_name
-                };
+                cvci[i] = cts[i].to_generic_contract ();
             }
 
             return cvci;

@@ -58,6 +58,7 @@ namespace Contractor {
                 foreach (var c in c_info) {
                     c_info_list += c;
                 }
+                return ContractFileService.to_GenericContract_arr (c_info_list);
             }
 
             return ContractFileService.to_GenericContract_arr (c_info_list);

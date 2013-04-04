@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: lampe2 michael@lazarski.me
+ * Author: lampe2 michael@lazarski.me, Akshay Shekher <voldyman666@gmail.com>
  */
 
 namespace Contractor {
@@ -28,6 +28,7 @@ namespace Contractor {
         }
 
      public class ContractFileInfo: Object {
+        public string id { get; construct set; }
         public string name { get; construct set; }
         public string exec { get; set; }
         public string exec_string { get; set; }
@@ -45,8 +46,9 @@ namespace Contractor {
         private const string[] SUPPORTED_GETTEXT_DOMAINS_KEYS = { "X-Ubuntu-Gettext-Domain", "X-GNOME-Gettext-Domain" };
         private static const string GROUP = "Contractor Entry";
 
-        public ContractFileInfo.for_keyfile (string path, KeyFile keyfile) {
-            Object (filename: path);
+        public ContractFileInfo.for_keyfile (File contract_file, KeyFile keyfile) {
+            Object (filename: contract_file.get_path ());
+            this.id = get_custom_id (contract_file);
             init_from_keyfile (keyfile);
         }
 
@@ -127,9 +129,29 @@ namespace Contractor {
                 is_valid = false;
             }
         }
+        private string get_custom_id (File file) {
+            string _id, file_name;
+            file_name = get_contract_name (file);
+            _id = get_parent_until (file, "contractor") + file_name.split (".")[0];
+            return _id;
+        }
+
+        private string get_contract_name (File file) {
+            var q_info = file.query_info ("*", FileQueryInfoFlags.NONE);
+            return q_info.get_name ();
+        }
+
+        private string get_parent_until (File file, string until_dir) {
+            File parent = file.get_parent ();
+            if (parent.get_basename () == until_dir)
+                return "";
+            else
+                return parent.get_basename () + "/" + get_parent_until (parent, until_dir);
+        }
+
         public GenericContract to_generic_contract () {
             return GenericContract () {
-                id = this.name,
+                id = this.id,
                 display_name = this.name,
                 icon_path = this.icon_name
             };
