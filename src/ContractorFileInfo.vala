@@ -147,9 +147,9 @@ namespace Contractor {
         }
 
         private string strip_file_extension (string filename, string extension) {
-            //usage: strip_file_extension ("/path/to/file.extension", ".extension")
+            //usage: strip_file_extension ("/path/to/file.extension", "extension")
             var index_of_last_dot = filename.last_index_of (".");
-            if (filename.slice (index_of_last_dot, filename.length) == extension) {
+            if (filename.slice (index_of_last_dot, filename.length) == "." + extension) {
                 return filename.slice (0, index_of_last_dot);
             } else {
                 return filename;
