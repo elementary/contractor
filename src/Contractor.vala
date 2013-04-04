@@ -26,7 +26,6 @@ namespace Contractor {
     [DBus (name = "org.elementary.Contractor")]
     public class Contractor : GLib.Object {
         private ContractFileService cfs;
-        //Gee.HashMultiMap<string, string> contracts;
 
         construct {
             debug ("starting Contractor...");
@@ -36,12 +35,11 @@ namespace Contractor {
         }
 
         /*
-        /  return:
-        /  status: TODO
-        */
+         * Gets all the contracts loaded and converts them to GenericContract then
+         * from GLib.List they are converted to an array
+         */
         public GenericContract[] get_contracts_by_mime (string mime_type) {
-            // need to add this to demo compile
-            return ContractFileService.to_GenericContract_arr (cfs.get_contract_files_for_type (mime_type));
+            return cfs.to_GenericContract_arr (cfs.get_contract_files_for_type (mime_type));
         }
 
         /*
@@ -49,7 +47,6 @@ namespace Contractor {
         /  status: TODO
         */
         public GenericContract[] get_contracts_by_mimelist (string[] mime_types) {
-            // need to add this to demo compile
             ContractFileInfo[] c_info_list = {};
 
             foreach (var mime in mime_types) {
@@ -58,10 +55,10 @@ namespace Contractor {
                 foreach (var c in c_info) {
                     c_info_list += c;
                 }
-                return ContractFileService.to_GenericContract_arr (c_info_list);
+                return cfs.to_GenericContract_arr (c_info_list);
             }
 
-            return ContractFileService.to_GenericContract_arr (c_info_list);
+            return cfs.to_GenericContract_arr (c_info_list);
         }
 
         /*
@@ -69,7 +66,8 @@ namespace Contractor {
         /  status: TODO
         */
         public int execute_with_file_list (string id, string[] file_path) {
-            // need to add this to demo compile
+            ContractFileInfo contract = cfs.get_contracts_for_id (id)[0];
+            print (contract.exec + "\n");
             return 0;
         }
         /*
@@ -77,13 +75,14 @@ namespace Contractor {
         /  status: TODO
         */
         public int execute_with_file (string id, string file_path) {
-            // need to add this to demo compile
+            ContractFileInfo contract = cfs.get_contracts_for_id (id)[0];
+            print (contract.exec + "\n");
             return 0;
         }
 
         public GenericContract[] list_all_contracts () {
             var cts = cfs.list_all_contracts ();
-            return ContractFileService.to_GenericContract_arr (cts);
+            return cfs.to_GenericContract_arr (cts);
         }
     }
     /* starts the contractor goodnes

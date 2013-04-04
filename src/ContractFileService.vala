@@ -141,6 +141,20 @@ namespace Contractor {
         }
 
         /*
+         * Filters the contracts accoding to id
+         * TODO: add a better function instead of this lambda, to add better matching.
+         */
+        public ContractFileInfo[] get_contracts_for_id (string id) {
+            List<ContractFileInfo> cont =  filter (contracts, (contract) => {
+                if (contract.id in id)
+                    return true;
+                else
+                    return false;
+            });
+
+            return to_CFI_array (cont);
+        }
+        /*
          * Function used to filter a list of ContractFileInfo's based on a custom function.
          */
         private delegate bool ContractFilterFunc (ContractFileInfo contr);
