@@ -92,24 +92,13 @@ namespace Contractor {
 
         /*  loads the specifi contractor file parses it and
         *   adds it to the list of contracts
-        *   status: needs comment and documentary
+        *   status: TODO not clean implemented!
         */
         private void load_contract_file (File file) {
             try {
-                uint8[] contents;
-                bool success = file.load_contents (null, out contents, null);
-                var contents_str = (string) contents;
-                size_t len = contents_str.length;
-
-                if (success && len > 0) {
-                    var keyfile = new KeyFile ();
-                    keyfile.load_from_data (contents_str, len, 0);
-
-                    var cfi = new ContractFileInfo.for_keyfile (file, keyfile);
-
-                    if (cfi.is_valid) {
-                        contracts.append (cfi);
-                    }
+                var cfi = new ContractFileInfo(file);
+                if (cfi.is_valid) {
+                    contracts.append (cfi);
                 }
             } catch (Error err) {
                 warning ("%s", err.message);

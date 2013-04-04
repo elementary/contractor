@@ -45,12 +45,32 @@ namespace Contractor {
         public bool strict_condition { get; private set; default = true; }
         private const string[] SUPPORTED_GETTEXT_DOMAINS_KEYS = { "Gettext-Domain", "X-Ubuntu-Gettext-Domain", "X-GNOME-Gettext-Domain" };
         private static const string GROUP = "Contractor Entry";
-
-        public ContractFileInfo.for_keyfile (File contract_file, KeyFile keyfile) {
-            Object (filename: contract_file.get_path ());
-            this.id = get_custom_id (contract_file);
-            init_from_keyfile (keyfile);
+        /*
+        * 
+        * status: TODO
+        */
+        public ContractFileInfo(File file) {
+                uint8[] contents;
+                bool success = file.load_contents (null, out contents, null);
+                var contents_str = (string) contents;
+                size_t len = contents_str.length;
+                message(contents_str);
+                if (success && len > 0) {
+                    var keyfile = new KeyFile ();
+                    keyfile.load_from_data (contents_str, len, 0);
+                    string path = file.get_basename ();
+                    this.id = strip_file_extension(path,"contract");
+                    init_from_keyfile (keyfile);
+                }
         }
+        /*
+        * 
+        * status: TODO untypical approch
+        */
+        // public ContractFileInfo.for_keyfile (File contract_file, KeyFile keyfile) {
+        //     //Object (filename: contract_file.get_path ());
+
+        // }
         /*
         * 
         * status: TODO
@@ -137,12 +157,12 @@ namespace Contractor {
         * 
         * status: TODO
         */
-        private string get_custom_id (File file) {
-            string _id, file_name;
-            file_name = get_contract_name (file);
-            _id = get_parent_until (file, "contractor") + file_name;
-            return _id;
-        }
+        // private string get_custom_id (File file) {
+        //     string _id, file_name;
+        //     file_name = get_contract_name (file);
+        //     _id = get_parent_until (file, "contractor") + file_name;
+        //     return _id;
+        // }
         /*
         * 
         * status: TODO
