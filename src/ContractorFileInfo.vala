@@ -19,7 +19,7 @@
 
 namespace Contractor {
     /*
-        According to the API this type of Contract should be returned.
+        This representation of a contract is returned to clients via D-bus API
     */
     public struct GenericContract {
            string id;
@@ -43,7 +43,7 @@ namespace Contractor {
         public bool is_conditional { get; private set; default = false; }
         /* used in the context of multiples arguments. If true, all arguments should respect the condition. If false, at least one argument should respect it. Default true */
         public bool strict_condition { get; private set; default = true; }
-        private const string[] SUPPORTED_GETTEXT_DOMAINS_KEYS = { "X-Ubuntu-Gettext-Domain", "X-GNOME-Gettext-Domain" };
+        private const string[] SUPPORTED_GETTEXT_DOMAINS_KEYS = { "Gettext-Domain", "X-Ubuntu-Gettext-Domain", "X-GNOME-Gettext-Domain" };
         private static const string GROUP = "Contractor Entry";
 
         public ContractFileInfo.for_keyfile (File contract_file, KeyFile keyfile) {
