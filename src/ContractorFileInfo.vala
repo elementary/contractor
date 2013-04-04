@@ -52,28 +52,27 @@ namespace Contractor {
         public ContractFileInfo(File file) {
             try {
                 uint8[] contents;
+                // check if there is a file
                 bool success = file.load_contents (null, out contents, null);
+                // parse content to string
                 var contents_str = (string) contents;
+                // get the length of the
                 size_t len = contents_str.length;
                 if (success && len > 0) {
+                    // creating a new KeyFile
                     var keyfile = new KeyFile ();
                     keyfile.load_from_data (contents_str, len, 0);
-                    string path = file.get_basename ();
-                    this.id = strip_file_extension(path,"contract");
+                    // addin a ID 
+                    this.id = get_contract_name (file);
+                    //initing the keyfile
                     init_from_keyfile (keyfile);
+                }else {
+                    throw new IOError.NOT_FOUND ("something went wrong on this %s file",this.id);
                 }
             } catch (Error err) {
                  warning ("%s", err.message);
             }
         }
-        /*
-        * 
-        * status: TODO untypical approch
-        */
-        // public ContractFileInfo.for_keyfile (File contract_file, KeyFile keyfile) {
-        //     //Object (filename: contract_file.get_path ());
-
-        // }
         /*
         * 
         * status: TODO
@@ -156,16 +155,6 @@ namespace Contractor {
                 is_valid = false;
             }
         }
-        /*
-        * 
-        * status: TODO
-        */
-        // private string get_custom_id (File file) {
-        //     string _id, file_name;
-        //     file_name = get_contract_name (file);
-        //     _id = get_parent_until (file, "contractor") + file_name;
-        //     return _id;
-        // }
         /*
         * 
         * status: TODO
