@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 elementary Developers
+ * Copyright (C) 2011-2013 elementary Developers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: lampe2 michael@lazarski.me, Akshay Shekher <voldyman666@gmail.com>
+ * Authors: ammonkey <am.monkeyd@gmail.com>,
+ *          lampe2 <michael@lazarski.me>,
+ *          Akshay Shekher <voldyman666@gmail.com>
+ *
+ * Initial implementation of ContractFileService was heavily inspired by
+ * Synapse DesktopFileService. Kudos to the Synapse's developers!
+ *
+ * The original Contractor implementation in Python was created by:
+ *          Allen Lowe <lallenlowe@gmail.com>
  */
 
 namespace Contractor {
