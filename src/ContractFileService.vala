@@ -162,7 +162,7 @@ namespace Contractor {
                     ret.append (cont);
                 }
             });
-            return ret.copy ();
+            return (owned) ret;
         }
 
         /*
