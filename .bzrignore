@@ -2,4 +2,4 @@ src/config.vala
 build
 src/myproj/bin
 src (copy)
-src/test_client
+test_client
