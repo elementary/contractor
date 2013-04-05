@@ -63,7 +63,7 @@ namespace Contractor {
                     var keyfile = new KeyFile ();
                     keyfile.load_from_data (contents_str, len, 0);
                     // addin a ID 
-                    this.id = get_contract_name (file);
+                    this.id = get_contract_id (file);
                     //initing the keyfile
                     init_from_keyfile (keyfile);
                 }else {
@@ -159,7 +159,7 @@ namespace Contractor {
         * 
         * status: TODO
         */
-        private string get_contract_name (File file) {
+        private string get_contract_id (File file) {
             FileInfo q_info = new FileInfo ();
             try {
                 q_info = file.query_info ("*", FileQueryInfoFlags.NONE);
