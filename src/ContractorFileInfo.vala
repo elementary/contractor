@@ -30,6 +30,7 @@ namespace Contractor {
     public struct GenericContract {
            string id;
            string display_name;
+           string description;
            string icon_path;
         }
 
@@ -52,7 +53,7 @@ namespace Contractor {
         private const string[] SUPPORTED_GETTEXT_DOMAINS_KEYS = { "Gettext-Domain", "X-Ubuntu-Gettext-Domain", "X-GNOME-Gettext-Domain" };
         private static const string GROUP = "Contractor Entry";
         /*
-        * 
+        *
         * status: TODO
         */
         public ContractFileInfo(File file) {
@@ -68,7 +69,7 @@ namespace Contractor {
                     // creating a new KeyFile
                     var keyfile = new KeyFile ();
                     keyfile.load_from_data (contents_str, len, 0);
-                    // addin a ID 
+                    // addin a ID
                     this.id = get_contract_id (file);
                     //initing the keyfile
                     init_from_keyfile (keyfile);
@@ -80,7 +81,7 @@ namespace Contractor {
             }
         }
         /*
-        * 
+        *
         * status: TODO
         */
         private void init_from_keyfile (KeyFile keyfile) {
@@ -162,7 +163,7 @@ namespace Contractor {
             }
         }
         /*
-        * 
+        *
         * status: TODO
         */
         private string get_contract_id (File file) {
@@ -173,7 +174,7 @@ namespace Contractor {
             return get_parent_until (file, "contractor") + strip_file_extension (q_info.get_name (), "contract");
         }
         /*
-        * 
+        *
         * status: TODO
         */
         private string strip_file_extension (string filename, string extension) {
@@ -186,7 +187,7 @@ namespace Contractor {
             }
         }
         /*
-        * 
+        *
         * status: TODO
         */
         private string get_parent_until (File file, string until_dir) {
@@ -197,13 +198,14 @@ namespace Contractor {
                 return parent.get_basename () + "/" + get_parent_until (parent, until_dir);
         }
         /*
-        * 
+        *
         * status: TODO
         */
         public GenericContract to_generic_contract () {
             return GenericContract () {
                 id = this.id,
                 display_name = this.name,
+                description = this.description,
                 icon_path = this.icon_name
             };
         }
