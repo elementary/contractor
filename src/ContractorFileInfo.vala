@@ -164,7 +164,7 @@ namespace Contractor {
             try {
                 q_info = file.query_info ("*", FileQueryInfoFlags.NONE);
             } catch (Error e) { warning (e.message);}
-            return strip_file_extension (q_info.get_name (), "contract");
+            return get_parent_until (file, "contractor") + strip_file_extension (q_info.get_name (), "contract");
         }
         /*
         * 
