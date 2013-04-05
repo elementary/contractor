@@ -68,13 +68,13 @@ namespace Contractor {
         /  return:
         /  status: TODO
         */
-        public int execute_with_file_list (string id, string[] file_paths) {
+        public int execute_with_uri_list (string id, string[] uris) {
             ContractFileInfo contract = cfs.get_contracts_for_id (id)[0];
-            List<string> uris = new List<string> ();
-            foreach (var file_path in file_paths) {
-                uris.append (file_path);
+            List<string> uris_list = new List<string> ();
+            foreach (var uri in uris) {
+                uris_list.append (uri);
             }
-            if (execute_with_uris (contract.exec, uris) == true ) {
+            if (execute_with_uris (contract.exec, uris_list) == true ) {
                 return 0;
             } else {
                 return 1;
@@ -84,11 +84,11 @@ namespace Contractor {
         /  return:
         /  status: TODO
         */
-        public int execute_with_file (string id, string file_path) {
+        public int execute_with_uri (string id, string uri) {
             ContractFileInfo contract = cfs.get_contracts_for_id (id)[0];
-            List<string> uri = new List<string> ();
-            uri.append (file_path);
-            if (execute_with_uris (contract.exec, uri) == true ) {
+            List<string> uri_list = new List<string> ();
+            uri_list.append (uri);
+            if (execute_with_uris (contract.exec, uri_list) == true ) {
                 return 0;
             } else {
                 return 1;
