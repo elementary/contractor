@@ -22,7 +22,6 @@
  */
 
 using GLib;
-using Gee;
 
 namespace Contractor {
 
@@ -69,10 +68,17 @@ namespace Contractor {
         /  return:
         /  status: TODO
         */
-        public int execute_with_file_list (string id, string[] file_path) {
+        public int execute_with_file_list (string id, string[] file_paths) {
             ContractFileInfo contract = cfs.get_contracts_for_id (id)[0];
-            print (contract.exec + "\n");
-            return 0;
+            List<string> uris = new List<string> ();
+            foreach (var file_path in file_paths) {
+                uris.append (file_path);
+            }
+            if (execute_with_uris (contract.exec, uris) == true ) {
+                return 0;
+            } else {
+                return 1;
+            }
         }
         /*
         /  return:
@@ -80,13 +86,26 @@ namespace Contractor {
         */
         public int execute_with_file (string id, string file_path) {
             ContractFileInfo contract = cfs.get_contracts_for_id (id)[0];
-            print (contract.exec + "\n");
-            return 0;
+            List<string> uri = new List<string> ();
+            uri.append (file_path);
+            if (execute_with_uris (contract.exec, uri) == true ) {
+                return 0;
+            } else {
+                return 1;
+            }
         }
 
         public GenericContract[] list_all_contracts () {
             var cts = cfs.list_all_contracts ();
             return cfs.to_GenericContract_arr (cts);
+        }
+        private bool execute_with_uris (string exec_str, List<string>? uris) {
+            try {
+                return AppInfo.create_from_commandline (exec_str, null, AppInfoCreateFlags.SUPPORTS_URIS).launch_uris(uris, null);
+            } catch (Error e) {
+                    warning (e.message);
+            }
+            return false;
         }
     }
     /* starts the contractor goodnes
