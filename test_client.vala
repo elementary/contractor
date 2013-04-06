@@ -16,11 +16,11 @@
  *
  * Author: lampe2 mgoldhand@googlemail.com
  */
- 
+
 using GLib;
 [DBus (name = "org.elementary.Contractor")]
 interface Demo : Object {
-    public abstract HashTable<string, string> list_all_contracts() throws Error;
+    public abstract GenericContract[] list_all_contracts() throws Error;
     public signal void pong (string msg);
 }
 public struct GenericContract {
@@ -35,17 +35,10 @@ void main () {
         message("trying");
         demo = Bus.get_proxy_sync (BusType.SESSION, "org.elementary.Contractor", "/org/elementary/contractor");
         demo.pong.connect((m) => {});
-        GenericContract[] contract = demo.list_all_contracts ();
-        //stdout.printf("%s\n", contract);
-        // GenericContract contract = get_data.to_generic_contract ();
-        //var val = contract.get_values ();
-        // var key = contract.get_keys ();
-        // foreach (string v in val) {
-        //     stdout.printf ("%s\n", v);
-        // }
-        // foreach (string k in key) {
-        //     stdout.printf ("%s\n", k);
-        // }
+        GenericContract[] contracts = demo.list_all_contracts ();
+        foreach (var cont in contracts) {
+            stdout.printf("%s\n", cont.display_name);
+        }
     } catch (Error e) {
         stderr.printf ("%s\n", e.message);
     }
