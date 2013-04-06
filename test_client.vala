@@ -21,27 +21,32 @@ using GLib;
 [DBus (name = "org.elementary.Contractor")]
 interface Demo : Object {
     public abstract HashTable<string, string> list_all_contracts() throws Error;
-    public abstract HashTable<string, string>[] xml_test() throws Error;
     public signal void pong (string msg);
 }
-
+public struct GenericContract {
+    string id;
+    string display_name;
+    string description;
+    string icon_path;
+}
 void main () {
     Demo demo = null;
     try {
         message("trying");
         demo = Bus.get_proxy_sync (BusType.SESSION, "org.elementary.Contractor", "/org/elementary/contractor");
         demo.pong.connect((m) => {});
-        var contract = demo.xml_test();
-        var val = contract[0].get_values ();
-        var key = contract[0].get_keys();
-        foreach (string v in val) {
-            stdout.printf ("%s\n", v);
-        }
-        foreach (string k in key) {
-            stdout.printf ("%s\n", k);
-        }
+        GenericContract[] contract = demo.list_all_contracts ();
+        //stdout.printf("%s\n", contract);
+        // GenericContract contract = get_data.to_generic_contract ();
+        //var val = contract.get_values ();
+        // var key = contract.get_keys ();
+        // foreach (string v in val) {
+        //     stdout.printf ("%s\n", v);
+        // }
+        // foreach (string k in key) {
+        //     stdout.printf ("%s\n", k);
+        // }
     } catch (Error e) {
         stderr.printf ("%s\n", e.message);
     }
 }
-

@@ -99,6 +99,7 @@ namespace Contractor {
         }
         private bool execute_with_uris (string exec_str, List<string>? uris) {
             try {
+                debug (exec_str);
                 return AppInfo.create_from_commandline (exec_str, null, AppInfoCreateFlags.NONE).launch_uris (uris, null);
             } catch (Error e) {
                     warning (e.message);

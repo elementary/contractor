@@ -32,7 +32,7 @@ namespace Contractor {
            string display_name;
            string description;
            string icon_path;
-        }
+    }
 
     public class ContractFileInfo: Object {
         public string id { get; construct set; }
