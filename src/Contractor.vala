@@ -58,9 +58,7 @@ namespace Contractor {
                 foreach (var c in c_info) {
                     c_info_list += c;
                 }
-                return cfs.to_GenericContract_arr (c_info_list);
             }
-
             return cfs.to_GenericContract_arr (c_info_list);
         }
 
@@ -69,7 +67,7 @@ namespace Contractor {
         /  status: TODO
         */
         public int execute_with_uri_list (string id, string[] uris) {
-            ContractFileInfo contract = cfs.get_contracts_for_id (id);
+            ContractFileInfo contract = cfs.get_contract_for_id (id);
             List<string> uris_list = new List<string> ();
             foreach (var uri in uris) {
                 uris_list.append (uri);
@@ -85,7 +83,7 @@ namespace Contractor {
         /  status: TODO
         */
         public int execute_with_uri (string id, string uri) {
-            ContractFileInfo contract = cfs.get_contracts_for_id (id);
+            ContractFileInfo contract = cfs.get_contract_for_id (id);
             List<string> uri_list = new List<string> ();
             uri_list.append (uri);
             if (execute_with_uris (contract.exec, uri_list) == true ) {

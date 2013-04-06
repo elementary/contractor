@@ -125,15 +125,13 @@ namespace Contractor {
          * TODO: add a better function instead of this lambda, to add better matching.
          */
         public ContractFileInfo[] get_contract_files_for_type (string mime_type) {
-            List<ContractFileInfo> cont =  filter (contracts, (contract) => {
+            List<ContractFileInfo> cont = filter (contracts, (contract) => {
                 foreach (string con_mime_type in contract.mime_types) {
                     if (con_mime_type in mime_type)
                         return true;
                 }
-
                 return false;
             });
-
             return to_CFI_array (cont);
         }
 
@@ -141,7 +139,7 @@ namespace Contractor {
          * Filters the contracts accoding to id
          * TODO: add a better function instead of this lambda, to add better matching.
          */
-        public ContractFileInfo get_contracts_for_id (string id) {
+        public ContractFileInfo[] get_contracts_for_id (string id) {
             List<ContractFileInfo> cont =  filter (contracts, (contract) => {
                 if (contract.id in id)
                     return true;
@@ -149,15 +147,22 @@ namespace Contractor {
                     return false;
             });
 
-            return to_CFI_array (cont)[0];
+            return to_CFI_array (cont);
+        }
+        /*
+         * Filters the contracts accoding to id
+         * TODO: done.
+         */
+        public ContractFileInfo get_contract_for_id (string id) {
+            return get_contracts_for_id (id)[0];
         }
         /*
          * Function used to filter a list of ContractFileInfo's based on a custom function.
          */
         private delegate bool ContractFilterFunc (ContractFileInfo contr);
-        private List<ContractFileInfo> filter (List<ContractFileInfo> conts, ContractFilterFunc fn) {
+        private List<ContractFileInfo> filter (List<ContractFileInfo> contracts, ContractFilterFunc fn) {
             List<ContractFileInfo> ret = new List<ContractFileInfo> ();
-            conts.foreach ((cont) => {
+            contracts.foreach ((cont) => {
                 if (fn (cont)) {
                     ret.append (cont);
                 }
