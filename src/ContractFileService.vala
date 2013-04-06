@@ -44,7 +44,6 @@ namespace Contractor {
 
         private void load_contracts_files (bool should_monitor=true) {
             debug ("loading necessary files...");
-            var count = 0;
             monitors = new List<FileMonitor> ();
 
             //get paths from enviroment
@@ -60,14 +59,14 @@ namespace Contractor {
                 }
 
                 if (should_monitor) {
+                    print ("Monitoring dir:"+directory.get_path ()+"\n");
                     try {
-                        monitors.append (directory.monitor_directory (FileMonitorFlags.NONE, null));
+                        var mon = directory.monitor_directory (FileMonitorFlags.NONE, null);
+                        mon.changed.connect (contract_file_directory_changed);
+                        monitors.append ((owned) mon);
                     } catch (IOError e) {
                         error ("%s monitor failed: %s", directory.get_path (), e.message);
                     }
-
-                    monitors.nth_data (count).changed.connect (contract_file_directory_changed);
-                    count =+ 1;
                 }
             }
 
@@ -117,7 +116,7 @@ namespace Contractor {
             debug ("Reloading contract files...");
             contracts = null;
             contracts = new List<FileInfo> ();
-            load_contracts_files (false);
+            load_contracts_files ();
         }
 
         /*
