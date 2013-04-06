@@ -34,7 +34,7 @@ namespace Contractor {
            string icon_path;
     }
 
-    public class ContractFileInfo: Object {
+    public class FileInfo: Object {
         public string id { get; construct set; }
         public string name { get; construct set; }
         public string exec { get; set; }
@@ -56,7 +56,7 @@ namespace Contractor {
         *
         * status: TODO
         */
-        public ContractFileInfo(File file) {
+        public FileInfo(File file) {
             try {
                 uint8[] contents;
                 // check if there is a file
@@ -167,7 +167,7 @@ namespace Contractor {
         * status: TODO
         */
         private string get_contract_id (File file) {
-            FileInfo q_info = new FileInfo ();
+            GLib.FileInfo q_info = new GLib.FileInfo ();
             try {
                 q_info = file.query_info ("*", FileQueryInfoFlags.NONE);
             } catch (Error e) { warning (e.message);}

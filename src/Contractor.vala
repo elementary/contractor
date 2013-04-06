@@ -28,13 +28,13 @@ namespace Contractor {
     // the main constractor class where everything comes together
     [DBus (name = "org.elementary.Contractor")]
     public class Contractor : GLib.Object {
-        private ContractFileService cfs;
+        private FileService cfs;
 
         construct {
             debug ("starting Contractor...");
             GLib.Intl.setlocale (GLib.LocaleCategory.ALL, "");
             GLib.Intl.textdomain (Build.GETTEXT_PACKAGE);
-            cfs = new ContractFileService ();
+            cfs = new FileService ();
         }
 
         /*
@@ -50,10 +50,10 @@ namespace Contractor {
         /  status: TODO
         */
         public GenericContract[] get_contracts_by_mimelist (string[] mime_types) {
-            ContractFileInfo[] c_info_list = {};
+            FileInfo[] c_info_list = {};
 
             foreach (var mime in mime_types) {
-                ContractFileInfo[] c_info =  cfs.get_contract_files_for_type (mime);
+                FileInfo[] c_info =  cfs.get_contract_files_for_type (mime);
 
                 foreach (var c in c_info) {
                     c_info_list += c;
@@ -67,7 +67,7 @@ namespace Contractor {
         /  status: TODO
         */
         public int execute_with_uri_list (string id, string[] uris) {
-            ContractFileInfo contract = cfs.get_contract_for_id (id);
+            FileInfo contract = cfs.get_contract_for_id (id);
             List<string> uris_list = new List<string> ();
             foreach (var uri in uris) {
                 uris_list.append (uri);
@@ -83,7 +83,7 @@ namespace Contractor {
         /  status: TODO
         */
         public int execute_with_uri (string id, string uri) {
-            ContractFileInfo contract = cfs.get_contract_for_id (id);
+            FileInfo contract = cfs.get_contract_for_id (id);
             List<string> uri_list = new List<string> ();
             uri_list.append (uri);
             if (execute_with_uris (contract.exec, uri_list) == true ) {

@@ -18,7 +18,7 @@
  *          lampe2 <michael@lazarski.me>,
  *          Akshay Shekher <voldyman666@gmail.com>
  *
- * Initial implementation of ContractFileService was heavily inspired by
+ * Initial implementation of FileService was heavily inspired by
  * Synapse DesktopFileService. Kudos to the Synapse's developers!
  *
  * The original Contractor implementation in Python was created by:
@@ -27,12 +27,12 @@
 
 namespace Contractor {
 
-    public class ContractFileService : Object {
-        public List<ContractFileInfo> contracts;
+    public class FileService : Object {
+        public List<FileInfo> contracts;
         public bool initialized { get; private set; default = false; }
 
-        public ContractFileService () {
-            contracts = new List<ContractFileInfo> ();
+        public FileService () {
+            contracts = new List<FileInfo> ();
             load_contracts_files ();
             initialized = true;
         }
@@ -81,7 +81,7 @@ namespace Contractor {
             try {
                 var enumerator = directory.enumerate_children ("%s,%s".printf(FileAttribute.STANDARD_NAME,
                                                                               FileAttribute.STANDARD_TYPE), 0);
-                FileInfo f = null;
+                GLib.FileInfo f = null;
 
                 while ((f = enumerator.next_file ()) != null) {
                     unowned string name = f.get_name ();
@@ -104,7 +104,7 @@ namespace Contractor {
         */
         private void load_contract_file (File file) {
             try {
-                var cfi = new ContractFileInfo(file);
+                var cfi = new FileInfo(file);
                 if (cfi.is_valid) {
                     contracts.append (cfi);
                 }
@@ -116,7 +116,7 @@ namespace Contractor {
         private void reload_contract_files () {
             debug ("Reloading contract files...");
             contracts = null;
-            contracts = new List<ContractFileInfo> ();
+            contracts = new List<FileInfo> ();
             load_contracts_files (false);
         }
 
@@ -124,8 +124,8 @@ namespace Contractor {
          * Filters the contracts on the basis of mime_type matching.
          * TODO: add a better function instead of this lambda, to add better matching.
          */
-        public ContractFileInfo[] get_contract_files_for_type (string mime_type) {
-            List<ContractFileInfo> cont = filter (contracts, (contract) => {
+        public FileInfo[] get_contract_files_for_type (string mime_type) {
+            List<FileInfo> cont = filter (contracts, (contract) => {
                 foreach (string con_mime_type in contract.mime_types) {
                     if (con_mime_type in mime_type)
                         return true;
@@ -139,8 +139,8 @@ namespace Contractor {
          * Filters the contracts accoding to id
          * TODO: add a better function instead of this lambda, to add better matching.
          */
-        public ContractFileInfo[] get_contracts_for_id (string id) {
-            List<ContractFileInfo> cont =  filter (contracts, (contract) => {
+        public FileInfo[] get_contracts_for_id (string id) {
+            List<FileInfo> cont =  filter (contracts, (contract) => {
                 if (contract.id in id)
                     return true;
                 else
@@ -153,15 +153,15 @@ namespace Contractor {
          * Filters the contracts accoding to id
          * TODO: done.
          */
-        public ContractFileInfo get_contract_for_id (string id) {
+        public FileInfo get_contract_for_id (string id) {
             return get_contracts_for_id (id)[0];
         }
         /*
-         * Function used to filter a list of ContractFileInfo's based on a custom function.
+         * Function used to filter a list of FileInfo's based on a custom function.
          */
-        private delegate bool ContractFilterFunc (ContractFileInfo contr);
-        private List<ContractFileInfo> filter (List<ContractFileInfo> contracts, ContractFilterFunc fn) {
-            List<ContractFileInfo> ret = new List<ContractFileInfo> ();
+        private delegate bool ContractFilterFunc (FileInfo contr);
+        private List<FileInfo> filter (List<FileInfo> contracts, ContractFilterFunc fn) {
+            List<FileInfo> ret = new List<FileInfo> ();
             contracts.foreach ((cont) => {
                 if (fn (cont)) {
                     ret.append (cont);
@@ -173,8 +173,8 @@ namespace Contractor {
         /*
          * Since GLib.List doesn't provide a way to convert it into an array.
          */
-        private ContractFileInfo[] to_CFI_array (List<ContractFileInfo> list_of_contracts) {
-            ContractFileInfo[] cont_arr = new ContractFileInfo[list_of_contracts.length ()];
+        private FileInfo[] to_CFI_array (List<FileInfo> list_of_contracts) {
+            FileInfo[] cont_arr = new FileInfo[list_of_contracts.length ()];
 
             for (int i=0; i < list_of_contracts.length (); i++) {
                 cont_arr[i] = list_of_contracts.nth_data (i);
@@ -183,7 +183,7 @@ namespace Contractor {
             return cont_arr;
         }
 
-        public ContractFileInfo[] list_all_contracts () {
+        public FileInfo[] list_all_contracts () {
             return to_CFI_array (this.contracts);
         }
 
@@ -205,10 +205,10 @@ namespace Contractor {
             });
         }
         /*
-         * Convert ContractFileInfo class to struct GenericContract's as they are required
+         * Convert FileInfo class to struct GenericContract's as they are required
          * by the API.
          */
-        public static GenericContract[] to_GenericContract_arr (ContractFileInfo[] cts) {
+        public static GenericContract[] to_GenericContract_arr (FileInfo[] cts) {
             GenericContract[] cvci = new GenericContract[cts.length];
 
             for (int i=0; i< cts.length; i++) {

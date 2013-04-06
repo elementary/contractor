@@ -20,7 +20,11 @@
 using GLib;
 [DBus (name = "org.elementary.Contractor")]
 interface Demo : Object {
-    public abstract GenericContract[] list_all_contracts() throws Error;
+    public abstract GenericContract[] list_all_contracts () throws Error;
+    public abstract GenericContract[] get_contracts_by_mime (string mime_type) throws Error;
+    public abstract GenericContract[] get_contracts_by_mimelist (string[] mime_types) throws Error;
+    public abstract int execute_with_uri (string id, string path) throws Error;
+    public abstract int execute_with_uri_list (string id, string[] path) throws Error;
     public signal void pong (string msg);
 }
 public struct GenericContract {
@@ -35,10 +39,24 @@ void main () {
         message("trying");
         demo = Bus.get_proxy_sync (BusType.SESSION, "org.elementary.Contractor", "/org/elementary/contractor");
         demo.pong.connect((m) => {});
+        print ("\n\nListAllContracts:\n");
         GenericContract[] contracts = demo.list_all_contracts ();
         foreach (var cont in contracts) {
             stdout.printf("%s\n", cont.display_name);
         }
+
+        print ("\n\nGetContractsForMime:\n");
+        contracts = demo.get_contracts_by_mime ("image");
+        foreach (var cont in contracts) {
+            stdout.printf("%s: %s\n", cont.display_name, cont.description);
+        }
+
+        print ("\n\nGetContractsForMimeList:\n");
+        contracts = demo.get_contracts_by_mimelist ({"text"});
+        foreach (var cont in contracts) {
+            stdout.printf("(%s): %s: %s\n", cont.id, cont.display_name, cont.description);
+        }
+
     } catch (Error e) {
         stderr.printf ("%s\n", e.message);
     }
