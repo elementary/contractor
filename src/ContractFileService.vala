@@ -59,7 +59,6 @@ namespace Contractor {
                 }
 
                 if (should_monitor) {
-                    print ("Monitoring dir:"+directory.get_path ()+"\n");
                     try {
                         var mon = directory.monitor_directory (FileMonitorFlags.NONE, null);
                         mon.changed.connect (contract_file_directory_changed);
