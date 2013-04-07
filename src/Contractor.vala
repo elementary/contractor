@@ -50,16 +50,36 @@ namespace Contractor {
         /  status: TODO
         */
         public GenericContract[] get_contracts_by_mimelist (string[] mime_types) {
-            FileInfo[] c_info_list = {};
+            FileInfo[] info_list = {};
+            int[] count = {};
 
             foreach (var mime in mime_types) {
-                FileInfo[] c_info =  cfs.get_contract_files_for_type (mime);
+                    FileInfo[] info = cfs.get_contract_files_for_type (mime);
 
-                foreach (var c in c_info) {
-                    c_info_list += c;
-                }
+                    foreach (var c in info) {
+                            bool found = false;
+                            for (var i = 0; i < info_list.length; i++) {
+                                    if (c == info_list[i]) {
+                                            count[i] += 1;
+                                            found = true;
+                                            break;
+                                    }
+                            }
+                            if (found)
+                                    continue;
+
+                            info_list += c;
+                            count += 1;
+                    }
             }
-            return cfs.to_GenericContract_arr (c_info_list);
+
+            FileInfo[] final = {};
+
+            for (var i = 0; i < info_list.length; i++) {
+                    if (count[i] == mime_types.length)
+                            final += info_list[i];
+            }
+            return cfs.to_GenericContract_arr (final);
         }
 
         /*
