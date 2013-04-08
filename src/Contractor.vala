@@ -117,17 +117,19 @@ namespace Contractor {
             var cts = cfs.list_all_contracts ();
             return cfs.to_GenericContract_arr (cts);
         }
+
         private bool execute_with_uris (string exec_str, List<string>? uris) {
             try {
-                debug (exec_str);
+                debug ("Executing contract with exec string " + exec_str);
                 return AppInfo.create_from_commandline (exec_str, null, AppInfoCreateFlags.NONE).launch_uris (uris, null);
             } catch (Error e) {
-                    warning (e.message);
+                warning (e.message);
             }
             return false;
         }
     }
-    /* starts the contractor goodnes
+
+    /* starts the contractor goodness
        creates a new Bus and enters the main loops
     */
     private MainLoop loop;
@@ -147,7 +149,7 @@ namespace Contractor {
         loop.run ();
     }
 
-    // trys to aquire the bus
+    // tries to aquire the bus
     private void on_bus_aquired (DBusConnection conn) {
         try {
             conn.register_object ("/org/elementary/contractor", new Contractor ());
