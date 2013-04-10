@@ -90,6 +90,9 @@ namespace Contractor {
             FileInfo contract = cfs.get_contract_for_id (id);
             List<string> uris_list = new List<string> ();
             foreach (var uri in uris) {
+                if (!uri.contains ("://")) {
+                    warning ("Warning: the uri doesn't seem to be vaild");
+                }
                 uris_list.append (uri);
             }
             if (execute_with_uris (contract.exec, uris_list) == true ) {
