@@ -3,5 +3,5 @@ Name=Wallpaper
 Icon=wallpaper
 Description=Set as Wallpaper
 MimeType=image
-Exec=gsettings set org.gnome.desktop.background picture-uri "file:///%f"
+Exec=gsettings set org.gnome.desktop.background picture-uri file://%u
 X-GNOME-Gettext-Domain=contractor
