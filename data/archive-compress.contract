@@ -4,4 +4,4 @@ Icon=
 Description=Compress
 MimeType=!Archives
 Exec=file-roller --add %U
-X-GNOME-Gettext-Domain=contractor
+Gettext-Domain=contractor
