@@ -1,4 +1,11 @@
-contractor (0.2) UNRELEASED; urgency=low
+contractor (0.3) precise; urgency=low
+
+  * New upstream release.
+
+ -- Sergey "Shnatsel" Davidoff <shnatsel@gmail.com>  Fri, 15 Jul 2011 14:50:08 +0400
+
+
+contractor (0.2) precise; urgency=low
 
   * Initial release.
 
