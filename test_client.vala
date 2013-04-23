@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: lampe2 mgoldhand@googlemail.com
+ * Author: lampe2 <michael@lazarski.me>,
+ *         Akshay Shekher <voldyman666@gmail.com>
  */
 
 using GLib;
@@ -44,19 +45,19 @@ void main () {
         foreach (var cont in contracts) {
             stdout.printf("%s\n", cont.display_name);
         }
-
+        string id = null;
         print ("\n\nGetContractsForMime:\n");
         contracts = demo.get_contracts_by_mime ("image");
         foreach (var cont in contracts) {
             stdout.printf("%s: %s\n", cont.display_name, cont.description);
+            id = cont.id;
         }
-
         print ("\n\nGetContractsForMimeList:\n");
         contracts = demo.get_contracts_by_mimelist ({"text"});
         foreach (var cont in contracts) {
             stdout.printf("(%s): %s: %s\n", cont.id, cont.display_name, cont.description);
         }
-
+        demo.execute_with_uri (id,"/home/michael/Pictures/wallpaper.png");
     } catch (Error e) {
         stderr.printf ("%s\n", e.message);
     }
