@@ -1,7 +1,7 @@
 [Contractor Entry]
-Name=Wallpaper
-Icon=wallpaper
-Description=Set as Wallpaper
+Name=Set as Wallpaper
+Icon=preferences-desktop-wallpaper
+Description=Set this image as wallpaper
 MimeType=image
 Exec=gsettings set org.gnome.desktop.background picture-uri file://%f
 Gettext-Domain=contractor
