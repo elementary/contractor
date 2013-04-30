@@ -47,11 +47,9 @@ public class Contractor.MimeTypeManager : Object {
     }
 
     private static bool compare_mimetypes (string mime_type, string ref_mime_type) {
-        bool match = ref_mime_type in mime_type
-                  || ContentType.equals (mime_type, ref_mime_type)
-                  || ContentType.is_a (mime_type, ref_mime_type);
-
-        return match;
+        return ref_mime_type in mime_type
+            || ContentType.equals (mime_type, ref_mime_type)
+            || ContentType.is_a (mime_type, ref_mime_type);
     }
 }
 
