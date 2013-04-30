@@ -31,6 +31,7 @@ VALA_C
     DBusService.vala
     ContractDirectory.vala
     FileService.vala
+    ContractSorter.vala
 PACKAGES
     gee-1.0
     glib-2.0

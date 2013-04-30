@@ -17,11 +17,11 @@
 
 public class Contractor.ContractManager : Object {
     private FileService file_service;
-    private Gee.HashMap<string, Contract> contracts;
+    private Gee.List<Contract> contracts;
 
     public ContractManager () {
         file_service = new FileService ();
-        contracts = new Gee.HashMap<string, Contract> ();
+        contracts = new Gee.LinkedList<Contract> ();
 
         file_service.contract_file_found.connect (load_contract);
         file_service.contract_files_changed.connect (load_contracts);
@@ -52,16 +52,22 @@ public class Contractor.ContractManager : Object {
     }
 
     public Contract? get_contract_for_id (string id) {
-        return contracts.get (id);
+        foreach (var contract in contracts) {
+            if (contract.id == id)
+                return contract;
+        }
+
+        warning ("Client requested invalid contract: %s.", id);
+        return null;
     }
 
     public Gee.Collection<Contract> get_all_contracts () {
-        return contracts.values;
+        return contracts;
     }
 
     private void load_contracts () {
         contracts.clear ();
-        file_service.load_files ();
+        file_service.load_contract_files ();
     }
 
     private void load_contract (File file) {
@@ -74,7 +80,11 @@ public class Contractor.ContractManager : Object {
             return;
         }
 
-        contracts.set (contract.id, contract);
+        contracts.add (contract);
+
+        // Sort contracts here so that clients don't have to sort them again
+        contracts.sort (ContractSorter.compare_func);
+
         message ("Contract file '%s' (%s) loaded successfully.", file.get_basename (), contract.id);
     }
 }

@@ -41,7 +41,7 @@ namespace Contractor {
             set_up_directories ();
         }
 
-        public void load_files () {
+        public void load_contract_files () {
             foreach (var directory in directories)
                 directory.lookup_contract_files ();
         }
