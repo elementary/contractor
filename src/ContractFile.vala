@@ -16,7 +16,7 @@
  */
 
 public class Contractor.ContractFile : Object {
-    public const string SUFFIX = "contract";
+    private const string EXTENSION = ".contract";
 
     private File file;
 
@@ -37,9 +37,12 @@ public class Contractor.ContractFile : Object {
         return "";
     }
 
+    public static bool is_valid_filename (string filename) {
+        return filename[- EXTENSION.length : filename.length] == EXTENSION;
+    }
+
     private static string remove_extension (string file_name) {
-        int index_before_extension = - (SUFFIX.length + 1);
-        return file_name[0 : index_before_extension];
+        return file_name[0 : - EXTENSION.length];
     }
 }
 

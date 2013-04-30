@@ -29,6 +29,7 @@ VALA_C
     MimeTypeManager.vala
     ContractManager.vala
     DBusService.vala
+    ContractDirectory.vala
     FileService.vala
 PACKAGES
     gee-1.0

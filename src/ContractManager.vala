@@ -23,7 +23,7 @@ public class Contractor.ContractManager : Object {
         file_service = new FileService ();
         contracts = new Gee.HashMap<string, Contract> ();
 
-        file_service.contract_found.connect (load_contract);
+        file_service.contract_file_found.connect (load_contract);
         file_service.contract_files_changed.connect (load_contracts);
 
         load_contracts ();
