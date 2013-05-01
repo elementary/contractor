@@ -4,6 +4,7 @@ include(ValaVersion)
 ensure_vala_version("0.16.0" MINIMUM)
 include(ValaPrecompile)
 
+set(EXEC_NAME "contractor")
 set(GETTEXT_PACKAGE "contractor")
 
 add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
@@ -18,8 +19,7 @@ set(LIB_PATHS ${DEPS_LIBRARY_DIRS})
 link_directories(${LIB_PATHS})
 add_definitions(${CFLAGS})
 
-vala_precompile(
-VALA_C
+vala_precompile(VALA_C ${EXEC_NAME}
     main.vala
     Application.vala
     Contract.vala
@@ -40,7 +40,7 @@ PACKAGES
     gio-unix-2.0
 )
 
-add_executable(contractor ${VALA_C})
-target_link_libraries(contractor ${DEPS_LIBRARIES})
-install(TARGETS contractor RUNTIME DESTINATION bin)
+add_executable(${EXEC_NAME} ${VALA_C})
+target_link_libraries(${EXEC_NAME} ${DEPS_LIBRARIES})
+install(TARGETS ${EXEC_NAME} RUNTIME DESTINATION bin)
 
