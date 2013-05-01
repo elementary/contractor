@@ -19,25 +19,41 @@ public class Contractor.MimeTypeManager : Object {
     private string[] values;
     private bool is_conditional = false;
 
-    public MimeTypeManager (string mimetypes) {
-        values = mimetypes.split (";", 0);
+    public MimeTypeManager (string serialized_mimetypes) {
+        string[] mime_types = serialized_mimetypes.split (";", 0);
 
-        if ("!" in mimetypes) { // See if we have a conditional mimetype
-            if (values.length == 1) {
+        if ("!" in serialized_mimetypes) { // See if we have a conditional mimetype
+            if (mime_types.length == 1) {
                 is_conditional = true;
-                values[0] = values[0].replace ("!", ""); // remove the '!'
+                mime_types[0] = mime_types[0].replace ("!", ""); // remove the '!'
             } else {
                 warning ("Conditional mimetypes must contain a single value.");
             }
         }
+
+        values = validate_mime_types (mime_types);
     }
 
     public bool is_type_supported (string mime_type) {
-        if (is_conditional) {
-            string conditional_mime_type = values[0];
-            return !compare_mimetypes (mime_type, conditional_mime_type);
+        bool has_mimetype = contains_mimetype (mime_type);
+        return is_conditional ? !has_mimetype : has_mimetype;
+    }
+
+    /**
+     * Removes duplicate and empty strings from mime_types.
+     */
+    public static string[] validate_mime_types (string[] mime_types) {
+        var mimetypes = new Gee.HashSet<string> ();
+
+        foreach (string mime_type in mime_types) {
+            if (!String.is_empty (mime_type) && !mimetypes.contains (mime_type))
+                mimetypes.add (mime_type);
         }
 
+        return mimetypes.to_array ();
+    }
+
+    private bool contains_mimetype (string mime_type) {
         foreach (string local_mime_type in values) {
             if (compare_mimetypes (mime_type, local_mime_type))
                 return true;

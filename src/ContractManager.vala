@@ -32,12 +32,13 @@ public class Contractor.ContractManager : Object {
     public Gee.Collection<Contract> get_contracts_for_types (string[] mime_types) {
         var valid_contracts = new Gee.LinkedList<Contract> ();
         var all_contracts = get_all_contracts ();
+        var valid_mime_types = MimeTypeManager.validate_mime_types (mime_types);
 
         foreach (var contract in all_contracts) {
             // Check if the contract supports ALL the types listed in mime_types
             bool all_types_supported = true;
-            
-            foreach (string mime_type in mime_types) {
+
+            foreach (string mime_type in valid_mime_types) {
                 if (!contract.supports_mime_type (mime_type)) {
                     all_types_supported = false;
                     break;
