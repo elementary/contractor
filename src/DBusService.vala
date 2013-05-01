@@ -44,29 +44,28 @@ namespace Contractor {
             return convert_to_generic_contracts (contracts);
         }
 
-        public int execute_with_uri_list (string id, string[] uris) {
+        public void execute_with_uri_list (string id, string[] uris) throws Error {
             var contract = contract_manager.get_contract_for_id (id);
 
             if (contract != null) {
-                List<string> uris_list = new List<string> ();
+                List<string>? uri_list = null;
+                
+                if (uris.length > 0) {
+                    uri_list = new List<string> ();
 
-                foreach (var uri in uris) {
-                    if (!uri.contains ("://"))
-                        warning ("Invalid URI: %s", uri);
+                    foreach (var uri in uris)
+                        uri_list.prepend (uri);
 
-                    uris_list.append (uri);
+                    uri_list.reverse ();
                 }
 
-                if (contract.launch_uris (uris_list))
-                    return 0;
+                contract.launch_uris (uri_list);
             }
-
-            return 1;
         }
 
-        public int execute_with_uri (string id, string uri) {
+        public void execute_with_uri (string id, string uri) throws Error {
             string[] uris = { uri };
-            return execute_with_uri_list (id, uris);
+            execute_with_uri_list (id, uris);
         }
 
         public GenericContract[] list_all_contracts () {

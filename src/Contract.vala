@@ -42,13 +42,8 @@ namespace Contractor {
             return mimetype_manager.is_type_supported (mime_type);
         }
 
-        public bool launch_uris (List<string>? uris) {
-            try {
-                return keyfile.get_app_info ().launch_uris (uris, null);
-            } catch (Error e) {
-                warning (e.message);
-                return false;
-            }
+        public void launch_uris (List<string>? uris) throws Error {
+            keyfile.get_app_info ().launch_uris (uris, null);
         }
 
         public GenericContract get_generic () {
