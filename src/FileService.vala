@@ -49,6 +49,7 @@ namespace Contractor {
         private void set_up_directories () {
             // get paths from enviroment
             var paths = Environment.get_system_data_dirs ();
+            paths += Environment.get_user_data_dir ();
 
             foreach (var path in paths) {
                 var directory = File.new_for_path (path).get_child (CONTRACT_DATA_DIR_NAME);
