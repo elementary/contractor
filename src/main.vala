@@ -16,6 +16,8 @@
  */
 
 int main (string[] args) {
+    Contractor.Translations.init ();
+
     var application = new Contractor.Application ();
     return application.run (args);
 }

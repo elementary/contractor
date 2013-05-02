@@ -52,11 +52,11 @@ public class Contractor.ContractKeyFile : Object {
     }
 
     public string get_name () throws Error {
-        return get_locale_string (NAME_KEY, text_domain);
+        return get_locale_string (NAME_KEY);
     }
 
     public string get_description () throws Error {
-        return get_locale_string (DESCRIPTION_KEY, text_domain);
+        return get_locale_string (DESCRIPTION_KEY);
     }
 
     public string get_icon () throws Error {
@@ -76,9 +76,9 @@ public class Contractor.ContractKeyFile : Object {
         return "";
     }
 
-    private string get_locale_string (string key, string text_domain) throws Error {
+    private string get_locale_string (string key) throws Error {
         string value = keyfile.get_locale_string (GROUP, key);
-        return dgettext (text_domain, value).dup ();
+        return Translations.get_string (text_domain, value);
     }
 
     private static string preprocess_contents (string contents) {
