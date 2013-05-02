@@ -42,8 +42,12 @@ public class Contractor.MimeTypeManager : Object {
         var mimetypes = new Gee.HashSet<string> ();
 
         foreach (string mime_type in mime_types) {
-            if (!String.is_empty (mime_type) && !mimetypes.contains (mime_type))
-                mimetypes.add (mime_type);
+            if (mime_type != null) {
+                string actual_mime_type = mime_type.strip ();
+
+                if (actual_mime_type != "" && !mimetypes.contains (actual_mime_type))
+                    mimetypes.add (actual_mime_type);
+            }
         }
 
         return mimetypes.to_array ();
