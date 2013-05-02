@@ -17,11 +17,13 @@
 
 public class Contractor.ContractManager : Object {
     private FileService file_service;
-    private Gee.List<Contract> contracts;
+    private Gee.List<Contract> sorted_contracts;
+    private Gee.HashMap<string, Contract> contracts;
 
     public ContractManager () {
         file_service = new FileService ();
-        contracts = new Gee.LinkedList<Contract> ();
+        sorted_contracts = new Gee.LinkedList<Contract> ();
+        contracts = new Gee.HashMap<string, Contract> ();
 
         file_service.contract_file_found.connect (load_contract);
         file_service.contract_files_changed.connect (load_contracts);
@@ -53,21 +55,21 @@ public class Contractor.ContractManager : Object {
     }
 
     public Contract? get_contract_for_id (string id) {
-        foreach (var contract in contracts) {
-            if (contract.id == id)
-                return contract;
-        }
+        var contract = contracts.get (id);
 
-        warning ("Client requested invalid contract: %s.", id);
-        return null;
+        if (contract == null)
+            warning ("Client requested invalid contract: %s.", id);
+
+        return contract;
     }
 
     public Gee.Collection<Contract> get_all_contracts () {
-        return contracts;
+        return sorted_contracts;
     }
 
     private void load_contracts () {
         contracts.clear ();
+        sorted_contracts.clear ();
         file_service.load_contract_files ();
     }
 
@@ -81,11 +83,19 @@ public class Contractor.ContractManager : Object {
             return;
         }
 
-        contracts.add (contract);
+        string contract_id = contract.id;
+
+        if (contracts.has_key (contract_id)) {
+            warning ("A contract with ID '%s' exists already. Not adding another one.", contract_id);
+            return;
+        }
+
+        contracts.set (contract_id, contract);
+        sorted_contracts.add (contract);
 
         // Sort contracts here so that clients don't have to sort them again
-        contracts.sort (ContractSorter.compare_func);
+        sorted_contracts.sort (ContractSorter.compare_func);
 
-        message ("Contract file '%s' (%s) loaded successfully.", file.get_basename (), contract.id);
+        message ("Contract file '%s' (%s) loaded successfully.", file.get_basename (), contract_id);
     }
 }
