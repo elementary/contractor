@@ -23,12 +23,8 @@ public class Contractor.MimeTypeManager : Object {
         string[] mime_types = serialized_mimetypes.split (";", 0);
 
         if ("!" in serialized_mimetypes) { // See if we have a conditional mimetype
-            if (mime_types.length == 1) {
-                is_conditional = true;
-                mime_types[0] = mime_types[0].replace ("!", ""); // remove the '!'
-            } else {
-                warning ("Conditional mimetypes must contain a single value.");
-            }
+            is_conditional = true;
+            mime_types[0] = mime_types[0].replace ("!", ""); // remove the '!'
         }
 
         values = validate_mime_types (mime_types);
@@ -68,4 +64,3 @@ public class Contractor.MimeTypeManager : Object {
             || ContentType.is_a (mime_type, ref_mime_type);
     }
 }
-
