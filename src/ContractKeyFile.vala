@@ -32,6 +32,8 @@ public class Contractor.ContractKeyFile : Object {
     private string text_domain;
     private KeyFile keyfile;
 
+    private AppInfo app_info;
+
     public ContractKeyFile (ContractFile contract_file) throws Error {
         string contract_file_contents = contract_file.get_contents ();
         string contents = preprocess_contents (contract_file_contents);
@@ -45,10 +47,15 @@ public class Contractor.ContractKeyFile : Object {
                             KeyFileDesktop.TYPE_APPLICATION);
 
         text_domain = get_text_domain ();
+
+        app_info = new DesktopAppInfo.from_keyfile (keyfile);
+
+        if (app_info == null)
+            throw new FileError.NOENT ("File in 'TryExec' is probably missing.");
     }
 
     public AppInfo get_app_info () {
-        return new DesktopAppInfo.from_keyfile (keyfile);
+        return app_info;
     }
 
     public string get_name () throws Error {
