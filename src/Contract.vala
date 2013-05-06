@@ -27,15 +27,18 @@ namespace Contractor {
 
         public Contract (File file) throws Error {
             var contract_file = new ContractFile (file);
-            id = contract_file.get_id ();
-
             keyfile = new ContractKeyFile (contract_file);
+
+            keyfile.verify_exec ();
+
             name = keyfile.get_name ();
             description = keyfile.get_description ();
             icon = keyfile.get_icon ();
 
-            string mimetypes = keyfile.get_mimetypes ();
+            string[] mimetypes = keyfile.get_mimetypes ();
             mimetype_manager = new MimeTypeManager (mimetypes);
+
+            id = contract_file.get_id ();
         }
 
         public bool supports_mime_type (string mime_type) {

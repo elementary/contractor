@@ -19,15 +19,16 @@ public class Contractor.MimeTypeManager : Object {
     private string[] values;
     private bool is_conditional = false;
 
-    public MimeTypeManager (string serialized_mimetypes) {
-        string[] mime_types = serialized_mimetypes.split (";", 0);
-
-        if ("!" in serialized_mimetypes) { // See if we have a conditional mimetype
+    public MimeTypeManager (string[] mimetypes) throws Error {
+        if ("!" in mimetypes[0]) { // See if we have a conditional mimetype
             is_conditional = true;
-            mime_types[0] = mime_types[0].replace ("!", ""); // remove the '!'
+            mimetypes[0] = mimetypes[0].replace ("!", ""); // remove the '!'
         }
 
-        values = validate_mime_types (mime_types);
+        values = validate_mime_types (mimetypes);
+
+        if (values.length == 0)
+            throw new KeyFileError.INVALID_VALUE ("No values specified for MimeType.");
     }
 
     public bool is_type_supported (string mime_type) {
@@ -55,14 +56,14 @@ public class Contractor.MimeTypeManager : Object {
 
     private bool contains_mimetype (string mime_type) {
         foreach (string local_mime_type in values) {
-            if (compare_mimetypes (mime_type, local_mime_type))
+            if (compare (mime_type, local_mime_type))
                 return true;
         }
 
         return false;
     }
 
-    private static bool compare_mimetypes (string mime_type, string ref_mime_type) {
+    private static bool compare (string mime_type, string ref_mime_type) {
         return ref_mime_type in mime_type
             || ContentType.equals (mime_type, ref_mime_type)
             || ContentType.is_a (mime_type, ref_mime_type);

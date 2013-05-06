@@ -33,6 +33,7 @@ VALA_C
     FileService.vala
     ContractSorter.vala
     Translations.vala
+    String.vala
 PACKAGES
     gee-1.0
     glib-2.0

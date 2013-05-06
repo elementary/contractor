@@ -79,7 +79,7 @@ public class Contractor.ContractManager : Object {
         try {
             contract = new Contract (file);
         } catch (Error err) {
-            warning ("Could not load contract: %s", err.message);
+            warning ("Could not load contract at '%s': %s", file.get_path (), err.message);
             return;
         }
 

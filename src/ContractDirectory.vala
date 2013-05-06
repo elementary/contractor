@@ -50,7 +50,7 @@ public class Contractor.ContractDirectory : Object {
     }
 
     private void process_directory (File directory) {
-        message ("Looking up contracts in: %s.", directory.get_path ());
+        message ("Looking up contracts in: %s", directory.get_path ());
 
         try {
             string[] QUERY_ATTRIBUTES = {
