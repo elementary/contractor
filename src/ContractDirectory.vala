@@ -21,7 +21,6 @@
  */
 
 public class Contractor.ContractDirectory : Object {
-    public signal void contract_file_found (File contract_file);
     public signal void changed ();
 
     private const int DIRECTORY_RELOAD_TIMEOUT_MS = 500;
@@ -36,8 +35,9 @@ public class Contractor.ContractDirectory : Object {
         set_monitor ();
     }
 
-    public void lookup_contract_files () {
-        process_directory (contract_directory);
+    public Gee.List<File> lookup_contract_files () {
+        var file_enumerator = new ContractFileEnumerator (contract_directory);
+        return file_enumerator.enumerate_files ();
     }
 
     private void set_monitor () {
@@ -47,40 +47,6 @@ public class Contractor.ContractDirectory : Object {
         } catch (IOError e) {
             critical ("Could not set up monitor for '%s': %s", contract_directory.get_path (), e.message);
         }
-    }
-
-    private void process_directory (File directory) {
-        message ("Looking up contracts in: %s", directory.get_path ());
-
-        try {
-            string[] QUERY_ATTRIBUTES = {
-                FileAttribute.STANDARD_NAME,
-                FileAttribute.STANDARD_TYPE
-            };
-
-            string attributes = string.joinv (",", QUERY_ATTRIBUTES);
-
-            var enumerator = directory.enumerate_children (attributes, FileQueryInfoFlags.NONE);
-
-            FileInfo f;
-
-            while ((f = enumerator.next_file ()) != null) {
-                unowned string name = f.get_name ();
-                var file_type = f.get_file_type ();
-                var child = directory.get_child (name);
-
-                if (file_type == FileType.REGULAR) {
-                    if (ContractFile.is_valid_filename (name))
-                        contract_file_found (child);
-                } else if (file_type == FileType.DIRECTORY) {
-                    process_directory (child);
-                } else {
-                    warning ("'%s' is not a regular file or directory. Skipping it...", child.get_path ());
-                }
-            }
-         } catch (Error err) {
-             warning ("Could not process directory '%s': %s", directory.get_path (), err.message);
-         }
     }
 
     private async void on_change_event (File file, File? other_file, FileMonitorEvent event) {

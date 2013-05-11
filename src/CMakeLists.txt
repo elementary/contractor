@@ -31,6 +31,7 @@ VALA_C
     DBusService.vala
     ContractDirectory.vala
     FileService.vala
+    FileEnumerator.vala
     ContractSorter.vala
     Translations.vala
     String.vala

@@ -25,10 +25,9 @@ public class Contractor.ContractManager : Object {
         sorted_contracts = new Gee.LinkedList<Contract> ();
         contracts = new Gee.HashMap<string, Contract> ();
 
-        file_service.contract_file_found.connect (load_contract);
-        file_service.contract_files_changed.connect (load_contracts);
-
         load_contracts ();
+
+        file_service.contract_files_changed.connect (load_contracts);
     }
 
     public Gee.Collection<Contract> get_contracts_for_types (string[] mime_types) {
@@ -68,9 +67,17 @@ public class Contractor.ContractManager : Object {
     }
 
     private void load_contracts () {
+        clear_loaded_contracts ();
+
+        var contract_files_to_load = file_service.load_contract_files ();
+
+        foreach (var contract_file in contract_files_to_load)
+            load_contract (contract_file);
+    }
+
+    private void clear_loaded_contracts () {
         contracts.clear ();
         sorted_contracts.clear ();
-        file_service.load_contract_files ();
     }
 
     private void load_contract (File file) {
