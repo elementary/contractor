@@ -28,6 +28,7 @@ VALA_C
     ContractKeyFile.vala
     MimeTypeManager.vala
     ContractManager.vala
+    ContractSource.vala
     DBusService.vala
     ContractDirectory.vala
     FileService.vala

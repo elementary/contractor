@@ -16,18 +16,10 @@
  */
 
 public class Contractor.ContractManager : Object {
-    private FileService file_service;
-    private Gee.List<Contract> sorted_contracts;
-    private Gee.HashMap<string, Contract> contracts;
+    private ContractSource contract_source;
 
     public ContractManager () {
-        file_service = new FileService ();
-        sorted_contracts = new Gee.LinkedList<Contract> ();
-        contracts = new Gee.HashMap<string, Contract> ();
-
-        load_contracts ();
-
-        file_service.contract_files_changed.connect (load_contracts);
+        contract_source = new ContractSource ();
     }
 
     public Gee.Collection<Contract> get_contracts_for_types (string[] mime_types) {
@@ -54,55 +46,15 @@ public class Contractor.ContractManager : Object {
     }
 
     public Contract? get_contract_for_id (string id) {
-        var contract = contracts.get (id);
+        var contract = contract_source.lookup (id);
 
         if (contract == null)
-            warning ("Client requested invalid contract: %s.", id);
+            warning ("Client requested invalid contract: %ss", id);
 
         return contract;
     }
 
     public Gee.Collection<Contract> get_all_contracts () {
-        return sorted_contracts;
-    }
-
-    private void load_contracts () {
-        clear_loaded_contracts ();
-
-        var contract_files_to_load = file_service.load_contract_files ();
-
-        foreach (var contract_file in contract_files_to_load)
-            load_contract (contract_file);
-    }
-
-    private void clear_loaded_contracts () {
-        contracts.clear ();
-        sorted_contracts.clear ();
-    }
-
-    private void load_contract (File file) {
-        Contract? contract = null;
-
-        try {
-            contract = new Contract (file);
-        } catch (Error err) {
-            warning ("Could not load contract at '%s': %s", file.get_path (), err.message);
-            return;
-        }
-
-        string contract_id = contract.id;
-
-        if (contracts.has_key (contract_id)) {
-            warning ("A contract with ID '%s' exists already. Not adding another one.", contract_id);
-            return;
-        }
-
-        contracts.set (contract_id, contract);
-        sorted_contracts.add (contract);
-
-        // Sort contracts here so that clients don't have to sort them again
-        sorted_contracts.sort (ContractSorter.compare_func);
-
-        message ("Contract file '%s' (%s) loaded successfully.", file.get_basename (), contract_id);
+        return contract_source.get_contracts ();
     }
 }

@@ -55,14 +55,12 @@ namespace Contractor {
         }
 
         public GenericContract get_generic () {
-            var generic = GenericContract ();
-
-            generic.id = id;
-            generic.name = name;
-            generic.description = description;
-            generic.icon = icon;
-
-            return generic;
+            return GenericContract () {
+                id = id,
+                name = name,
+                description = description,
+                icon = icon
+            };
         }
     }
 }

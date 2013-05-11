@@ -34,7 +34,6 @@ public class Contractor.ContractKeyFile : Object {
 
     private string text_domain;
     private KeyFile keyfile;
-    private AppInfo app_info;
 
     public ContractKeyFile (ContractFile contract_file) throws Error {
         string contract_file_contents = contract_file.get_contents ();
@@ -50,13 +49,15 @@ public class Contractor.ContractKeyFile : Object {
 
         text_domain = get_text_domain ();
 
-        app_info = new DesktopAppInfo.from_keyfile (keyfile);
+        get_app_info (); // perform initial validation
+    }
+
+    public AppInfo get_app_info () throws Error {
+        var app_info = new DesktopAppInfo.from_keyfile (keyfile);
 
         if (app_info == null)
             throw new FileError.NOENT ("%s's file is probably missing.", TRY_EXEC_KEY);
-    }
 
-    public AppInfo get_app_info () {
         return app_info;
     }
 
