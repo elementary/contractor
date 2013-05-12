@@ -19,8 +19,8 @@ namespace Contractor {
     public class Contract : Object {
         public string id { get; private set; }
         public string name { get; private set; }
-        public string icon { get; private set; }
-        public string description { get; private set; }
+        public string icon { get; private set; default = ""; }
+        public string description { get; private set; default = ""; }
 
         private MimeTypeManager mimetype_manager;
         private ContractKeyFile keyfile;
@@ -29,14 +29,8 @@ namespace Contractor {
             var contract_file = new ContractFile (file);
             keyfile = new ContractKeyFile (contract_file);
 
-            keyfile.verify_exec ();
-
-            name = keyfile.get_name ();
-            description = keyfile.get_description ();
-            icon = keyfile.get_icon ();
-
-            string[] mimetypes = keyfile.get_mimetypes ();
-            mimetype_manager = new MimeTypeManager (mimetypes);
+            load_mandatory_fields ();
+            load_non_mandatory_fields ();
 
             id = contract_file.get_id ();
         }
@@ -61,6 +55,27 @@ namespace Contractor {
                 description = description,
                 icon = icon
             };
+        }
+
+        private void load_mandatory_fields () throws Error {
+            name = keyfile.get_name ();
+
+            string[] mimetypes = keyfile.get_mimetypes ();
+            mimetype_manager = new MimeTypeManager (mimetypes);
+        }
+
+        private void load_non_mandatory_fields () {
+            try {
+                description = keyfile.get_description ();
+            } catch (Error err) {
+                warning (err.message);
+            }
+
+            try {
+                icon = keyfile.get_icon ();
+            } catch (Error err) {
+                warning (err.message);
+            }
         }
     }
 }
