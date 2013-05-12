@@ -50,8 +50,6 @@ public class Contractor.Application : GLib.Application {
             release ();
             return;
         }
-
-        dbus_service.init ();
     }
 
     private void on_bus_not_aquired () {

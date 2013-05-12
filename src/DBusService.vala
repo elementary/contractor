@@ -28,9 +28,7 @@ namespace Contractor {
     public class DBusService : Object {
         private ContractManager contract_manager;
 
-        public DBusService () { }
-
-        public void init () {
+        public DBusService () {
             contract_manager = new ContractManager ();
         }
 
