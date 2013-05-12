@@ -26,6 +26,10 @@ namespace Contractor {
 
     [DBus (name = "org.elementary.Contractor")]
     public class DBusService : Object {
+        public DBusService () {
+            Idle.add (delayed_contract_load);
+        }
+
         public GenericContract[] get_contracts_by_mime (string mime_type) {
             string[] mime_types = { mime_type };
             return get_contracts_by_mimelist (mime_types);
@@ -64,6 +68,11 @@ namespace Contractor {
         public GenericContract[] list_all_contracts () {
             var contracts = ContractManager.get_instance ().get_all_contracts ();
             return convert_to_generic_contracts (contracts);
+        }
+
+        private static bool delayed_contract_load () {
+            ContractManager.get_instance ();
+            return false;
         }
 
         private static GenericContract[] convert_to_generic_contracts (Gee.Collection<Contract> contracts) {
