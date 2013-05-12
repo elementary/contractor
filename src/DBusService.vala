@@ -26,24 +26,18 @@ namespace Contractor {
 
     [DBus (name = "org.elementary.Contractor")]
     public class DBusService : Object {
-        private ContractManager contract_manager;
-
-        public DBusService () {
-            contract_manager = new ContractManager ();
-        }
-
         public GenericContract[] get_contracts_by_mime (string mime_type) {
             string[] mime_types = { mime_type };
             return get_contracts_by_mimelist (mime_types);
         }
 
         public GenericContract[] get_contracts_by_mimelist (string[] mime_types) {
-            var contracts = contract_manager.get_contracts_for_types (mime_types);
+            var contracts = ContractManager.get_instance ().get_contracts_for_types (mime_types);
             return convert_to_generic_contracts (contracts);
         }
 
         public int execute_with_uri_list (string id, string[] uris) {
-            var contract = contract_manager.get_contract_for_id (id);
+            var contract = ContractManager.get_instance ().get_contract_for_id (id);
 
             if (contract != null) {
                 List<string> uris_list = new List<string> ();
@@ -68,7 +62,7 @@ namespace Contractor {
         }
 
         public GenericContract[] list_all_contracts () {
-            var contracts = contract_manager.get_all_contracts ();
+            var contracts = ContractManager.get_instance ().get_all_contracts ();
             return convert_to_generic_contracts (contracts);
         }
 
