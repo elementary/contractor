@@ -21,22 +21,21 @@ public class Contractor.ContractFileEnumerator : Object {
         FileAttribute.STANDARD_TYPE
     };
 
-    private Gee.List<File> files;
-    private File lookup_directory;
-    private string attributes;
+    private static string attributes;
 
-    public ContractFileEnumerator (File directory) {
-        lookup_directory = directory;
+    private File directory;
+
+    static construct {
         attributes = string.joinv (",", QUERY_ATTRIBUTES);
     }
 
-    public Gee.List<File> enumerate_files () {
-        files = new Gee.LinkedList<File> ();
-        process_directory (lookup_directory);
-        return files;
+    public ContractFileEnumerator (File directory) {
+        this.directory = directory;
     }
 
-    private void process_directory (File directory) {
+    public Gee.List<File> enumerate_files () {
+        var files = new Gee.LinkedList<File> ();
+
         message ("Looking up contracts in: %s", directory.get_path ());
 
         try {
@@ -51,19 +50,15 @@ public class Contractor.ContractFileEnumerator : Object {
 
                 if (file_type == FileType.REGULAR) {
                     if (ContractFile.is_valid_filename (name))
-                        file_found (child);
-                } else if (file_type == FileType.DIRECTORY) {
-                    process_directory (child);
+                        files.add (child);
                 } else {
-                    warning ("'%s' is not a regular file or directory. Skipping it...", child.get_path ());
+                    warning ("'%s' is not a regular file. Skipping it...", child.get_path ());
                 }
             }
-         } catch (Error err) {
-             warning ("Could not process directory '%s': %s", directory.get_path (), err.message);
-         }
-    }
+        } catch (Error err) {
+            warning ("Could not process directory '%s': %s", directory.get_path (), err.message);
+        }
 
-    private void file_found (File file) {
-        files.add (file);
+        return files;
     }
 }
