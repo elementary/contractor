@@ -15,18 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class Contractor.ContractManager : Object {
-    private FileService file_service;
-    private Gee.List<Contract> contracts;
+public class Contractor.ContractManager {
+    private static ContractManager the_instance;
+    private ContractSource contract_source;
 
-    public ContractManager () {
-        file_service = new FileService ();
-        contracts = new Gee.LinkedList<Contract> ();
+    private ContractManager () {
+        contract_source = new ContractSource ();
+    }
 
-        file_service.contract_file_found.connect (load_contract);
-        file_service.contract_files_changed.connect (load_contracts);
-
-        load_contracts ();
+    public static ContractManager get_instance () {
+        if (the_instance == null)
+            the_instance = new ContractManager ();
+        return the_instance;
     }
 
     public Gee.Collection<Contract> get_contracts_for_types (string[] mime_types) {
@@ -53,39 +53,15 @@ public class Contractor.ContractManager : Object {
     }
 
     public Contract? get_contract_for_id (string id) {
-        foreach (var contract in contracts) {
-            if (contract.id == id)
-                return contract;
-        }
+        var contract = contract_source.lookup (id);
 
-        warning ("Client requested invalid contract: %s.", id);
-        return null;
+        if (contract == null)
+            warning ("Client requested invalid contract: %ss", id);
+
+        return contract;
     }
 
     public Gee.Collection<Contract> get_all_contracts () {
-        return contracts;
-    }
-
-    private void load_contracts () {
-        contracts.clear ();
-        file_service.load_contract_files ();
-    }
-
-    private void load_contract (File file) {
-        Contract? contract = null;
-
-        try {
-            contract = new Contract (file);
-        } catch (Error err) {
-            warning ("Could not load contract: %s", err.message);
-            return;
-        }
-
-        contracts.add (contract);
-
-        // Sort contracts here so that clients don't have to sort them again
-        contracts.sort (ContractSorter.compare_func);
-
-        message ("Contract file '%s' (%s) loaded successfully.", file.get_basename (), contract.id);
+        return contract_source.get_contracts ();
     }
 }

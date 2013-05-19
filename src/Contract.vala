@@ -19,23 +19,20 @@ namespace Contractor {
     public class Contract : Object {
         public string id { get; private set; }
         public string name { get; private set; }
-        public string icon { get; private set; }
-        public string description { get; private set; }
+        public string icon { get; private set; default = ""; }
+        public string description { get; private set; default = ""; }
 
         private MimeTypeManager mimetype_manager;
         private ContractKeyFile keyfile;
 
         public Contract (File file) throws Error {
             var contract_file = new ContractFile (file);
-            id = contract_file.get_id ();
-
             keyfile = new ContractKeyFile (contract_file);
-            name = keyfile.get_name ();
-            description = keyfile.get_description ();
-            icon = keyfile.get_icon ();
 
-            string mimetypes = keyfile.get_mimetypes ();
-            mimetype_manager = new MimeTypeManager (mimetypes);
+            load_mandatory_fields ();
+            load_non_mandatory_fields ();
+
+            id = contract_file.get_id ();
         }
 
         public bool supports_mime_type (string mime_type) {
@@ -47,14 +44,33 @@ namespace Contractor {
         }
 
         public GenericContract get_generic () {
-            var generic = GenericContract ();
+            return GenericContract () {
+                id = id,
+                name = name,
+                description = description,
+                icon = icon
+            };
+        }
 
-            generic.id = id;
-            generic.name = name;
-            generic.description = description;
-            generic.icon = icon;
+        private void load_mandatory_fields () throws Error {
+            name = keyfile.get_name ();
 
-            return generic;
+            string[] mimetypes = keyfile.get_mimetypes ();
+            mimetype_manager = new MimeTypeManager (mimetypes);
+        }
+
+        private void load_non_mandatory_fields () {
+            try {
+                description = keyfile.get_description ();
+            } catch (Error err) {
+                warning (err.message);
+            }
+
+            try {
+                icon = keyfile.get_icon ();
+            } catch (Error err) {
+                warning (err.message);
+            }
         }
     }
 }

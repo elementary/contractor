@@ -1,8 +1,7 @@
 [Contractor Entry]
-Name=Bluetooth Transfer
+Name=Send files via Bluetooth
 Icon=bluetooth
-Description=Send files via Bluetooth
-#FIXME: replace this with special-cased "any file" when it's supported
-MimeType=application;audio;text;video;image;
+Description=
+MimeType=!inode;
 Exec=bluetooth-sendto %F
 Gettext-Domain=gnome-bluetooth2

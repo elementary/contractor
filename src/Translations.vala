@@ -15,10 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Translations {
-    const string archive_name = N_("Archives");
-    const string archive_desc = N_("Extract here");
-    const string archive_compress = N_("Compress");
-    const string wallpaper_name = N_("Wallpaper");
-    const string wallpaper_desc = N_("Set as Wallpaper");
+public class Contractor.Translations {
+    private const string archive_name = N_("Archives");
+    private const string archive_desc = N_("Extract here");
+    private const string archive_compress = N_("Compress");
+    private const string wallpaper_name = N_("Wallpaper");
+    private const string wallpaper_desc = N_("Set as Wallpaper");
+
+    private static Gee.HashSet<string> domains;
+
+    public static void init () {
+        domains = new Gee.HashSet<string> ();
+        Intl.setlocale (LocaleCategory.ALL, "");
+    }
+
+    public static string get_string (string domain, string to_translate) {
+        add_domain (domain);
+        return dgettext (domain, to_translate).dup ();
+    }
+
+    private static void add_domain (string domain) {
+        if (domains.contains (domain))
+            return;
+
+        domains.add (domain);
+        Intl.textdomain (domain);
+    }
 }

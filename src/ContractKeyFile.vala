@@ -16,12 +16,15 @@
  */
 
 public class Contractor.ContractKeyFile : Object {
-    private const string FILE_GROUP = "Contractor Entry";
-    private const string GROUP = KeyFileDesktop.GROUP;
-    private const string NAME_KEY = "Name";
-    private const string ICON_KEY = "Icon";
+    private const string CONTRACTOR_GROUP = "Contractor Entry";
+    private const string DESKTOP_GROUP = KeyFileDesktop.GROUP;
+
+    private const string NAME_KEY = KeyFileDesktop.KEY_NAME;
     private const string DESCRIPTION_KEY = "Description";
-    private const string MIMETYPE_KEY = "MimeType";
+    private const string ICON_KEY = KeyFileDesktop.KEY_ICON;
+    private const string MIMETYPE_KEY = KeyFileDesktop.KEY_MIME_TYPE;
+    private const string EXEC_KEY = KeyFileDesktop.KEY_EXEC;
+    private const string TRY_EXEC_KEY = KeyFileDesktop.KEY_TRY_EXEC;
 
     private const string[] SUPPORTED_GETTEXT_DOMAIN_KEYS = {
         "Gettext-Domain",
@@ -39,52 +42,71 @@ public class Contractor.ContractKeyFile : Object {
         keyfile = new KeyFile ();
         keyfile.load_from_data (contents, contents.length, KeyFileFlags.NONE);
 
+        verify_exec ();
+
         // Add this so that we can use the key file with GDesktopAppInfo.
         keyfile.set_string (KeyFileDesktop.GROUP,
                             KeyFileDesktop.KEY_TYPE,
                             KeyFileDesktop.TYPE_APPLICATION);
 
         text_domain = get_text_domain ();
+
+        get_app_info (); // perform initial validation
     }
 
-    public AppInfo get_app_info () {
-        return new DesktopAppInfo.from_keyfile (keyfile);
+    public AppInfo get_app_info () throws Error {
+        var app_info = new DesktopAppInfo.from_keyfile (keyfile);
+
+        if (app_info == null)
+            throw new FileError.NOENT ("%s's file is probably missing.", TRY_EXEC_KEY);
+
+        return app_info;
     }
 
     public string get_name () throws Error {
-        return get_locale_string (NAME_KEY, text_domain);
+        return get_locale_string (NAME_KEY);
     }
 
     public string get_description () throws Error {
-        return get_locale_string (DESCRIPTION_KEY, text_domain);
+        return get_locale_string (DESCRIPTION_KEY);
     }
 
     public string get_icon () throws Error {
-        return keyfile.get_string (GROUP, ICON_KEY);
+        return keyfile.get_string (DESKTOP_GROUP, ICON_KEY);
     }
 
-    public string get_mimetypes () throws Error {
-        return keyfile.get_string (GROUP, MIMETYPE_KEY);
+    public string[] get_mimetypes () throws Error {
+        return keyfile.get_string_list (DESKTOP_GROUP, MIMETYPE_KEY);
+    }
+
+    private void verify_exec () throws Error {
+        string exec = keyfile.get_string (DESKTOP_GROUP, EXEC_KEY);
+        verify_string (exec, EXEC_KEY);
     }
 
     private string get_text_domain () throws Error {
         foreach (var domain_key in SUPPORTED_GETTEXT_DOMAIN_KEYS) {
-            if (keyfile.has_key (GROUP, domain_key))
-                return keyfile.get_string (GROUP, domain_key);
+            if (keyfile.has_key (DESKTOP_GROUP, domain_key))
+                return keyfile.get_string (DESKTOP_GROUP, domain_key);
         }
 
         return "";
     }
 
-    private string get_locale_string (string key, string text_domain) throws Error {
-        string value = keyfile.get_locale_string (GROUP, key);
-        return dgettext (text_domain, value).dup ();
+    private string get_locale_string (string key) throws Error {
+        string locale_string = keyfile.get_locale_string (DESKTOP_GROUP, key);
+        verify_string (locale_string, key);
+        return Translations.get_string (text_domain, locale_string);
+    }
+
+    private static void verify_string (string? str, string key) throws Error {
+        if (String.is_empty (str))
+            throw new KeyFileError.INVALID_VALUE ("%s key is empty.", key);
     }
 
     private static string preprocess_contents (string contents) {
         // replace [Contractor Entry] with [Desktop Entry] so that we can use
         // GLib's implementation of GDesktopAppInfo.
-        return contents.replace (FILE_GROUP, GROUP);
+        return contents.replace (CONTRACTOR_GROUP, DESKTOP_GROUP);
     }
 }
-

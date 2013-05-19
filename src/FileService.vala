@@ -30,7 +30,6 @@ namespace Contractor {
 
     public class FileService : Object {
         public signal void contract_files_changed ();
-        public signal void contract_file_found (File contract_file);
 
         private const string CONTRACT_DATA_DIR_NAME = "contractor";
 
@@ -41,26 +40,30 @@ namespace Contractor {
             set_up_directories ();
         }
 
-        public void load_contract_files () {
+        public Gee.List<File> load_contract_files () {
+            var contract_files = new Gee.LinkedList<File> ();
+
             foreach (var directory in directories)
-                directory.lookup_contract_files ();
+                contract_files.add_all (directory.lookup_contract_files ());
+
+            return contract_files;
         }
 
         private void set_up_directories () {
-            // get paths from enviroment
-            var paths = Environment.get_system_data_dirs ();
-            paths += Environment.get_user_data_dir ();
+            var data_dir_paths = new string[0];
 
-            foreach (var path in paths) {
+            // The user's data dir takes priority over system-wide data directories
+            data_dir_paths += Environment.get_user_data_dir ();
+
+            foreach (string data_dir in Environment.get_system_data_dirs ())
+                data_dir_paths += data_dir;
+
+            foreach (var path in data_dir_paths) {
                 var directory = File.new_for_path (path).get_child (CONTRACT_DATA_DIR_NAME);
 
-                if (directory.query_exists ()) {
-                    var contract_dir = new ContractDirectory (directory);
-                    contract_dir.contract_file_found.connect ((file) => contract_file_found (file));
-                    contract_dir.changed.connect (() => contract_files_changed ());
-
-                    directories.add (contract_dir);
-                }
+                var contract_dir = new ContractDirectory (directory);
+                contract_dir.changed.connect (() => contract_files_changed ());
+                directories.add (contract_dir);
             }
         }
     }

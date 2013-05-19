@@ -26,12 +26,8 @@ namespace Contractor {
 
     [DBus (name = "org.elementary.Contractor")]
     public class DBusService : Object {
-        private ContractManager contract_manager;
-
-        public DBusService () { }
-
-        public void init () {
-            contract_manager = new ContractManager ();
+        public DBusService () {
+            Idle.add (delayed_contract_load);
         }
 
         public GenericContract[] get_contracts_by_mime (string mime_type) {
@@ -40,12 +36,12 @@ namespace Contractor {
         }
 
         public GenericContract[] get_contracts_by_mimelist (string[] mime_types) {
-            var contracts = contract_manager.get_contracts_for_types (mime_types);
+            var contracts = ContractManager.get_instance ().get_contracts_for_types (mime_types);
             return convert_to_generic_contracts (contracts);
         }
 
         public void execute_with_uri_list (string id, string[] uris) throws Error {
-            var contract = contract_manager.get_contract_for_id (id);
+            var contract = ContractManager.get_instance ().get_contract_for_id (id);
 
             if (contract != null) {
                 List<string>? uri_list = null;
@@ -69,8 +65,13 @@ namespace Contractor {
         }
 
         public GenericContract[] list_all_contracts () {
-            var contracts = contract_manager.get_all_contracts ();
+            var contracts = ContractManager.get_instance ().get_all_contracts ();
             return convert_to_generic_contracts (contracts);
+        }
+
+        private static bool delayed_contract_load () {
+            ContractManager.get_instance ();
+            return false;
         }
 
         private static GenericContract[] convert_to_generic_contracts (Gee.Collection<Contract> contracts) {

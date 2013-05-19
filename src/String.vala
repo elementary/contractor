@@ -20,4 +20,3 @@ namespace Contractor.String {
         return str == null || str.strip () == "";
     }
 }
-

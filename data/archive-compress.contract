@@ -2,6 +2,6 @@
 Name=Compress
 Icon=
 Description=Compress
-MimeType=!Archives
+MimeType=!archive;inode/blockdevice;inode/chardevice;inode/fifo;inode/socket;
 Exec=file-roller --add %U
 Gettext-Domain=contractor
