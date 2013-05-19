@@ -16,6 +16,8 @@
  */
 
 public class Contractor.ContractSource : Object {
+    public signal void changed ();
+
     private FileService file_service;
     private Gee.List<Contract> sorted_contracts;
     private Gee.HashMap<string, Contract> contracts;
@@ -45,6 +47,8 @@ public class Contractor.ContractSource : Object {
 
         foreach (var contract_file in contract_files_to_load)
             load_contract (contract_file);
+
+        changed ();
     }
 
     private void load_contract (File file) {

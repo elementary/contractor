@@ -27,10 +27,12 @@ namespace Contractor {
     [DBus (name = "org.elementary.Contractor")]
     public class DBusService : Object {
         public signal void contracts_changed ();
+
         private ContractManager contract_manager;
 
         public DBusService () {
             contract_manager = new ContractManager ();
+            contract_manager.contracts_changed.connect (() => contracts_changed ());
         }
 
         public GenericContract[] get_contracts_by_mime (string mime_type) {

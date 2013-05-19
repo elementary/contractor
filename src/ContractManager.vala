@@ -16,10 +16,13 @@
  */
 
 public class Contractor.ContractManager {
+    public signal void contracts_changed ();
+
     private ContractSource contract_source;
 
     public ContractManager () {
         contract_source = new ContractSource ();
+        contract_source.changed.connect (() => contracts_changed ());
     }
 
     public Gee.Collection<Contract> get_contracts_for_types (string[] mime_types) {
