@@ -97,6 +97,7 @@ public class Contractor.ContractKeyFile : Object {
 
     private string get_locale_string (string key) throws Error {
         string locale_string = keyfile.get_locale_string (DESKTOP_GROUP, key);
+        verify_string (locale_string, key);
         return Translations.get_string (text_domain, locale_string);
     }
 
