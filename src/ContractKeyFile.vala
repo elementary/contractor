@@ -64,9 +64,7 @@ public class Contractor.ContractKeyFile : Object {
     }
 
     public string get_name () throws Error {
-        string name = get_locale_string (NAME_KEY);
-        verify_string (name, NAME_KEY);
-        return name;
+        return get_locale_string (NAME_KEY);
     }
 
     public string get_description () throws Error {
