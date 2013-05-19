@@ -16,17 +16,10 @@
  */
 
 public class Contractor.ContractManager {
-    private static ContractManager the_instance;
     private ContractSource contract_source;
 
-    private ContractManager () {
+    public ContractManager () {
         contract_source = new ContractSource ();
-    }
-
-    public static ContractManager get_instance () {
-        if (the_instance == null)
-            the_instance = new ContractManager ();
-        return the_instance;
     }
 
     public Gee.Collection<Contract> get_contracts_for_types (string[] mime_types) {
