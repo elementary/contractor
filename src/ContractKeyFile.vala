@@ -42,6 +42,8 @@ public class Contractor.ContractKeyFile : Object {
         keyfile = new KeyFile ();
         keyfile.load_from_data (contents, contents.length, KeyFileFlags.NONE);
 
+        verify_exec ();
+
         // Add this so that we can use the key file with GDesktopAppInfo.
         keyfile.set_string (KeyFileDesktop.GROUP,
                             KeyFileDesktop.KEY_TYPE,
@@ -77,7 +79,7 @@ public class Contractor.ContractKeyFile : Object {
         return keyfile.get_string_list (DESKTOP_GROUP, MIMETYPE_KEY);
     }
 
-    public void verify_exec () throws Error {
+    private void verify_exec () throws Error {
         string exec = keyfile.get_string (DESKTOP_GROUP, EXEC_KEY);
         verify_string (exec, EXEC_KEY);
     }
@@ -97,7 +99,7 @@ public class Contractor.ContractKeyFile : Object {
         return Translations.get_string (text_domain, locale_string);
     }
 
-    private static void verify_string (string str, string key) throws Error {
+    private static void verify_string (string? str, string key) throws Error {
         if (String.is_empty (str))
             throw new KeyFileError.INVALID_VALUE ("%s key is empty.", key);
     }
