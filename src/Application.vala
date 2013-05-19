@@ -15,22 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class Contractor.Application : GLib.Application {
+public class Contractor.Application {
     private const string DBUS_NAME = "org.elementary.Contractor";
     private const string DBUS_PATH = "/org/elementary/contractor";
 
     private DBusService dbus_service;
+    private MainLoop main_loop;
 
-    construct {
-        application_id = DBUS_NAME;
-        flags = ApplicationFlags.IS_SERVICE;
+    public void run () {
+        main_loop = new MainLoop ();
+        init_service ();
+        main_loop.run ();
     }
 
-    public override void startup () {
-        base.startup ();
-
-        init_service ();
-        hold ();
+    private void quit () {
+        main_loop.quit ();
     }
 
     private void init_service () {
@@ -47,15 +46,12 @@ public class Contractor.Application : GLib.Application {
             conn.register_object (DBUS_PATH, dbus_service);
         } catch (IOError e) {
             warning ("Could not register service: %s.", e.message);
-            release ();
-            return;
+            quit ();
         }
-
-        dbus_service.init ();
     }
 
     private void on_bus_not_aquired () {
         critical ("Could not aquire Session bus for contractor.");
-        release ();
+        quit ();
     }
 }

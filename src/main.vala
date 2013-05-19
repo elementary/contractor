@@ -15,10 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-int main (string[] args) {
+void main (string[] args) {
     Contractor.Translations.init ();
 
     var application = new Contractor.Application ();
-    return application.run (args);
+    application.run ();
 }
 
