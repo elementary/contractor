@@ -43,20 +43,8 @@ namespace Contractor {
         public void execute_with_uri_list (string id, string[] uris) throws Error {
             var contract = ContractManager.get_instance ().get_contract_for_id (id);
 
-            if (contract != null) {
-                List<string>? uri_list = null;
-                
-                if (uris.length > 0) {
-                    uri_list = new List<string> ();
-
-                    foreach (var uri in uris)
-                        uri_list.prepend (uri);
-
-                    uri_list.reverse ();
-                }
-
-                contract.launch_uris (uri_list);
-            }
+            if (contract != null)
+                contract.launch_uris (uris);
         }
 
         public void execute_with_uri (string id, string uri) throws Error {

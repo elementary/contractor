@@ -39,8 +39,9 @@ namespace Contractor {
             return mimetype_manager.is_type_supported (mime_type);
         }
 
-        public void launch_uris (List<string>? uris) throws Error {
-            keyfile.get_app_info ().launch_uris (uris, null);
+        public void launch_uris (string[] uris) throws Error {
+            var uri_list = String.array_to_list (uris);
+            keyfile.get_app_info ().launch_uris (uri_list, null);
         }
 
         public GenericContract get_generic () {

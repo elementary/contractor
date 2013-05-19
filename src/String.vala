@@ -19,4 +19,19 @@ namespace Contractor.String {
     public bool is_empty (string? str) {
         return str == null || str.strip () == "";
     }
+
+    public List<string>? array_to_list (string[] array) {
+        List<string>? list = null;
+
+        if (array != null && array.length > 0) {
+            list = new List<string> ();
+
+            foreach (var str in array)
+                list.prepend (str);
+
+            list.reverse ();
+        }
+
+        return list;
+    }
 }
