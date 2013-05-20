@@ -28,11 +28,14 @@ namespace Contractor {
     public class DBusService : Object {
         public signal void contracts_changed ();
 
-        private ContractManager contract_manager;
+        private ContractSource contract_source;
+        private ContractMatcher contract_matcher;
 
         public DBusService () {
-            contract_manager = new ContractManager ();
-            contract_manager.contracts_changed.connect (() => contracts_changed ());
+            contract_source = new ContractSource ();
+            contract_source.changed.connect (() => contracts_changed ());
+
+            contract_matcher = new ContractMatcher (contract_source);
         }
 
         public GenericContract[] get_contracts_by_mime (string mime_type) {
@@ -41,15 +44,13 @@ namespace Contractor {
         }
 
         public GenericContract[] get_contracts_by_mimelist (string[] mime_types) {
-            var contracts = contract_manager.get_contracts_for_types (mime_types);
+            var contracts = contract_matcher.get_contracts_for_types (mime_types);
             return convert_to_generic_contracts (contracts);
         }
 
         public void execute_with_uri_list (string id, string[] uris) throws Error {
-            var contract = contract_manager.get_contract_for_id (id);
-
-            if (contract != null)
-                contract.launch_uris (uris);
+            var contract = contract_source.lookup_by_id (id);
+            contract.launch_uris (uris);
         }
 
         public void execute_with_uri (string id, string uri) throws Error {
@@ -58,7 +59,7 @@ namespace Contractor {
         }
 
         public GenericContract[] list_all_contracts () {
-            var contracts = contract_manager.get_all_contracts ();
+            var contracts = contract_source.get_contracts ();
             return convert_to_generic_contracts (contracts);
         }
 

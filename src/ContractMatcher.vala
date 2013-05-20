@@ -15,20 +15,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class Contractor.ContractManager {
-    public signal void contracts_changed ();
-
+public class Contractor.ContractMatcher : Object {
     private ContractSource contract_source;
 
-    public ContractManager () {
-        contract_source = new ContractSource ();
-        contract_source.changed.connect (() => contracts_changed ());
+    public ContractMatcher (ContractSource contract_source) {
+        this.contract_source = contract_source;
     }
 
     public Gee.Collection<Contract> get_contracts_for_types (string[] mime_types) {
         var valid_contracts = new Gee.LinkedList<Contract> ();
-        var all_contracts = get_all_contracts ();
-        var valid_mime_types = MimeTypeManager.validate_mime_types (mime_types);
+        var all_contracts = contract_source.get_contracts ();
+        var valid_mime_types = String.clean_array (mime_types);
 
         foreach (var contract in all_contracts) {
             // Check if the contract supports ALL the types listed in mime_types
@@ -46,18 +43,5 @@ public class Contractor.ContractManager {
         }
 
         return valid_contracts;
-    }
-
-    public Contract? get_contract_for_id (string id) {
-        var contract = contract_source.lookup (id);
-
-        if (contract == null)
-            warning ("Client requested invalid contract: %ss", id);
-
-        return contract;
-    }
-
-    public Gee.Collection<Contract> get_all_contracts () {
-        return contract_source.get_contracts ();
     }
 }

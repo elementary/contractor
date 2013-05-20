@@ -34,4 +34,22 @@ namespace Contractor.String {
 
         return list;
     }
+
+    /**
+     * Removes duplicate and empty strings from the given array.
+     */
+    public string[] clean_array (string[] str_array) {
+        var container = new Gee.HashSet<string> ();
+
+        foreach (string str in str_array) {
+            if (str != null) {
+                string clean_str = str.strip ();
+
+                if (clean_str != "" && !container.contains (clean_str))
+                    container.add (clean_str);
+            }
+        }
+
+        return container.to_array ();
+    }
 }

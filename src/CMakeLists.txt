@@ -27,7 +27,7 @@ vala_precompile(VALA_C ${EXEC_NAME}
     ContractFile.vala
     ContractKeyFile.vala
     MimeTypeManager.vala
-    ContractManager.vala
+    ContractMatcher.vala
     ContractSource.vala
     DBusService.vala
     ContractDirectory.vala

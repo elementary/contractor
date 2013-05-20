@@ -29,10 +29,10 @@ namespace Contractor {
             var contract_file = new ContractFile (file);
             keyfile = new ContractKeyFile (contract_file);
 
+            id = contract_file.get_id ();
+
             load_mandatory_fields ();
             load_non_mandatory_fields ();
-
-            id = contract_file.get_id ();
         }
 
         public bool supports_mime_type (string mime_type) {
@@ -64,13 +64,13 @@ namespace Contractor {
             try {
                 description = keyfile.get_description ();
             } catch (Error err) {
-                warning (err.message);
+                warning ("Contract '%s' does not provide a description (%s)", id, err.message);
             }
 
             try {
                 icon = keyfile.get_icon ();
             } catch (Error err) {
-                warning (err.message);
+                warning ("Contract '%s' does not provide an icon (%s)", id, err.message);
             }
         }
     }

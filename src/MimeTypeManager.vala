@@ -25,7 +25,7 @@ public class Contractor.MimeTypeManager : Object {
             mimetypes[0] = mimetypes[0].replace ("!", ""); // remove the '!'
         }
 
-        values = validate_mime_types (mimetypes);
+        values = String.clean_array (mimetypes);
 
         if (values.length == 0)
             throw new KeyFileError.INVALID_VALUE ("No values specified for MimeType.");
@@ -34,24 +34,6 @@ public class Contractor.MimeTypeManager : Object {
     public bool is_type_supported (string mime_type) {
         bool has_mimetype = contains_mimetype (mime_type);
         return is_conditional ? !has_mimetype : has_mimetype;
-    }
-
-    /**
-     * Removes duplicate and empty strings from mime_types.
-     */
-    public static string[] validate_mime_types (string[] mime_types) {
-        var mimetypes = new Gee.HashSet<string> ();
-
-        foreach (string mime_type in mime_types) {
-            if (mime_type != null) {
-                string actual_mime_type = mime_type.strip ();
-
-                if (actual_mime_type != "" && !mimetypes.contains (actual_mime_type))
-                    mimetypes.add (actual_mime_type);
-            }
-        }
-
-        return mimetypes.to_array ();
     }
 
     private bool contains_mimetype (string mime_type) {
