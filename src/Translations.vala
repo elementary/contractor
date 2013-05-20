@@ -16,12 +16,6 @@
  */
 
 public class Contractor.Translations {
-    private const string archive_name = N_("Archives");
-    private const string archive_desc = N_("Extract here");
-    private const string archive_compress = N_("Compress");
-    private const string wallpaper_name = N_("Wallpaper");
-    private const string wallpaper_desc = N_("Set as Wallpaper");
-
     private static Gee.HashSet<string> domains;
 
     public static void init () {
