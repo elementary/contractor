@@ -25,7 +25,14 @@ public class Contractor.Translations {
 
     public static string get_string (string domain, string to_translate) {
         add_domain (domain);
-        return dgettext (domain, to_translate).dup ();
+        string translated = dgettext (domain, to_translate);
+
+        // By design contracts need to use external translation domains,
+        // usually provided by the applications they are based on. Many of
+        // the strings provided by these applications have Mnemonics tied
+        // to them, and these only make sense in the application itself,
+        // so we remove them here.
+        return translated.replace ("_", "");
     }
 
     private static void add_domain (string domain) {
