@@ -4,10 +4,9 @@ include(ValaVersion)
 ensure_vala_version("0.16.0" MINIMUM)
 include(ValaPrecompile)
 
-set(EXEC_NAME "contractor")
-set(GETTEXT_PACKAGE "contractor")
+set(EXEC_NAME ${CMAKE_PROJECT_NAME})
 
-add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
+add_definitions(-DGETTEXT_PACKAGE=\"${CMAKE_PROJECT_NAME}\")
 
 # pkgconfig, real C code
 find_package(PkgConfig)

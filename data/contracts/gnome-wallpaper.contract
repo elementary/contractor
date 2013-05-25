@@ -1,8 +1,7 @@
 [Contractor Entry]
-Name=Set as Wallpaper
+Name=Set as _Desktop Background
 Icon=preferences-desktop-wallpaper
-Description=Set this image as wallpaper
+Description=Set selected image to be the new desktop background
 MimeType=image
 Exec=gsettings set org.gnome.desktop.background picture-uri file://%f
-Gettext-Domain=contractor
-OnlyShowIn=GNOME;Unity;Pantheon;
+Gettext-Domain=shotwell
