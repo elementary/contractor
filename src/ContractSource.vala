@@ -16,6 +16,8 @@
  */
 
 public class Contractor.ContractSource : Object {
+    public signal void changed ();
+
     private FileService file_service;
     private Gee.List<Contract> sorted_contracts;
     private Gee.HashMap<string, Contract> contracts;
@@ -34,8 +36,13 @@ public class Contractor.ContractSource : Object {
         return sorted_contracts;
     }
 
-    public Contract? lookup (string contract_id) {
-        return contracts.get (contract_id);
+    public Contract lookup_by_id (string contract_id) throws Error {
+        var contract = contracts.get (contract_id);
+
+        if (contract == null)
+            throw new IOError.NOT_FOUND ("Requested invalid contract: %s", contract_id);
+
+        return contract;
     }
 
     private void load_contracts () {
@@ -45,13 +52,15 @@ public class Contractor.ContractSource : Object {
 
         foreach (var contract_file in contract_files_to_load)
             load_contract (contract_file);
+
+        changed ();
     }
 
     private void load_contract (File file) {
         try {
             var contract = new Contract (file);
             add_contract (contract);
-            message ("Contract file '%s' loaded successfully.", file.get_basename ());
+            message ("Contract file '%s' loaded successfully.", file.get_path ());
         } catch (Error err) {
             warning ("Could not load contract at '%s': %s", file.get_path (), err.message);
         }

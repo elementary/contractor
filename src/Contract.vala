@@ -29,23 +29,19 @@ namespace Contractor {
             var contract_file = new ContractFile (file);
             keyfile = new ContractKeyFile (contract_file);
 
+            id = contract_file.get_id ();
+
             load_mandatory_fields ();
             load_non_mandatory_fields ();
-
-            id = contract_file.get_id ();
         }
 
         public bool supports_mime_type (string mime_type) {
             return mimetype_manager.is_type_supported (mime_type);
         }
 
-        public bool launch_uris (List<string>? uris) {
-            try {
-                return keyfile.get_app_info ().launch_uris (uris, null);
-            } catch (Error e) {
-                warning (e.message);
-                return false;
-            }
+        public void launch_uris (string[] uris) throws Error {
+            var uri_list = String.array_to_list (uris);
+            keyfile.get_app_info ().launch_uris (uri_list, null);
         }
 
         public GenericContract get_generic () {
@@ -68,13 +64,13 @@ namespace Contractor {
             try {
                 description = keyfile.get_description ();
             } catch (Error err) {
-                warning (err.message);
+                warning ("Contract '%s' does not provide a description (%s)", id, err.message);
             }
 
             try {
                 icon = keyfile.get_icon ();
             } catch (Error err) {
-                warning (err.message);
+                warning ("Contract '%s' does not provide an icon (%s)", id, err.message);
             }
         }
     }

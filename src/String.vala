@@ -19,4 +19,37 @@ namespace Contractor.String {
     public bool is_empty (string? str) {
         return str == null || str.strip () == "";
     }
+
+    public List<string>? array_to_list (string[] array) {
+        List<string>? list = null;
+
+        if (array != null && array.length > 0) {
+            list = new List<string> ();
+
+            foreach (var str in array)
+                list.prepend (str);
+
+            list.reverse ();
+        }
+
+        return list;
+    }
+
+    /**
+     * Removes duplicate and empty strings from the given array.
+     */
+    public string[] clean_array (string[] str_array) {
+        var container = new Gee.HashSet<string> ();
+
+        foreach (string str in str_array) {
+            if (str != null) {
+                string clean_str = str.strip ();
+
+                if (clean_str != "" && !container.contains (clean_str))
+                    container.add (clean_str);
+            }
+        }
+
+        return container.to_array ();
+    }
 }

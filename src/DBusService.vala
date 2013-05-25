@@ -26,8 +26,16 @@ namespace Contractor {
 
     [DBus (name = "org.elementary.Contractor")]
     public class DBusService : Object {
+        public signal void contracts_changed ();
+
+        private ContractSource contract_source;
+        private ContractMatcher contract_matcher;
+
         public DBusService () {
-            Idle.add (delayed_contract_load);
+            contract_source = new ContractSource ();
+            contract_source.changed.connect (() => contracts_changed ());
+
+            contract_matcher = new ContractMatcher (contract_source);
         }
 
         public GenericContract[] get_contracts_by_mime (string mime_type) {
@@ -36,43 +44,23 @@ namespace Contractor {
         }
 
         public GenericContract[] get_contracts_by_mimelist (string[] mime_types) {
-            var contracts = ContractManager.get_instance ().get_contracts_for_types (mime_types);
+            var contracts = contract_matcher.get_contracts_for_types (mime_types);
             return convert_to_generic_contracts (contracts);
         }
 
-        public int execute_with_uri_list (string id, string[] uris) {
-            var contract = ContractManager.get_instance ().get_contract_for_id (id);
-
-            if (contract != null) {
-                List<string> uris_list = new List<string> ();
-
-                foreach (var uri in uris) {
-                    if (!uri.contains ("://"))
-                        warning ("Invalid URI: %s", uri);
-
-                    uris_list.append (uri);
-                }
-
-                if (contract.launch_uris (uris_list))
-                    return 0;
-            }
-
-            return 1;
+        public void execute_with_uri (string id, string uri) throws Error {
+            string[] uris = { uri };
+            execute_with_uri_list (id, uris);
         }
 
-        public int execute_with_uri (string id, string uri) {
-            string[] uris = { uri };
-            return execute_with_uri_list (id, uris);
+        public void execute_with_uri_list (string id, string[] uris) throws Error {
+            var contract = contract_source.lookup_by_id (id);
+            contract.launch_uris (uris);
         }
 
         public GenericContract[] list_all_contracts () {
-            var contracts = ContractManager.get_instance ().get_all_contracts ();
+            var contracts = contract_source.get_contracts ();
             return convert_to_generic_contracts (contracts);
-        }
-
-        private static bool delayed_contract_load () {
-            ContractManager.get_instance ();
-            return false;
         }
 
         private static GenericContract[] convert_to_generic_contracts (Gee.Collection<Contract> contracts) {

@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class Contractor.ContractSorter {
-    public static int compare_func (Contract? a, Contract? b) {
+namespace Contractor.ContractSorter {
+    public int compare_func (Contract? a, Contract? b) {
         if (a == null)
             return (b == null) ? 0 : -1;
 
