@@ -48,14 +48,14 @@ namespace Contractor {
             return convert_to_generic_contracts (contracts);
         }
 
-        public void execute_with_uri_list (string id, string[] uris) throws Error {
-            var contract = contract_source.lookup_by_id (id);
-            contract.launch_uris (uris);
-        }
-
         public void execute_with_uri (string id, string uri) throws Error {
             string[] uris = { uri };
             execute_with_uri_list (id, uris);
+        }
+
+        public void execute_with_uri_list (string id, string[] uris) throws Error {
+            var contract = contract_source.lookup_by_id (id);
+            contract.launch_uris (uris);
         }
 
         public GenericContract[] list_all_contracts () {
