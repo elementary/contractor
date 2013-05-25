@@ -1,5 +1,1 @@
-src/config.vala
 build
-src/myproj/bin
-src (copy)
-test_client
