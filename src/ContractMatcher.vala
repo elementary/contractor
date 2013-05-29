@@ -15,19 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class Contractor.ContractMatcher : Object {
-    private ContractSource contract_source;
-
-    public ContractMatcher (ContractSource contract_source) {
-        this.contract_source = contract_source;
-    }
-
-    public Gee.Collection<Contract> get_contracts_for_types (string[] mime_types) {
+namespace Contractor.ContractMatcher {
+    public Gee.Collection<Contract> get_contracts_for_types (string[] mime_types,
+        Gee.Collection<Contract> contracts_to_filter)
+    {
         var valid_contracts = new Gee.LinkedList<Contract> ();
-        var all_contracts = contract_source.get_contracts ();
         var valid_mime_types = String.clean_array (mime_types);
 
-        foreach (var contract in all_contracts) {
+        foreach (var contract in contracts_to_filter) {
             // Check if the contract supports ALL the types listed in mime_types
             bool all_types_supported = true;
 
