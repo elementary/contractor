@@ -46,7 +46,7 @@ public class Contractor.MimeTypeManager : Object {
     }
 
     private static bool compare (string mime_type, string ref_mime_type) {
-        return ref_mime_type in mime_type
+        return mime_type.has_prefix (ref_mime_type)
             || ContentType.equals (mime_type, ref_mime_type)
             || ContentType.is_a (mime_type, ref_mime_type);
     }
