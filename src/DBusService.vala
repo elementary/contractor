@@ -29,13 +29,10 @@ namespace Contractor {
         public signal void contracts_changed ();
 
         private ContractSource contract_source;
-        private ContractMatcher contract_matcher;
 
         public DBusService () {
             contract_source = new ContractSource ();
             contract_source.changed.connect (() => contracts_changed ());
-
-            contract_matcher = new ContractMatcher (contract_source);
         }
 
         public GenericContract[] get_contracts_by_mime (string mime_type) {
@@ -44,7 +41,8 @@ namespace Contractor {
         }
 
         public GenericContract[] get_contracts_by_mimelist (string[] mime_types) {
-            var contracts = contract_matcher.get_contracts_for_types (mime_types);
+            var all_contracts = contract_source.get_contracts ();
+            var contracts = ContractMatcher.get_contracts_for_types (mime_types, all_contracts);
             return convert_to_generic_contracts (contracts);
         }
 
