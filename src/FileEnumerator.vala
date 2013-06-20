@@ -46,7 +46,7 @@ public class Contractor.ContractFileEnumerator : Object {
             while ((f = enumerator.next_file ()) != null) {
                 unowned string name = f.get_name ();
                 var file_type = f.get_file_type ();
-                var child = directory.get_child_for_display_name (name);
+                var child = directory.get_child (name);
 
                 if (file_type == FileType.REGULAR) {
                     if (ContractFile.is_valid_filename (name))
