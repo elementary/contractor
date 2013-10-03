@@ -17,10 +17,13 @@
 
 namespace Contractor.ContractMatcher {
     public Gee.Collection<Contract> get_contracts_for_types (string[] mime_types,
-        Gee.Collection<Contract> contracts_to_filter)
+        Gee.Collection<Contract> contracts_to_filter) throws ContractorError
     {
         var valid_contracts = new Gee.LinkedList<Contract> ();
         var valid_mime_types = String.clean_array (mime_types);
+
+        if (valid_mime_types.length == 0)
+            throw new ContractorError.NO_MIMETYPES_GIVEN ("No mimetypes were provided.");
 
         foreach (var contract in contracts_to_filter) {
             // Check if the contract supports ALL the types listed in mime_types
