@@ -23,6 +23,10 @@
  */
 
 namespace Contractor {
+    [DBus (name = "org.elementary.ContractorError")]
+    public errordomain ContractorError {
+        NO_MIMETYPES_GIVEN
+    }
 
     [DBus (name = "org.elementary.Contractor")]
     public class DBusService : Object {
@@ -35,12 +39,12 @@ namespace Contractor {
             contract_source.changed.connect (() => contracts_changed ());
         }
 
-        public GenericContract[] get_contracts_by_mime (string mime_type) {
+        public GenericContract[] get_contracts_by_mime (string mime_type) throws Error {
             string[] mime_types = { mime_type };
             return get_contracts_by_mimelist (mime_types);
         }
 
-        public GenericContract[] get_contracts_by_mimelist (string[] mime_types) {
+        public GenericContract[] get_contracts_by_mimelist (string[] mime_types) throws Error {
             var all_contracts = contract_source.get_contracts ();
             var contracts = ContractMatcher.get_contracts_for_types (mime_types, all_contracts);
             return convert_to_generic_contracts (contracts);
