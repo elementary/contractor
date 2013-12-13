@@ -1,5 +1,5 @@
 [Contractor Entry]
-Name=Compress
+Name=Compress...
 Icon=add-files-to-archive
 Description=Create a compressed archive with the selected objects
 MimeType=!archive;inode/blockdevice;inode/chardevice;inode/fifo;inode/socket;
