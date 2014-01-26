@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Sergey "Shnatsel" Davidoff <shnatsel@gmail.com>
 Build-Depends: cmake (>= 2.6),
                debhelper (>= 7.0.50~),
-               libgee-dev,
+               libgee-0.8-dev,
                libglib2.0-dev,
                valac (>= 0.16)
 Standards-Version: 3.8.4
