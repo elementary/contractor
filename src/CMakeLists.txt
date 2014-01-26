@@ -10,7 +10,7 @@ add_definitions(-DGETTEXT_PACKAGE=\"${CMAKE_PROJECT_NAME}\")
 
 # pkgconfig, real C code
 find_package(PkgConfig)
-pkg_check_modules(DEPS REQUIRED gee-1.0 glib-2.0 gio-2.0 gio-unix-2.0)
+pkg_check_modules(DEPS REQUIRED gee-0.8 glib-2.0 gio-2.0 gio-unix-2.0)
 
 set(CFLAGS ${DEPS_CFLAGS} ${DEPS_CFLAGS_OTHER})
 set(LIB_PATHS ${DEPS_LIBRARY_DIRS})
@@ -36,7 +36,7 @@ vala_precompile(VALA_C ${EXEC_NAME}
     Translations.vala
     String.vala
 PACKAGES
-    gee-1.0
+    gee-0.8
     glib-2.0
     gio-2.0
     gio-unix-2.0
