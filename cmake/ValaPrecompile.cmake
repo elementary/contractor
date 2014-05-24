@@ -131,14 +131,27 @@ macro(vala_precompile output target_name)
     set(out_files "")
     set(out_files_display "")
     set(${output} "")
+
     foreach(src ${ARGS_DEFAULT_ARGS})
-        list(APPEND in_files "${CMAKE_CURRENT_SOURCE_DIR}/${src}")
+        string(REGEX MATCH "^/" IS_MATCHED ${src})
+        if(${IS_MATCHED} MATCHES "/")
+            set(src_file_path ${src})
+        else()
+            set(src_file_path ${CMAKE_CURRENT_SOURCE_DIR}/${src})
+        endif()
+        list(APPEND in_files ${src_file_path})
         string(REPLACE ".vala" ".c" src ${src})
         string(REPLACE ".gs" ".c" src ${src})
-        set(out_file "${DIRECTORY}/${src}")
-        list(APPEND out_files "${DIRECTORY}/${src}")
-        list(APPEND out_files_display "${src}")
+        if(${IS_MATCHED} MATCHES "/")
+            get_filename_component(VALA_FILE_NAME ${src} NAME)
+            set(out_file "${CMAKE_CURRENT_BINARY_DIR}/${VALA_FILE_NAME}")
+            list(APPEND out_files "${CMAKE_CURRENT_BINARY_DIR}/${VALA_FILE_NAME}")
+        else()
+            set(out_file "${DIRECTORY}/${src}")
+            list(APPEND out_files "${DIRECTORY}/${src}")
+        endif()
         list(APPEND ${output} ${out_file})
+        list(APPEND out_files_display "${src}")
     endforeach(src ${ARGS_DEFAULT_ARGS})
 
     set(custom_vapi_arguments "")
@@ -157,6 +170,11 @@ macro(vala_precompile output target_name)
         list(APPEND out_files "${DIRECTORY}/${ARGS_GENERATE_VAPI}.vapi")
         list(APPEND out_files_display "${ARGS_GENERATE_VAPI}.vapi")
         set(vapi_arguments "--library=${ARGS_GENERATE_VAPI}" "--vapi=${ARGS_GENERATE_VAPI}.vapi")
+
+        # Header and internal header is needed to generate internal vapi
+        if (NOT ARGS_GENERATE_HEADER)
+            set(ARGS_GENERATE_HEADER ${ARGS_GENERATE_VAPI})
+        endif(NOT ARGS_GENERATE_HEADER)
     endif(ARGS_GENERATE_VAPI)
 
     set(header_arguments "")
@@ -167,10 +185,21 @@ macro(vala_precompile output target_name)
     endif(ARGS_GENERATE_HEADER)
 
     set(gir_arguments "")
+    set(gircomp_command "")
     if(ARGS_GENERATE_GIR)
         list(APPEND out_files "${DIRECTORY}/${ARGS_GENERATE_GIR}.gir")
         list(APPEND out_files_display "${ARGS_GENERATE_GIR}.gir")
         set(gir_arguments "--gir=${ARGS_GENERATE_GIR}.gir")
+
+        include (FindGirCompiler)
+        find_package(GirCompiler REQUIRED)
+        
+        set(gircomp_command 
+            COMMAND 
+                ${G_IR_COMPILER_EXECUTABLE}
+            ARGS 
+                "${DIRECTORY}/${ARGS_GENERATE_GIR}.gir"
+                -o "${DIRECTORY}/${ARGS_GENERATE_GIR}.typelib")
     endif(ARGS_GENERATE_GIR)
 
     set(symbols_arguments "")
@@ -199,6 +228,8 @@ macro(vala_precompile output target_name)
         "-d" ${DIRECTORY} 
         ${vala_pkg_opts} 
         ${ARGS_OPTIONS} 
+        "-g"
+        "--save-temps"
         ${in_files} 
         ${custom_vapi_arguments}
     COMMAND
@@ -210,6 +241,7 @@ macro(vala_precompile output target_name)
         ${ARGS_CUSTOM_VAPIS}
     COMMENT
         "Generating ${out_files_display}"
+    ${gircomp_command}
     )
 
     # This command will be run twice for some reason (pass a non-empty string to COMMENT
