@@ -1,7 +1,0 @@
-[Contractor Entry]
-Name=Send files via Bluetooth
-Icon=bluetooth
-Description=Send files to device...
-MimeType=!inode;
-Exec=bluetooth-sendto %F
-Gettext-Domain=gnome-bluetooth2
