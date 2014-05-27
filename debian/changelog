@@ -1,3 +1,10 @@
+contractor (0.3.1) trusty; urgency=low
+
+  * New upstream release.
+
+ -- Sergey "Shnatsel" Davidoff <shnatsel@gmail.com>  Tue, 27 May 2014 21:17:45 +0400
+
+
 contractor (0.3) precise; urgency=low
 
   * New upstream release.
