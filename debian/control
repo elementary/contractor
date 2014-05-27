@@ -16,7 +16,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: service for sharing data between apps
  A sharing service that allows source apps to send their data to
  registered destination apps. This way, data source apps don't have to
- have the destination apps hard coded into them.
+ have the destination apps hard-coded into them.
 
 Package: contractor-dbg
 Architecture: any
@@ -27,6 +27,6 @@ Enhances: contractor
 Description: service for sharing data between apps (debugging symbols)
  A sharing service that allows source apps to send their data to
  registered destination apps. This way, data source apps don't have to
- have the destination apps hard coded into them.
+ have the destination apps hard-coded into them.
  .
  This package contains debugging symbols for contractor.
