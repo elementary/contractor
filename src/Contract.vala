@@ -41,7 +41,7 @@ namespace Contractor {
         }
 
         public bool supports_file_size (int file_size) {
-            return file_size <= max_file_size;
+            return file_size == -1 || file_size <= max_file_size;
         }
 
         public void launch_uris (string[] uris) throws Error {
