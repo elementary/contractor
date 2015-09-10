@@ -56,7 +56,7 @@ namespace Contractor.ContractMatcher {
             }
 
             if (file_size_supported)
-            valid_contracts.add (contract);
+                valid_contracts.add (contract);
         }
 
         return valid_contracts;
