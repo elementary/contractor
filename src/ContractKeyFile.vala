@@ -23,6 +23,7 @@ public class Contractor.ContractKeyFile : Object {
     private const string DESCRIPTION_KEY = "Description";
     private const string ICON_KEY = KeyFileDesktop.KEY_ICON;
     private const string MIMETYPE_KEY = KeyFileDesktop.KEY_MIME_TYPE;
+    private const string MAX_FILE_SIZE_KEY = "MaxFileSize";
     private const string EXEC_KEY = KeyFileDesktop.KEY_EXEC;
     private const string TRY_EXEC_KEY = KeyFileDesktop.KEY_TRY_EXEC;
 
@@ -77,6 +78,10 @@ public class Contractor.ContractKeyFile : Object {
 
     public string[] get_mimetypes () throws Error {
         return keyfile.get_string_list (DESKTOP_GROUP, MIMETYPE_KEY);
+    }
+
+    public int get_max_file_size () throws Error {
+        return keyfile.get_integer (DESKTOP_GROUP, MAX_FILE_SIZE_KEY);
     }
 
     private void verify_exec () throws Error {

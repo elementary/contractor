@@ -21,6 +21,7 @@ namespace Contractor {
         public string name { get; private set; }
         public string icon { get; private set; default = ""; }
         public string description { get; private set; default = ""; }
+        public int max_file_size { get; private set; default = -1; }
 
         private MimeTypeManager mimetype_manager;
         private ContractKeyFile keyfile;
@@ -37,6 +38,10 @@ namespace Contractor {
 
         public bool supports_mime_type (string mime_type) {
             return mimetype_manager.is_type_supported (mime_type);
+        }
+
+        public bool supports_file_size (int file_size) {
+            return file_size <= max_file_size;
         }
 
         public void launch_uris (string[] uris) throws Error {
@@ -71,6 +76,12 @@ namespace Contractor {
                 icon = keyfile.get_icon ();
             } catch (Error err) {
                 warning ("Contract '%s' does not provide an icon (%s)", id, err.message);
+            }
+
+            try {
+                max_file_size = keyfile.get_max_file_size ();
+            } catch (Error err) {
+                warning ("Contract '%s' does not provide a max file size (%s)", id, err.message);
             }
         }
     }

@@ -42,4 +42,24 @@ namespace Contractor.ContractMatcher {
 
         return valid_contracts;
     }
+
+    public Gee.Collection<Contract> get_contracts_for_types_and_file_size (string[] mime_types,
+        int file_size, Gee.Collection<Contract> contracts_to_filter) throws ContractorError
+    {
+        var contracts_for_types = get_contracts_for_types (mime_types, contracts_to_filter);
+        var valid_contracts = new Gee.LinkedList<Contract> ();
+
+        foreach (var contract in contracts_for_types) {
+            bool file_size_supported = true;
+
+            if (!contract.supports_file_size (file_size)) {
+                file_size_supported = false;
+            }
+
+            if (file_size_supported)
+                valid_contracts.add (contract);
+        }
+
+        return valid_contracts;
+    }
 }
