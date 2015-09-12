@@ -50,18 +50,18 @@ namespace Contractor {
             return convert_to_generic_contracts (contracts);
         }
 
-        public GenericContract[] get_contracts_by_file_size (int file_size) throws Error {
+        public GenericContract[] get_contracts_by_file_size (int64 file_size) throws Error {
             var all_contracts = contract_source.get_contracts ();
             var contracts = ContractMatcher.get_contracts_for_file_size (file_size, all_contracts);
             return convert_to_generic_contracts (contracts);
         }
 
-        public GenericContract[] get_contracts_by_mime_and_file_size (string mime_type, int file_size) throws Error {
+        public GenericContract[] get_contracts_by_mime_and_file_size (string mime_type, int64 file_size) throws Error {
             string[] mime_types = { mime_type };
             return get_contracts_by_mimelist_and_file_size (mime_types, file_size);
         }
 
-        public GenericContract[] get_contracts_by_mimelist_and_file_size (string[] mime_types, int file_size) throws Error {
+        public GenericContract[] get_contracts_by_mimelist_and_file_size (string[] mime_types, int64 file_size) throws Error {
             var all_contracts = contract_source.get_contracts ();
             var contracts = ContractMatcher.get_contracts_for_types_and_file_size (mime_types, file_size, all_contracts);
             return convert_to_generic_contracts (contracts);

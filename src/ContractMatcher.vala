@@ -43,7 +43,7 @@ namespace Contractor.ContractMatcher {
         return valid_contracts;
     }
 
-    public Gee.Collection<Contract> get_contracts_for_file_size (int file_size,
+    public Gee.Collection<Contract> get_contracts_for_file_size (int64 file_size,
         Gee.Collection<Contract> contracts_to_filter) throws ContractorError
     {
         var valid_contracts = new Gee.LinkedList<Contract> ();
@@ -63,7 +63,7 @@ namespace Contractor.ContractMatcher {
     }
 
     public Gee.Collection<Contract> get_contracts_for_types_and_file_size (string[] mime_types,
-        int file_size, Gee.Collection<Contract> contracts_to_filter) throws ContractorError
+        int64 file_size, Gee.Collection<Contract> contracts_to_filter) throws ContractorError
     {
         var contracts_for_types = get_contracts_for_types (mime_types, contracts_to_filter);
         var valid_contracts = get_contracts_for_file_size (file_size, contracts_for_types);

@@ -80,8 +80,8 @@ public class Contractor.ContractKeyFile : Object {
         return keyfile.get_string_list (DESKTOP_GROUP, MIMETYPE_KEY);
     }
 
-    public int get_max_file_size () throws Error {
-        return keyfile.get_integer (DESKTOP_GROUP, MAX_FILE_SIZE_KEY);
+    public int64 get_max_file_size () throws Error {
+        return keyfile.get_int64 (DESKTOP_GROUP, MAX_FILE_SIZE_KEY);
     }
 
     private void verify_exec () throws Error {

@@ -21,7 +21,7 @@ namespace Contractor {
         public string name { get; private set; }
         public string icon { get; private set; default = ""; }
         public string description { get; private set; default = ""; }
-        public int max_file_size { get; private set; default = -1; }
+        public int64 max_file_size { get; private set; default = -1; }
 
         private MimeTypeManager mimetype_manager;
         private ContractKeyFile keyfile;
@@ -40,7 +40,7 @@ namespace Contractor {
             return mimetype_manager.is_type_supported (mime_type);
         }
 
-        public bool supports_file_size (int file_size) {
+        public bool supports_file_size (int64 file_size) {
             return file_size == -1 || file_size <= max_file_size;
         }
 
