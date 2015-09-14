@@ -24,43 +24,107 @@
 
 namespace Contractor {
     [DBus (name = "org.elementary.ContractorError")]
+    /**
+     * Errors specific to the Contractor D-Bus service.
+     */
     public errordomain ContractorError {
+        /**
+         * Error if no MIME type was passed where mandatory.
+         */
         NO_MIMETYPES_GIVEN
     }
 
+    /**
+     * A D-Bus service handling requests for Contracts defined by .contract
+     * files.
+     */
     [DBus (name = "org.elementary.Contractor")]
     public class DBusService : Object {
+        /**
+         * Signal which gets sent when Contracts change.
+         */
         public signal void contracts_changed ();
 
+        /**
+         * Source from where .Contracts are loaded.
+         */
         private ContractSource contract_source;
 
+        /**
+         * Constructor to create a DBusService object and setup a
+         * ContractSource.
+         */
         public DBusService () {
             contract_source = new ContractSource ();
             contract_source.changed.connect (() => contracts_changed ());
         }
 
+        /**
+         * This method gets an array of GenericContracts filtered by a
+         * MIME type.
+         *
+         * @param mime_type a MIME type string, e.g. text, image
+         *
+         * @return an array of GenericContracts
+         */
         public GenericContract[] get_contracts_by_mime (string mime_type) throws Error {
             string[] mime_types = { mime_type };
             return get_contracts_by_mimelist (mime_types);
         }
 
+        /**
+         * This method gets an array of GenericContracts filtered by an array of
+         * MIME types.
+         *
+         * @param mime_types an array of MIME type strings, e.g. text, image
+         *
+         * @return an array of GenericContracts
+         */
         public GenericContract[] get_contracts_by_mimelist (string[] mime_types) throws Error {
             var all_contracts = contract_source.get_contracts ();
             var contracts = ContractMatcher.get_contracts_for_types (mime_types, all_contracts);
             return convert_to_generic_contracts (contracts);
         }
 
+        /**
+         * This method gets an array of GenericContracts filtered by the file
+         * size in bytes.
+         *
+         * @param file_size the file size in bytes, e.g. from FileInfo.get_size ()
+         *
+         * @return an array of GenericContracts
+         */
         public GenericContract[] get_contracts_by_file_size (int64 file_size) throws Error {
             var all_contracts = contract_source.get_contracts ();
             var contracts = ContractMatcher.get_contracts_for_file_size (file_size, all_contracts);
             return convert_to_generic_contracts (contracts);
         }
 
+        /**
+         * This method gets an array of GenericContracts filtered by a MIME type
+         * and the file size in bytes.
+         *
+         * @param mime_type a MIME type string, e.g. text, image
+         * @param file_size the file size in bytes, e.g. from FileInfo.get_size ()
+         *
+         * @return an array of GenericContracts
+         */
         public GenericContract[] get_contracts_by_mime_and_file_size (string mime_type, int64 file_size) throws Error {
             string[] mime_types = { mime_type };
             return get_contracts_by_mimelist_and_file_size (mime_types, file_size);
         }
 
+        /**
+         * This method gets an array of GenericContracts filtered by an array of
+         * MIME types and the file size in bytes.
+         *
+         * The file size should probably be the sum of all files file size.
+         *
+         * @param mime_types an array of MIME type strings, e.g. text, image
+         * @param file_size the file size in bytes, e.g. from FileInfo.get_size ()
+         *
+         * @return an array of GenericContracts
+         */
         public GenericContract[] get_contracts_by_mimelist_and_file_size (string[] mime_types, int64 file_size) throws Error {
             var all_contracts = contract_source.get_contracts ();
             var contracts = ContractMatcher.get_contracts_for_types_and_file_size (mime_types, file_size, all_contracts);
@@ -77,11 +141,23 @@ namespace Contractor {
             contract.launch_uris (uris);
         }
 
+        /**
+         * This method gets an array of GenericContracts containing all
+         * contracts that exist.
+         *
+         * @return an array of GenericContracts containing all contracts
+         */
         public GenericContract[] list_all_contracts () {
             var contracts = contract_source.get_contracts ();
             return convert_to_generic_contracts (contracts);
         }
 
+        /**
+         * Converts a Collection of Contracts into an array of
+         * GenericContracts.
+         *
+         * @return an array of GenericContracts
+         */
         private static GenericContract[] convert_to_generic_contracts (Gee.Collection<Contract> contracts) {
             var generic_contracts = new GenericContract[0];
 
