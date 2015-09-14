@@ -39,8 +39,9 @@ public class Contractor.ContractSource : Object {
     public Contract lookup_by_id (string contract_id) throws Error {
         var contract = contracts.get (contract_id);
 
-        if (contract == null)
+        if (contract == null) {
             throw new IOError.NOT_FOUND ("Requested invalid contract: %s", contract_id);
+        }
 
         return contract;
     }
@@ -50,8 +51,9 @@ public class Contractor.ContractSource : Object {
 
         var contract_files_to_load = file_service.load_contract_files ();
 
-        foreach (var contract_file in contract_files_to_load)
+        foreach (var contract_file in contract_files_to_load) {
             load_contract (contract_file);
+        }
 
         changed ();
     }

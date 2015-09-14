@@ -36,8 +36,9 @@ public class Contractor.Translations {
     }
 
     private static void add_domain (string domain) {
-        if (domains.contains (domain))
+        if (domains.contains (domain)) {
             return;
+        }
 
         domains.add (domain);
         Intl.textdomain (domain);

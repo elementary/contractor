@@ -49,8 +49,9 @@ public class Contractor.ContractFileEnumerator : Object {
                 var child = directory.get_child (name);
 
                 if (file_type == FileType.REGULAR) {
-                    if (ContractFile.is_valid_filename (name))
+                    if (ContractFile.is_valid_filename (name)) {
                         files.add (child);
+                    }
                 } else {
                     warning ("'%s' is not a regular file. Skipping it...", child.get_path ());
                 }

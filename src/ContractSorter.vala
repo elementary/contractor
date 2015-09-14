@@ -17,11 +17,13 @@
 
 namespace Contractor.ContractSorter {
     public int compare_func (Contract? a, Contract? b) {
-        if (a == null)
+        if (a == null) {
             return (b == null) ? 0 : -1;
+        }
 
-        if (b == null)
+        if (b == null) {
             return 1;
+        }
 
         return strcmp (a.name.collate_key (), b.name.collate_key ());
     }

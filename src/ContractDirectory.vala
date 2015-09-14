@@ -50,8 +50,9 @@ public class Contractor.ContractDirectory : Object {
     }
 
     private async void on_change_event (File file, File? other_file, FileMonitorEvent event) {
-        if (update_pending)
+        if (update_pending) {
             return;
+        }
 
         update_pending = true;
 

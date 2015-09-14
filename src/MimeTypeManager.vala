@@ -27,8 +27,9 @@ public class Contractor.MimeTypeManager : Object {
 
         values = String.clean_array (mimetypes);
 
-        if (values.length == 0)
+        if (values.length == 0) {
             throw new KeyFileError.INVALID_VALUE ("No values specified for MimeType.");
+        }
     }
 
     public bool is_type_supported (string mime_type) {
@@ -38,8 +39,9 @@ public class Contractor.MimeTypeManager : Object {
 
     private bool contains_mimetype (string mime_type) {
         foreach (string local_mime_type in values) {
-            if (compare (mime_type, local_mime_type))
+            if (compare (mime_type, local_mime_type)) {
                 return true;
+            }
         }
 
         return false;

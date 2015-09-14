@@ -85,8 +85,9 @@ namespace Contractor {
         private static GenericContract[] convert_to_generic_contracts (Gee.Collection<Contract> contracts) {
             var generic_contracts = new GenericContract[0];
 
-            foreach (var contract in contracts)
+            foreach (var contract in contracts) {
                 generic_contracts += contract.get_generic ();
+            }
 
             return generic_contracts;
         }

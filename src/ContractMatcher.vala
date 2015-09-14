@@ -22,8 +22,9 @@ namespace Contractor.ContractMatcher {
         var valid_contracts = new Gee.LinkedList<Contract> ();
         var valid_mime_types = String.clean_array (mime_types);
 
-        if (valid_mime_types.length == 0)
+        if (valid_mime_types.length == 0) {
             throw new ContractorError.NO_MIMETYPES_GIVEN ("No mimetypes were provided.");
+        }
 
         foreach (var contract in contracts_to_filter) {
             // Check if the contract supports ALL the types listed in mime_types
@@ -36,8 +37,9 @@ namespace Contractor.ContractMatcher {
                 }
             }
 
-            if (all_types_supported)
+            if (all_types_supported) {
                 valid_contracts.add (contract);
+            }
         }
 
         return valid_contracts;

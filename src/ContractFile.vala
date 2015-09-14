@@ -31,8 +31,9 @@ public class Contractor.ContractFile : Object {
     public string get_contents () throws Error {
         uint8[] file_data;
 
-        if (file.load_contents (null, out file_data, null))
+        if (file.load_contents (null, out file_data, null)) {
             return (string) file_data;
+        }
 
         return "";
     }

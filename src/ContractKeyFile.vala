@@ -58,8 +58,9 @@ public class Contractor.ContractKeyFile : Object {
     public AppInfo get_app_info () throws Error {
         var app_info = new DesktopAppInfo.from_keyfile (keyfile);
 
-        if (app_info == null)
+        if (app_info == null) {
             throw new FileError.NOENT ("%s's file is probably missing.", TRY_EXEC_KEY);
+        }
 
         return app_info;
     }
@@ -91,8 +92,9 @@ public class Contractor.ContractKeyFile : Object {
 
     private string get_text_domain () throws Error {
         foreach (var domain_key in SUPPORTED_GETTEXT_DOMAIN_KEYS) {
-            if (keyfile.has_key (DESKTOP_GROUP, domain_key))
+            if (keyfile.has_key (DESKTOP_GROUP, domain_key)) {
                 return keyfile.get_string (DESKTOP_GROUP, domain_key);
+            }
         }
 
         return "";
@@ -105,8 +107,9 @@ public class Contractor.ContractKeyFile : Object {
     }
 
     private static void verify_string (string? str, string key) throws Error {
-        if (String.is_empty (str))
+        if (String.is_empty (str)) {
             throw new KeyFileError.INVALID_VALUE ("%s key is empty.", key);
+        }
     }
 
     private static string preprocess_contents (string contents) {

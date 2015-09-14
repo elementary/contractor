@@ -26,8 +26,9 @@ namespace Contractor.String {
         if (array != null && array.length > 0) {
             list = new List<string> ();
 
-            foreach (var str in array)
+            foreach (var str in array) {
                 list.prepend (str);
+            }
 
             list.reverse ();
         }
@@ -45,8 +46,9 @@ namespace Contractor.String {
             if (str != null) {
                 string clean_str = str.strip ();
 
-                if (clean_str != "" && !container.contains (clean_str))
+                if (clean_str != "" && !container.contains (clean_str)) {
                     container.add (clean_str);
+                }
             }
         }
 
