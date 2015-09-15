@@ -57,7 +57,7 @@ namespace Contractor.ContractMatcher {
      * get contracts which support the passed file size
      *
      * @param file_size the file size which has to be supported by the returned contracts
-     * @param a list of contracts to filter
+     * @param contracts_to_filter a list of contracts to filter
      *
      * @return a Collection of Contract objects which support the file size
      */
@@ -85,7 +85,7 @@ namespace Contractor.ContractMatcher {
      *
      * @param mime_types the MIME types which have to be supported by the returned contracts
      * @param file_size the file size which has to be supported by the returned contracts
-     * @param a list of contracts to filter
+     * @param contracts_to_filter a list of contracts to filter
      *
      * @return a Collection of Contract objects which support the MIME types and the file size
      */

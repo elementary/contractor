@@ -40,6 +40,8 @@ public class Contractor.ContractKeyFile : Object {
      * the constructor to create a ContractKeyFile object which loads the
      * content of the passed ContractFile object and sets up an internally
      * stored KeyFile object to access individual contract fields
+     *
+     * @param contract_file ContractFile object from which the content should be loaded
      */
     public ContractKeyFile (ContractFile contract_file) throws Error {
         string contract_file_contents = contract_file.get_contents ();
