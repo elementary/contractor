@@ -81,7 +81,7 @@ namespace Contractor {
             try {
                 max_file_size = keyfile.get_max_file_size ();
             } catch (Error err) {
-                warning ("Contract '%s' does not provide a max file size (%s)", id, err.message);
+                debug ("Contract '%s' does not provide a max file size (%s)", id, err.message);
             }
         }
     }
