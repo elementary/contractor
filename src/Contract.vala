@@ -17,7 +17,7 @@
 
 namespace Contractor {
     /**
-     * A Contract which defines an action
+     * a contract which defines an action available for certain files
      */
     public class Contract : Object {
         /**
