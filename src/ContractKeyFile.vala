@@ -36,6 +36,11 @@ public class Contractor.ContractKeyFile : Object {
     private string text_domain;
     private KeyFile keyfile;
 
+    /**
+     * the constructor to create a ContractKeyFile object which loads the
+     * content of the passed ContractFile object and sets up an internally
+     * stored KeyFile object to access individual contract fields
+     */
     public ContractKeyFile (ContractFile contract_file) throws Error {
         string contract_file_contents = contract_file.get_contents ();
         string contents = preprocess_contents (contract_file_contents);
@@ -65,22 +70,48 @@ public class Contractor.ContractKeyFile : Object {
         return app_info;
     }
 
+    /**
+     * gets the contracts name from the key file
+     *
+     * @return the contracts name
+     */
     public string get_name () throws Error {
         return get_locale_string (NAME_KEY);
     }
 
+    /**
+     * gets the contracts description from the key file
+     *
+     * @return the contracts description
+     */
     public string get_description () throws Error {
         return get_locale_string (DESCRIPTION_KEY);
     }
 
+    /**
+     * gets the contracts icon from the key file
+     *
+     * @return the contracts icon, e.g. add-files-to-archive
+     */
     public string get_icon () throws Error {
         return keyfile.get_string (DESKTOP_GROUP, ICON_KEY);
     }
 
+    /**
+     * gets the contracts supported MIME types from the key file
+     *
+     * @return an array of MIME type strings, e.g. text, image
+     */
     public string[] get_mimetypes () throws Error {
         return keyfile.get_string_list (DESKTOP_GROUP, MIMETYPE_KEY);
     }
 
+    /**
+     * gets the contracts supported maximal file size from the key file
+     * the return value can be used directly in GLib
+     *
+     * @return the maximal file size in bytes as int64
+     */
     public int64 get_max_file_size () throws Error {
         return keyfile.get_int64 (DESKTOP_GROUP, MAX_FILE_SIZE_KEY);
     }
