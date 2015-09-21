@@ -16,14 +16,23 @@
  */
 
 namespace Contractor.ContractMatcher {
+    /**
+     * get contracts which support the passed MIME types
+     *
+     * @param mime_types the MIME types which have to be supported by the returned contracts
+     * @param contracts_to_filter a list of contracts to filter
+     *
+     * @return a Collection of Contract objects which support the file size
+     */
     public Gee.Collection<Contract> get_contracts_for_types (string[] mime_types,
         Gee.Collection<Contract> contracts_to_filter) throws ContractorError
     {
         var valid_contracts = new Gee.LinkedList<Contract> ();
         var valid_mime_types = String.clean_array (mime_types);
 
-        if (valid_mime_types.length == 0)
+        if (valid_mime_types.length == 0) {
             throw new ContractorError.NO_MIMETYPES_GIVEN ("No mimetypes were provided.");
+        }
 
         foreach (var contract in contracts_to_filter) {
             // Check if the contract supports ALL the types listed in mime_types
@@ -36,9 +45,55 @@ namespace Contractor.ContractMatcher {
                 }
             }
 
-            if (all_types_supported)
+            if (all_types_supported) {
+                valid_contracts.add (contract);
+            }
+        }
+
+        return valid_contracts;
+    }
+
+    /**
+     * get contracts which support the passed file size
+     *
+     * @param file_size the file size which has to be supported by the returned contracts
+     * @param contracts_to_filter a list of contracts to filter
+     *
+     * @return a Collection of Contract objects which support the file size
+     */
+    public Gee.Collection<Contract> get_contracts_for_file_size (int64 file_size,
+        Gee.Collection<Contract> contracts_to_filter) throws ContractorError
+    {
+        var valid_contracts = new Gee.LinkedList<Contract> ();
+
+        foreach (var contract in contracts_to_filter) {
+            bool file_size_supported = true;
+
+            if (!contract.supports_file_size (file_size)) {
+                file_size_supported = false;
+            }
+
+            if (file_size_supported)
                 valid_contracts.add (contract);
         }
+
+        return valid_contracts;
+    }
+
+    /**
+     * get contracts which support the passed MIME types and file size
+     *
+     * @param mime_types the MIME types which have to be supported by the returned contracts
+     * @param file_size the file size which has to be supported by the returned contracts
+     * @param contracts_to_filter a list of contracts to filter
+     *
+     * @return a Collection of Contract objects which support the MIME types and the file size
+     */
+    public Gee.Collection<Contract> get_contracts_for_types_and_file_size (string[] mime_types,
+        int64 file_size, Gee.Collection<Contract> contracts_to_filter) throws ContractorError
+    {
+        var contracts_for_types = get_contracts_for_types (mime_types, contracts_to_filter);
+        var valid_contracts = get_contracts_for_file_size (file_size, contracts_for_types);
 
         return valid_contracts;
     }

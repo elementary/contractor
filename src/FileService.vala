@@ -43,8 +43,9 @@ namespace Contractor {
         public Gee.List<File> load_contract_files () {
             var contract_files = new Gee.LinkedList<File> ();
 
-            foreach (var directory in directories)
+            foreach (var directory in directories) {
                 contract_files.add_all (directory.lookup_contract_files ());
+            }
 
             return contract_files;
         }
@@ -55,8 +56,9 @@ namespace Contractor {
             // The user's data dir takes priority over system-wide data directories
             data_dir_paths += Environment.get_user_data_dir ();
 
-            foreach (string data_dir in Environment.get_system_data_dirs ())
+            foreach (string data_dir in Environment.get_system_data_dirs ()) {
                 data_dir_paths += data_dir;
+            }
 
             foreach (var path in data_dir_paths) {
                 var directory = File.new_for_path (path).get_child (CONTRACT_DATA_DIR_NAME);
