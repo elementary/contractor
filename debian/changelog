@@ -1,3 +1,9 @@
+contractor (0.3.2) xenial; urgency=medium
+
+  * New upstream release.
+
+ -- Cody Garver <cody@elementary.io>  Thu, 11 Aug 2016 05:26:54 -0500
+
 contractor (0.3.1) trusty; urgency=low
 
   * New upstream release.
