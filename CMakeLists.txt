@@ -5,7 +5,7 @@ cmake_policy(VERSION 2.6)
 project(contractor)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake )
 
-set (VERSION "0.3.1")
+set (VERSION "0.3.2")
 
 # Add 'make dist' command for creating release tarball
 set (CPACK_PACKAGE_VERSION ${VERSION})
