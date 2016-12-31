@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 elementary Developers
+ * Copyright (C) 2013-2017 elementary Developers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,4 +21,3 @@ void main (string[] args) {
     var application = new Contractor.Application ();
     application.run ();
 }
-

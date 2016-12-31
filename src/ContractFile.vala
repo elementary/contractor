@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 elementary Developers
+ * Copyright (C) 2013-2017 elementary Developers
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,4 +86,3 @@ public class Contractor.ContractFile : Object {
         return file_name[0 : - EXTENSION.length];
     }
 }
-
