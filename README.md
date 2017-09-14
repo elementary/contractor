@@ -15,3 +15,7 @@ Run `cmake` to configure the build environment and then `make` to build
 To install, use `make install`
 
     sudo make install
+
+## Documentaion
+
+Documentation can be found at https://valadoc.org/granite/Granite.Services.ContractorProxy
