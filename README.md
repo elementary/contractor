@@ -16,10 +16,10 @@ To install, use `make install`
 
     sudo make install
 
-## Writing contract files
-Elementary OS's Pantheon's file manager supports adding options to the context menu by the way of Contract files.
+## Writing Contract Files
+elementary Files, Photos and other apps support adding options to the context menu by the way of Contract files. 
 
-Contract files can be made system wide available by adding them to:
+These Contract files can be made system wide available by adding them to:
 `/usr/share/contractor`
 or for specific users by adding them to:
 `~/.local/share/contractor`
