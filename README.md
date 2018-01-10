@@ -38,15 +38,3 @@ Exec=gnome-disk-image-mounter %f
 
 Tips:
 - Use `pkexec` to ask for root permissions. Example: `Exec=pkexec chmod +x %U`
-- To execute more complex scripts, put the script in a .sh file and call it.
-
-Examples:
-- Rename file(s) in Thunar: https://elementaryos.stackexchange.com/a/10962/3892
-- Search here: https://elementaryos.stackexchange.com/a/7055/3892
-- Mount ISO: https://elementaryos.stackexchange.com/a/270/3892
-- Open folder as root: https://elementaryos.stackexchange.com/a/442/3892
-- Get media info: https://elementaryos.stackexchange.com/a/3788/3892
-- Make executable: https://unix.stackexchange.com/a/193689
-- Make executable alternative: https://github.com/elementary/files/issues/206#issuecomment-348936412
-- Multiple examples: http://revanthrevoori.com/blog/2015/12/elementary-contracts
-- Image resize: https://elementaryos.stackexchange.com/a/14101/3892
