@@ -38,3 +38,15 @@ Exec=gnome-disk-image-mounter %f
 
 Tips:
 - Use `pkexec` to ask for root permissions. Example: `Exec=pkexec chmod +x %U`
+
+## Examples
+- [Send by Email](https://github.com/elementary/mail/blob/master/data/mail-attach.contract)
+- [Print](https://github.com/elementary/pantheon-print/blob/master/data/print.contract)
+- [Send files via Bluetooth](https://github.com/codygarver/os-patch-gnome-bluetooth-xenial/blob/master/debian/gnome-bluetooth.contract)
+- [Compress](https://github.com/codygarver/os-patch-file-roller-xenial/blob/master/data/file-roller-compress.contract)
+- [Extract Here](https://github.com/codygarver/os-patch-file-roller-xenial/blob/master/data/file-roller-extract-here.contract)
+- [Set as Desktop Background](https://github.com/elementary/switchboard-plug-pantheon-shell/blob/master/set-wallpaper-contract/set-wallpaper.contract.in) (will be processed during the compilation process)
+- [Write onto removable device](https://github.com/artemanufrij/imageburner/blob/master/data/com.github.artemanufrij.imageburner.contract)
+- [QR Share](https://github.com/mubitosh/qrshare/blob/master/data/com.github.mubitosh.qrshare.contract)
+- [Wallpaperize](https://github.com/Philip-Scott/wallpaperize/blob/master/data/com.github.philip-scott.wallpaperize.contract)
+- [Show checksum](https://github.com/artemanufrij/hashit/blob/1d295b2a340d840898999059dd808439294aa89a/data/com.github.artemanufrij.hashit.contract)
