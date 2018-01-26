@@ -45,7 +45,6 @@ Tips:
 - [Send files via Bluetooth](https://github.com/codygarver/os-patch-gnome-bluetooth-xenial/blob/master/debian/gnome-bluetooth.contract)
 - [Compress](https://github.com/codygarver/os-patch-file-roller-xenial/blob/master/data/file-roller-compress.contract)
 - [Extract Here](https://github.com/codygarver/os-patch-file-roller-xenial/blob/master/data/file-roller-extract-here.contract)
-- [Set as Desktop Background](https://github.com/elementary/switchboard-plug-pantheon-shell/blob/master/set-wallpaper-contract/set-wallpaper.contract.in) (will be processed during the compilation process)
 - [Write onto removable device](https://github.com/artemanufrij/imageburner/blob/master/data/com.github.artemanufrij.imageburner.contract)
 - [QR Share](https://github.com/mubitosh/qrshare/blob/master/data/com.github.mubitosh.qrshare.contract)
 - [Wallpaperize](https://github.com/Philip-Scott/wallpaperize/blob/master/data/com.github.philip-scott.wallpaperize.contract)
