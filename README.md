@@ -49,4 +49,4 @@ Tips:
 - [QR Share](https://github.com/mubitosh/qrshare/blob/master/data/com.github.mubitosh.qrshare.contract)
 - [Wallpaperize](https://github.com/Philip-Scott/wallpaperize/blob/master/data/com.github.philip-scott.wallpaperize.contract)
 - [Show checksum](https://github.com/artemanufrij/hashit/blob/1d295b2a340d840898999059dd808439294aa89a/data/com.github.artemanufrij.hashit.contract)
-- [GPG Encrypt/Decrypt and more](https://github.com/phocean/contracts)
+- [GPG Encrypt/Decrypt](https://github.com/phocean/contracts-gpg)
