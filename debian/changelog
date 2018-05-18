@@ -1,3 +1,9 @@
+contractor (0.3.3) bionic; urgency=medium
+
+  * New upstream release.
+
+ -- Cody Garver <cody@elementary.io>  Fri, 18 May 2018 07:04:40 -0500
+
 contractor (0.3.2) xenial; urgency=medium
 
   * New upstream release.
