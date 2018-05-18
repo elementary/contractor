@@ -6,7 +6,7 @@ project(contractor)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake )
 include(GNUInstallDirs)
 
-set (VERSION "0.3.2")
+set (VERSION "0.3.3")
 
 add_subdirectory (src)
 add_subdirectory (data)
