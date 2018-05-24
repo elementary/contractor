@@ -1,14 +1,11 @@
 conf_data = configuration_data()
-conf_data.set('PREFIX', get_option('prefix'))
-service_config = configure_file(
+conf_data.set('EXEC_PATH', join_paths (get_option('prefix'), get_option('bindir'), meson.project_name()))
+
+dbus = dependency('dbus-1')
+
+configure_file(
     input: 'org.elementary.contractor.service.in',
-    output: 'org.elementary.contractor.service',
-    configuration: conf_data
+    output: '@BASENAME@',
+    configuration: conf_data,
+    install_dir: dbus.get_pkgconfig_variable('session_bus_services_dir')
 )
-
-install_data(
-    service_config,
-    install_dir: join_paths(get_option('datadir'), 'dbus-1', 'services')
-)
-
-
