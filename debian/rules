@@ -1,10 +1,10 @@
 #!/usr/bin/make -f
 
 %:
-	dh $@ 
+	dh $@ --buildsystem=meson
 
-override_dh_auto_install:
-	dh_auto_install --destdir=debian/contractor
+override_dh_missing:
+	dh_missing --fail-missing --list-missing
 
 override_dh_strip:
-	dh_strip --dbg-package=contractor-dbg
+	dh_strip -p contractor --dbgsym-migration='contractor-dbg (<< 0.3.4)'
