@@ -1,7 +1,7 @@
 project(
     'contractor',
     'vala', 'c',
-    version: '0.3.3'
+    version: '0.3.4'
 )
 
 i18n = import('i18n')
