@@ -2,19 +2,22 @@
 
 ## Building, Testing, and Installation
 
-It's recommended to create a clean build environment
+You'll need the following dependencies:
+* libdbus-1-dev
+* libgee-0.8-dev
+* libglib2.0-dev
+* meson
+* valac
 
-    mkdir build
-    cd build/
-    
-Run `cmake` to configure the build environment and then `make` to build
+Run `meson` to configure the build environment and then `ninja` to build
 
-    cmake -DCMAKE_INSTALL_PREFIX=/usr ..
-    make
-    
-To install, use `make install`
+    meson build --prefix=/usr
+    cd build
+    ninja
 
-    sudo make install
+To install, use `ninja install`
+
+    sudo ninja install
 
 ## Writing Contract Files
 elementary Files, Photos and other apps support adding options to the context menu by the way of Contract files. 
