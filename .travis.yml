@@ -7,10 +7,8 @@ env:
  - DEPENDENCY_PACKAGES="libdbus-1-dev libgee-0.8-dev libglib2.0-dev meson valac"
 
 install:
- - docker pull elementary/docker:loki
- - docker run -v "$PWD":/tmp/build-dir elementary/docker:loki /bin/sh -c "apt-get update && apt-get -y install $DEPENDENCY_PACKAGES && cd /tmp/build-dir && meson build && ninja -C build"
- - docker pull elementary/docker:loki-unstable
- - docker run -v "$PWD":/tmp/build-dir elementary/docker:loki-unstable /bin/sh -c "apt-get update && apt-get -y install $DEPENDENCY_PACKAGES && cd /tmp/build-dir && rm -rf build && meson build && ninja -C build"
+ - docker run -v "$PWD":/tmp/build-dir elementary/docker:stable /bin/sh -c "apt-get update && apt-get -y install $DEPENDENCY_PACKAGES && cd /tmp/build-dir && meson build && ninja -C build"
+ - docker run -v "$PWD":/tmp/build-dir elementary/docker:unstable /bin/sh -c "apt-get update && apt-get -y install $DEPENDENCY_PACKAGES && cd /tmp/build-dir && rm -rf build && meson build && ninja -C build"
 
 script:
  - echo BUILDS PASSED
