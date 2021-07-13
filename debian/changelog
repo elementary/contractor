@@ -1,3 +1,9 @@
+contractor (0.3.5) focal; urgency=medium
+
+  * Fix install path for DBus service
+
+ -- Daniel Foré <daniel@elementary.io>  Tue, 13 Jul 2021 14:33:42 -0700
+
 contractor (0.3.4) bionic; urgency=medium
 
   * New upstream release.

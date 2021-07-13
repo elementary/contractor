@@ -1,7 +1,7 @@
 Source: contractor
 Section: utils
 Priority: optional
-Maintainer: Cody Garver <cody@elementary.io>
+Maintainer: elementary, Inc. <builds@elementary.io>
 Build-Depends: debhelper (>= 10.5.1),
                libdbus-1-dev,
                libgee-0.8-dev,
