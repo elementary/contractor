@@ -9,7 +9,7 @@ add_global_arguments('-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()), lan
 
 prefix = get_option('prefix')
 datadir = join_paths(prefix, get_option('datadir'))
-bindir = join_paths(prefix, get_option('bindir'))
+libexecdir = join_paths(prefix, get_option('libexecdir'))
 
 subdir('src')
 subdir('data')
