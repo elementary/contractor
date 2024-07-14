@@ -25,8 +25,7 @@ namespace Contractor.ContractMatcher {
      * @return a Collection of Contract objects which support the file size
      */
     public Gee.Collection<Contract> get_contracts_for_types (string[] mime_types,
-        Gee.Collection<Contract> contracts_to_filter) throws ContractorError
-    {
+        Gee.Collection<Contract> contracts_to_filter) throws ContractorError {
         var valid_contracts = new Gee.LinkedList<Contract> ();
         var valid_mime_types = String.clean_array (mime_types);
 
@@ -62,8 +61,7 @@ namespace Contractor.ContractMatcher {
      * @return a Collection of Contract objects which support the file size
      */
     public Gee.Collection<Contract> get_contracts_for_file_size (int64 file_size,
-        Gee.Collection<Contract> contracts_to_filter) throws ContractorError
-    {
+        Gee.Collection<Contract> contracts_to_filter) throws ContractorError {
         var valid_contracts = new Gee.LinkedList<Contract> ();
 
         foreach (var contract in contracts_to_filter) {
@@ -90,8 +88,7 @@ namespace Contractor.ContractMatcher {
      * @return a Collection of Contract objects which support the MIME types and the file size
      */
     public Gee.Collection<Contract> get_contracts_for_types_and_file_size (string[] mime_types,
-        int64 file_size, Gee.Collection<Contract> contracts_to_filter) throws ContractorError
-    {
+        int64 file_size, Gee.Collection<Contract> contracts_to_filter) throws ContractorError {
         var contracts_for_types = get_contracts_for_types (mime_types, contracts_to_filter);
         var valid_contracts = get_contracts_for_file_size (file_size, contracts_for_types);
 
