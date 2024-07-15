@@ -30,6 +30,6 @@ executable(
     meson.project_name(),
     files,
     dependencies: dependencies,
-    install : true,
-    install_dir : libexecdir
+    install: true,
+    install_dir: libexecdir
 )
