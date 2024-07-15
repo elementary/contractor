@@ -53,7 +53,7 @@ public class Contractor.ContractFileEnumerator : Object {
                         files.add (child);
                     }
                 } else {
-                    warning ("'%s' is not a regular file. Skipping it...", child.get_path ());
+                    warning ("'%s' is not a regular file. Skipping it…", child.get_path ());
                 }
             }
         } catch (Error err) {
