@@ -23,7 +23,7 @@
  */
 
 namespace Contractor {
-    [DBus (name = "org.elementary.ContractorError")]
+    [DBus (name = "io.elementary.ContractorError")]
     /**
      * Errors specific to the Contractor D-Bus service.
      */
@@ -38,7 +38,7 @@ namespace Contractor {
      * A D-Bus service handling requests for Contracts defined by .contract
      * files.
      */
-    [DBus (name = "org.elementary.Contractor")]
+    [DBus (name = "io.elementary.Contractor")]
     public class DBusService : Object {
         /**
          * Signal which gets sent when Contracts change.

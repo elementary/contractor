@@ -16,8 +16,8 @@
  */
 
 public class Contractor.Application {
-    private const string DBUS_NAME = "org.elementary.Contractor";
-    private const string DBUS_PATH = "/org/elementary/contractor";
+    private const string DBUS_NAME = "io.elementary.Contractor";
+    private const string DBUS_PATH = "/io/elementary/contractor";
 
     private DBusService dbus_service;
     private MainLoop main_loop;
