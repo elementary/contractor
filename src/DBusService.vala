@@ -153,6 +153,37 @@ namespace Contractor {
         }
 
         /**
+         * Gets every contract, including the optional submenu path.
+         * Clients group entries that share the same submenu string.
+         * An empty submenu means a top-level item.
+         *
+         * @return an array of ContractMenuEntry containing all contracts
+         */
+        public ContractMenuEntry[] list_all_contract_entries () {
+            var contracts = contract_source.get_contracts ();
+            return convert_to_contract_menu_entries (contracts);
+        }
+
+        /**
+         * Gets contracts filtered by MIME types and file size, including the
+         * optional submenu path.
+         *
+         * Pass file_size -1 to skip the file size filter. A submenu is only
+         * relevant for contracts that pass these filters; clients should group
+         * the returned entries and omit empty groups.
+         *
+         * @param mime_types an array of MIME type strings, e.g. text, image
+         * @param file_size the file size in bytes, or -1 for any size
+         *
+         * @return an array of ContractMenuEntry
+         */
+        public ContractMenuEntry[] get_contract_entries_by_mimelist_and_file_size (string[] mime_types, int64 file_size) throws Error {
+            var all_contracts = contract_source.get_contracts ();
+            var contracts = ContractMatcher.get_contracts_for_types_and_file_size (mime_types, file_size, all_contracts);
+            return convert_to_contract_menu_entries (contracts);
+        }
+
+        /**
          * Converts a Collection of Contracts into an array of
          * GenericContracts.
          *
@@ -166,6 +197,22 @@ namespace Contractor {
             }
 
             return generic_contracts;
+        }
+
+        /**
+         * Converts a Collection of Contracts into an array of
+         * ContractMenuEntry values, including each submenu path.
+         *
+         * @return an array of ContractMenuEntry
+         */
+        private static ContractMenuEntry[] convert_to_contract_menu_entries (Gee.Collection<Contract> contracts) {
+            var entries = new ContractMenuEntry[0];
+
+            foreach (var contract in contracts) {
+                entries += contract.get_menu_entry ();
+            }
+
+            return entries;
         }
     }
 }

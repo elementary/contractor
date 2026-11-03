@@ -32,6 +32,11 @@ namespace Contractor {
         public string icon { get; private set; default = ""; }
         public string description { get; private set; default = ""; }
         /**
+         * optional submenu path displayed by clients. Empty means a top-level
+         * item. '/' separates nested menu labels.
+         */
+        public string submenu { get; private set; default = ""; }
+        /**
          * the maximal file size a file or list of files are allowed to have to
          * be applicable for this contract
          */
@@ -102,6 +107,20 @@ namespace Contractor {
         }
 
         /**
+         * creates and returns a ContractMenuEntry filled with data from this
+         * Contract, including the optional submenu path
+         */
+        public ContractMenuEntry get_menu_entry () {
+            return ContractMenuEntry () {
+                id = id,
+                name = name,
+                description = description,
+                icon = icon,
+                submenu = submenu
+            };
+        }
+
+        /**
          * loads mandatory fields from the key file
          */
         private void load_mandatory_fields () throws Error {
@@ -132,6 +151,8 @@ namespace Contractor {
             } catch (Error err) {
                 debug ("Contract '%s' does not provide a max file size (%s)", id, err.message);
             }
+
+            submenu = keyfile.get_submenu ();
         }
     }
 }

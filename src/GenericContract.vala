@@ -21,3 +21,15 @@ public struct Contractor.GenericContract {
     string description;
     string icon;
 }
+
+/**
+ * A contract exposed to clients that can group actions into submenus.
+ * submenu is empty for a top-level item. '/' separates nested labels.
+ */
+public struct Contractor.ContractMenuEntry {
+    string id;
+    string name;
+    string description;
+    string icon;
+    string submenu;
+}
