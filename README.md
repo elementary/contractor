@@ -38,6 +38,9 @@ Exec=gnome-disk-image-mounter %f
 - `Name`: Text displayed in the right click context menu.
 - `MimeType`: Mimetype(s) of files it should be shown for.
 - `Exec`: Command to execute. [More info](https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html#exec-variables).
+- `Submenu`: Optional menu path. Contracts that share the same value are grouped under that submenu by the client. `/` separates nested labels (`Archive/Compress`). A missing or empty value keeps the item at the top level. Localized keys work the same way as `Name` (`Submenu[pt_BR]=Arquivo`). The Contractor service returns the translated path; the client draws the submenu and hides a group when none of its contracts match the current files.
+
+`Submenu` is available from `list_all_contract_entries` and `get_contract_entries_by_mimelist_and_file_size`. The older methods still return a flat list without this field.
 
 Tips:
 - Use `pkexec` to ask for root permissions. Example: `Exec=pkexec chmod +x %U`

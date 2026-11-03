@@ -24,6 +24,7 @@ public class Contractor.ContractKeyFile : Object {
     private const string ICON_KEY = KeyFileDesktop.KEY_ICON;
     private const string MIMETYPE_KEY = KeyFileDesktop.KEY_MIME_TYPE;
     private const string MAX_FILE_SIZE_KEY = "MaxFileSize";
+    private const string SUBMENU_KEY = "Submenu";
     private const string EXEC_KEY = KeyFileDesktop.KEY_EXEC;
     private const string TRY_EXEC_KEY = KeyFileDesktop.KEY_TRY_EXEC;
 
@@ -88,6 +89,23 @@ public class Contractor.ContractKeyFile : Object {
      */
     public string get_description () throws Error {
         return get_locale_string (DESCRIPTION_KEY);
+    }
+
+    /**
+     * gets the optional submenu path from the key file
+     *
+     * A missing or empty key means the contract stays at the top level.
+     * '/' separates nested menu labels. The returned string is localized
+     * the same way as the contract name.
+     *
+     * @return the submenu path, or an empty string when unset
+     */
+    public string get_submenu () {
+        try {
+            return get_locale_string (SUBMENU_KEY);
+        } catch (Error err) {
+            return "";
+        }
     }
 
     /**
